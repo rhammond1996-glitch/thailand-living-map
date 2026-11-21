@@ -161,9 +161,62 @@ function render(preserveView=false){
  $('places-list').innerHTML=list.length?list.map(placeCard).join(''):'<div class="empty">'+(state.favoritesOnly?'No favorites here yet. Choose All places and tap a star to save something.':'No places match these filters. Try another category.')+'</div>';
  renderPins(list,preserveView);
 }
+
+/**
+ * Leaflet 1.9's doubleClickZoom responds to a 'dblclick' event, which mobile
+ * Safari may not dispatch on a finger double tap. Detect actual touch taps.
+ * Keep pinch zoom and dragging untouched; ignore map controls and markers.
+ */
+function enableMobileDoubleTap(activeMap){
+ const surface=activeMap.getContainer();
+ let press=null, previousTap=null;
+ const TAP_MS=340, PRESS_MS=320, SPREAD_PX=42, MOVE_PX=18;
+ const isUI=target=>!!(target instanceof Element &&
+  target.closest('.leaflet-marker-icon, .leaflet-popup, .leaflet-control, button, a, input, [role="button"]'));
+ const point=t=>({x:t.clientX,y:t.clientY});
+ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+ surface.addEventListener('touchstart',event=>{
+  if(event.touches.length!==1||isUI(event.target)){
+   press=null;previousTap=null;return;
+  }
+  press={...point(event.touches[0]),time:performance.now(),moved:false};
+ },{capture:true,passive:true});
+ surface.addEventListener('touchmove',event=>{
+  if(!press)return;
+  if(event.touches.length!==1){press=null;previousTap=null;return;}
+  if(distance(point(event.touches[0]),press)>MOVE_PX){
+   press.moved=true;previousTap=null;
+  }
+ },{capture:true,passive:true});
+ surface.addEventListener('touchcancel',()=>{press=null;previousTap=null;},{capture:true,passive:true});
+ surface.addEventListener('touchend',event=>{
+  if(!press||event.changedTouches.length!==1||event.touches.length!==0){
+   press=null;return;
+  }
+  const ended=point(event.changedTouches[0]);
+  const now=performance.now();
+  const valid=!press.moved&&now-press.time<=PRESS_MS&&distance(ended,press)<=MOVE_PX;
+  press=null;
+  if(!valid){previousTap=null;return;}
+  if(previousTap&&now-previousTap.time<=TAP_MS&&distance(ended,previousTap)<=SPREAD_PX){
+   previousTap=null;
+   // Prevent Safari's browser-page double-tap zoom; only the map should zoom.
+   if(event.cancelable)event.preventDefault();
+   event.stopPropagation();
+   const rect=surface.getBoundingClientRect();
+   const anchor=L.point(ended.x-rect.left,ended.y-rect.top);
+   const nextZoom=Math.min(activeMap.getMaxZoom(),activeMap.getZoom()+1);
+   activeMap.setZoomAround(anchor,nextZoom,{animate:true});
+  }else{
+   previousTap={...ended,time:now};
+  }
+ },{capture:true,passive:false});
+}
+
 function initializeMap(){
  if(!window.L){$('map-error').hidden=false;return;}
- map=L.map('map',{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:true,touchZoom:true,tapHold:false}).setView([16.3,99.5],6);
+ map=L.map('map',{zoomControl:false,scrollWheelZoom:!L.Browser.touch,doubleClickZoom:!L.Browser.touch,touchZoom:true,tapHold:false}).setView([16.3,99.5],6);
+ if(L.Browser.touch)enableMobileDoubleTap(map);
  L.control.zoom({position:'bottomright'}).addTo(map);
  const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
  tiles.on('tileerror',()=>{$('map-error').hidden=false;});tiles.addTo(map);
