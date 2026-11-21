@@ -15,7 +15,8 @@ const CATEGORIES=[
  ['Vintage','Vintage','♻','#72956b'],
  ['Jewelry & artisan','Artisan','💍','#bd9664'],
  ['Creative districts','Design districts','✦','#8180b8'],
- ['Gay Nightlife','Gay nightlife','🪩','#9a5bba']
+ ['Gay Nightlife','Gay nightlife','🪩','#9a5bba'],
+ ['Underground & Raves','Underground & raves','🔊','#5369c5']
 ];
 const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,icon,color])=>[key,{label,icon,color}]));
 const state={places:[],city:'All',category:'All',query:'',top:false,selected:null,level:'middle',source:'',signature:''};
