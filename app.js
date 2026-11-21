@@ -8,18 +8,66 @@ const CONFIG={
 };
 const FIELDS=['id','name','city','categories','location_type','address','highlights','price_note','priority','status','lat','lng','verification'];
 const CATEGORIES=[
- ['All','All places','✳','#377c61'],
- ['Fragrances','Fragrance','🌸','#b16b9a'],
- ['Independent fashion','Fashion','👕','#347fa3'],
- ['Designer replicas','Replicas','👜','#bd8551'],
- ['Vintage','Vintage','♻','#72956b'],
- ['Jewelry & artisan','Artisan','💍','#bd9664'],
- ['Creative districts','Design districts','✦','#8180b8'],
- ['Gay Nightlife','Gay nightlife','🪩','#9a5bba'],
- ['Underground & Raves','Underground & raves','🔊','#5369c5']
+ ['All','All places','#925b77'],
+ ['Fragrances','Fragrance','#b16b9a'],
+ ['Independent fashion','Fashion','#347fa3'],
+ ['Designer replicas','Replicas','#bd8551'],
+ ['Vintage','Vintage','#73956b'],
+ ['Jewelry & artisan','Artisan','#b08851'],
+ ['Creative districts','Design','#8180b8'],
+ ['Gay Nightlife','Nightlife','#9a5bba'],
+ ['Underground & Raves','Raves','#5369c5']
 ];
-const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,icon,color])=>[key,{label,icon,color}]));
-const state={places:[],city:'All',category:'All',query:'',top:false,selected:null,level:'middle',source:'',signature:''};
+const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[key,{label,color}]));
+const ICON_PATHS={
+ 'All':'<path d="M3 8h18M3 16h18M8 3v18M16 3v18"/>',
+ 'Fragrances':'<rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3M9 3h6M19 5h2"/>',
+ 'Independent fashion':'<path d="m8 4 4 2 4-2 5 5-3 3-2-2v11H8V10l-2 2-3-3 5-5z"/>',
+ 'Designer replicas':'<path d="M5 9h14l-1 12H6L5 9z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+ 'Vintage':'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
+ 'Jewelry & artisan':'<path d="M6 4h12l4 6-10 11L2 10l4-6zM2 10h20M9 4l-2 6 5 11 5-11-2-6"/>',
+ 'Creative districts':'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M13 17h8m-4-4v8"/>',
+ 'Gay Nightlife':'<path d="M20.5 13A9 9 0 0 1 11 3.5 9 9 0 1 0 20.5 13Z"/>',
+ 'Underground & Raves':'<path d="M3 11v2M7 7v10M11 3v18M15 7v10M19 10v4M22 12v1"/>'
+};
+function iconSVG(category,size=18){
+ return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICON_PATHS[category]||ICON_PATHS.All)+'</svg>';
+}
+const STAR_PATH='<path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/>';
+function starSVG(active,size=19){
+ return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" stroke="currentColor" fill="'+(active?'currentColor':'none')+'" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">'+STAR_PATH+'</svg>';
+}
+const FAVORITES_KEY='thailand-living-map:favorites:v1';
+function readFavorites(){
+ try{const data=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');return new Set(Array.isArray(data)?data.map(String):[]);}catch{return new Set();}
+}
+const favorites=readFavorites();
+function favoriteButton(p,where='list'){
+ const saved=favorites.has(String(p.id));
+ return '<button type="button" class="favorite-star '+(saved?'is-favorite':'')+'" data-favorite="'+esc(p.id)+'" aria-pressed="'+saved+'" aria-label="'+(saved?'Remove ':'Add ')+esc(p.name)+(saved?' from favorites':' to favorites')+'" title="'+(saved?'Remove from favorites':'Add to favorites')+'">'+starSVG(saved,where==='detail'?22:19)+'</button>';
+}
+function syncFavoriteButtons(){
+ document.querySelectorAll('button[data-favorite]').forEach(button=>{
+  const id=button.dataset.favorite,p=state.places.find(p=>String(p.id)===String(id));
+  const selected=favorites.has(String(id));
+  button.classList.toggle('is-favorite',selected);
+  button.setAttribute('aria-pressed',String(selected));
+  button.setAttribute('aria-label',(selected?'Remove ':'Add ')+(p?.name||'place')+(selected?' from favorites':' to favorites'));
+  button.title=selected?'Remove from favorites':'Add to favorites';
+  button.innerHTML=starSVG(selected,button.closest('#place-detail')?22:19);
+ });
+}
+function toggleFavorite(id){
+ const p=state.places.find(p=>String(p.id)===String(id));if(!p)return;
+ const key=String(id);
+ if(favorites.has(key))favorites.delete(key);else favorites.add(key);
+ try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...favorites]));}catch(err){console.warn('Favorites could not be saved on this device',err);}
+ if(state.favoritesOnly&&!favorites.has(key))closeDetails();
+ render(true);
+ syncFavoriteButtons();
+}
+
+const state={places:[],city:'All',category:'All',query:'',favoritesOnly:false,selected:null,level:'peek',source:'',signature:''};
 let map,markers,markerById=new Map(),geoLayer=null,loading=false,feedFailed=false;
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
@@ -28,7 +76,6 @@ const mobile=()=>matchMedia('(max-width:720px)').matches;
 const coords=p=>p.lat!==null&&p.lng!==null&&p.lat!==''&&p.lng!==''&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lng))&&Number(p.lat)>5&&Number(p.lat)<22&&Number(p.lng)>97&&Number(p.lng)<107;
 const gmaps=p=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+', '+p.address);
 const directions=p=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.name+', '+p.address);
-const priority=p=>p.priority==='Top'?0:p.priority==='High'?1:p.priority==='Medium'?2:3;
 function clean(rows){
  const seen=new Set();
  return rows.map(row=>{const p={};for(const field of FIELDS)p[field]=row[field]??'';p.lat=p.lat===''||p.lat===null?null:Number(p.lat);p.lng=p.lng===''||p.lng===null?null:Number(p.lng);return p;})
@@ -37,9 +84,9 @@ function clean(rows){
 function filtered(){
  return state.places.filter(p=>(state.city==='All'||p.city===state.city)&&
  (state.category==='All'||cats(p).includes(state.category))&&
- (!state.top||['High','Top'].includes(p.priority))&&
+ (!state.favoritesOnly||favorites.has(String(p.id)))&&
  (!state.query||[p.name,p.city,p.categories,p.location_type,p.address,p.highlights,p.price_note].join(' ').toLowerCase().includes(state.query)))
- .sort((a,b)=>priority(a)-priority(b)||String(a.city).localeCompare(String(b.city))||String(a.name).localeCompare(String(b.name)));
+ .sort((a,b)=>String(a.city).localeCompare(String(b.city))||String(a.name).localeCompare(String(b.name)));
 }
 function refreshStatus(message,type='live'){
  $('sync-label').textContent=message;
@@ -93,49 +140,54 @@ async function syncPlaces(){
  try{await loadLive();}catch(err){feedFailed=true;if(!state.places.length)await loadSnapshot();else refreshStatus('Saved snapshot','snapshot');console.info('Live Sheet unavailable; using snapshot:',err.message);}
 }
 function chips(){
- $('categories').innerHTML=CATEGORIES.map(([key,label,icon])=>'<button type="button" data-category="'+esc(key)+'" aria-pressed="'+(state.category===key)+'" class="'+(state.category===key?'active':'')+'">'+icon+' '+esc(label)+'</button>').join('');
+ $('categories').innerHTML=CATEGORIES.map(([key,label])=>'<button type="button" data-category="'+esc(key)+'" aria-pressed="'+(state.category===key)+'" class="'+(state.category===key?'active':'')+'">'+iconSVG(key,16)+' '+esc(label)+'</button>').join('');
 }
 function placeCard(p){
- const badges=cats(p).slice(0,3).map(t=>'<span class="pill">'+(STYLES[t]?.icon||'•')+' '+esc(STYLES[t]?.label||t)+'</span>').join('');
- const pin=coords(p)?'':'<span class="missing">Pin pending · </span>';
+ const primary=cats(p)[0]||'All';
+ const type=STYLES[primary]||STYLES.All;
  return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="Show '+esc(p.name)+'">'+
- '<div class="place-head"><h3>'+esc(p.name)+'</h3><small>'+esc(p.city)+'</small></div>'+
- '<div class="badges">'+badges+'</div><p>'+esc(p.highlights||p.location_type||'')+'</p>'+
- '<div class="place-foot"><span>'+pin+esc(p.price_note||p.location_type||'')+'</span><span class="priority">'+(['High','Top'].includes(p.priority)?'★ '+(p.priority==='Top'?'Must visit':'High priority'):esc(p.priority))+'</span></div></article>';
+ '<div class="place-head"><span class="place-category-icon" style="--category:'+type.color+'">'+iconSVG(primary,19)+'</span><div class="place-title"><h3>'+esc(p.name)+'</h3><small>'+esc(p.city)+' · '+esc(type.label)+'</small></div>'+favoriteButton(p)+'</div>'+
+ '<p>'+esc(p.highlights||p.location_type||'')+'</p>'+
+ (p.price_note?'<div class="place-meta">'+esc(p.price_note)+'</div>':'')+
+ (!coords(p)?'<div class="place-meta">Location to confirm</div>':'')+'</article>';
 }
-function render(){
+function render(preserveView=false){
  chips();const list=filtered();
- $('total').textContent=state.places.length+' saved';
- $('results').textContent=list.length+' matching';
- $('drawer-summary').textContent=list.length+' places'+(state.city==='All'?' across Thailand':' in '+state.city)+(state.category!=='All'?' · '+STYLES[state.category]?.label:'');
- $('places-list').innerHTML=list.length?list.map(placeCard).join(''):'<div class="empty">No places match these filters. Try a different city or category.</div>';
- $('top-only').classList.toggle('active',state.top);
- $('top-only').setAttribute('aria-pressed',String(state.top));
- renderPins(list);
+ $('results').textContent=list.length+' places';
+ $('favorites-count').textContent=favorites.size;
+ $('favorites-only').classList.toggle('active',state.favoritesOnly);
+ $('favorites-only').setAttribute('aria-pressed',String(state.favoritesOnly));
+ $('drawer-summary').textContent=list.length+' places'+(state.city==='All'?'':' · '+state.city);
+ $('places-list').innerHTML=list.length?list.map(placeCard).join(''):'<div class="empty">'+(state.favoritesOnly?'No favorites here yet. Choose All places and tap a star to save something.':'No places match these filters. Try another category.')+'</div>';
+ renderPins(list,preserveView);
 }
 function initializeMap(){
  if(!window.L){$('map-error').hidden=false;return;}
- map=L.map('map',{zoomControl:false,scrollWheelZoom:false}).setView([16.3,99.5],6);
+ map=L.map('map',{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:true,touchZoom:true,tapHold:false}).setView([16.3,99.5],6);
  L.control.zoom({position:'bottomright'}).addTo(map);
  const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
  tiles.on('tileerror',()=>{$('map-error').hidden=false;});tiles.addTo(map);
  markers=L.layerGroup().addTo(map);
  window.addEventListener('resize',()=>map.invalidateSize({pan:false}));
 }
-function renderPins(list){
+function renderPins(list,preserveView=false){
  if(!map)return;
  markers.clearLayers();markerById.clear();
  const positions=[];
  for(const p of list){
   if(!coords(p))continue;
-  const t=STYLES[cats(p)[0]]||STYLES['Creative districts'];
-  const markup='<div class="pin '+(p.priority==='Top'?'top':'')+'" style="--pin:'+t.color+'"><span>'+t.icon+'</span></div>';
-  const icon=L.divIcon({html:markup,className:'',iconSize:[36,36],iconAnchor:[18,31]});
-  const popup='<div class="popup"><strong>'+esc(p.name)+'</strong><p>'+esc(p.highlights)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open Google Maps ↗</a></div>';
+  const primary=cats(p)[0]||'All';
+  const t=STYLES[primary]||STYLES.All;
+  const saved=favorites.has(String(p.id));
+  const markup='<div class="pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'">'+iconSVG(primary,19)+(saved?'<span class="pin-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
+  const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[34,34],iconAnchor:[17,17]});
+  const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
   const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).bindPopup(popup).addTo(markers);
-  marker.on('click',()=>focus(p.id));markerById.set(p.id,marker);positions.push(marker.getLatLng());
+  marker.on('click',()=>focus(p.id));
+  markerById.set(p.id,marker);
+  positions.push(marker.getLatLng());
  }
- $('pin-count').textContent=positions.length+' on map';
+ if(preserveView)return;
  if(positions.length===1)map.setView(positions[0],14);
  else if(positions.length>1)map.fitBounds(positions,{paddingTopLeft:[35,70],paddingBottomRight:mobile()?[35,220]:[45,45],maxZoom:state.city==='All'?8:14,animate:false});
  else map.setView(state.city==='Bangkok'?[13.75,100.53]:state.city==='Chiang Mai'?[18.79,98.99]:[16.3,99.5],state.city==='All'?6:12);
@@ -157,7 +209,9 @@ function focus(id){
  const marker=markerById.get(id);
  if(mobile()){
   setLevel('peek');
-  const top=cats(p)[0];$('place-detail').innerHTML='<div class="detail-top"><div><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+' · '+esc(STYLES[top]?.label||p.location_type)+'</div></div><button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
+  const top=cats(p)[0]||'All';
+  const category=STYLES[top]||STYLES.All;
+  $('place-detail').innerHTML='<div class="detail-top"><div class="detail-title"><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+' · '+esc(category.label)+'</div></div>'+favoriteButton(p,'detail')+'<button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
    '<p>'+esc(p.highlights||p.location_type)+'</p><div class="detail-foot"><small>'+esc(p.price_note||p.location_type)+'</small><a class="directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div>';
   $('place-detail').hidden=false;
   if(marker&&map){map.flyTo(marker.getLatLng(),Math.max(14,map.getZoom()),{duration:.4});setTimeout(()=>{if(state.selected===p.id)map.panBy([0,65],{animate:true,duration:.2});},450);}
@@ -173,13 +227,13 @@ function chooseCity(city){
 function init(){
  initializeMap();
  $('map-cities').addEventListener('click',e=>{const b=e.target.closest('button[data-city]');if(b)chooseCity(b.dataset.city);});
- $('panel-cities').addEventListener('click',e=>{const b=e.target.closest('button[data-city]');if(b)chooseCity(b.dataset.city);});
  $('categories').addEventListener('click',e=>{const b=e.target.closest('button[data-category]');if(b){state.category=b.dataset.category;closeDetails();render();}});
  $('place-search').addEventListener('input',e=>{state.query=e.target.value.trim().toLowerCase();render();});
- $('top-only').addEventListener('click',()=>{state.top=!state.top;closeDetails();render();});
- $('places-list').addEventListener('click',e=>{const c=e.target.closest('.place');if(c)focus(c.dataset.id);});
- $('places-list').addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)){const c=e.target.closest('.place');if(c){e.preventDefault();focus(c.dataset.id);}}});
- $('place-detail').addEventListener('click',e=>{if(e.target.closest('.close-detail'))closeDetails();});
+ $('favorites-only').addEventListener('click',()=>{state.favoritesOnly=!state.favoritesOnly;closeDetails();render();});
+ $('places-list').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}const c=e.target.closest('.place');if(c)focus(c.dataset.id);});
+ $('places-list').addEventListener('keydown',e=>{if(e.target.closest('button[data-favorite]'))return;if(['Enter',' '].includes(e.key)){const c=e.target.closest('.place');if(c){e.preventDefault();focus(c.dataset.id);}}});
+ $('place-detail').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}if(e.target.closest('.close-detail'))closeDetails();});
+ $('map').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){e.preventDefault();e.stopPropagation();toggleFavorite(star.dataset.favorite);}});
  $('place-search').addEventListener('focus',()=>{if(mobile()&&state.level==='peek')setLevel('middle');});
  const grab=$('drawer-grab');let start=null,swiped=false;
  grab.addEventListener('pointerdown',e=>{if(mobile()){start=e.clientY;swiped=false;}});
@@ -195,7 +249,6 @@ function init(){
    setLevel('peek');closeDetails();
   },()=>{btn.disabled=false;btn.textContent='⌖';alert('Location not available or permission was declined.');},{enableHighAccuracy:false,timeout:12000,maximumAge:30000});
  });
- $('refresh').addEventListener('click',()=>{loadSnapshot().then(syncPlaces);});
  $('share').addEventListener('click',async()=>{
   try{if(navigator.share)await navigator.share({title:'Thailand Living Map',url:location.href});
   else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('share').textContent='Copied ✓';setTimeout(()=>$('share').textContent='Share ↗',1800);}
