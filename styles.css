@@ -70,3 +70,64 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline-color:#c45b88}
 .close-detail{background:#fce4ee;color:#9b4d74}
 .directions{background:#b94879;color:white}
 .map-error{background:#fff3f8;color:#844661;border-color:#eabbd0}
+
+
+/* v4: minimal, mobile-first browsing with manually saved favorites */
+.map-legend,.panel-intro,.filter-heading,.panel-cities,.result-heading{display:none!important}
+.places-panel .panel-content{padding-top:16px}
+.places-panel .search-label{margin-top:0}
+.category-chips{margin-top:13px}
+.category-chips button{display:inline-flex;align-items:center;gap:7px;font-weight:600;padding:9px 11px}
+.category-chips button svg{flex:none}
+.panel-actions{padding-top:12px;padding-bottom:13px}
+.favorites-filter{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #eac2d4;color:#8e4a6c;border-radius:11px;padding:9px 13px;font-size:12px;font-weight:700;min-height:42px}
+.favorites-filter svg{flex-shrink:0}
+.favorites-filter.active{background:#b94879;border-color:#b94879;color:white}
+#favorites-count{opacity:.8;font-size:11px;font-variant-numeric:tabular-nums}
+.results-count{font-size:12px;color:#956b80}
+.place{padding:13px 12px;margin-bottom:8px}
+.place-head{align-items:center;gap:10px}
+.place-title{flex:1;min-width:0}
+.place-title h3{font-weight:700;font-size:14px}
+.place-title small{display:block;margin-top:4px;white-space:normal;color:#97768a}
+.place-category-icon{width:36px;height:36px;border-radius:11px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--category),white 90%);color:var(--category);border:1px solid color-mix(in srgb,var(--category),white 72%)}
+.place p{font-size:12px;line-height:1.5;margin:9px 0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.place-meta{font-size:11px;color:#9a7185;margin-top:6px}
+.favorite-star{flex-shrink:0;background:transparent;border:0;color:#a98198;display:grid;place-items:center;width:42px;height:42px;border-radius:11px;padding:0}
+.favorite-star:hover,.favorite-star:focus-visible{background:#fce2ed;color:#a33768}
+.favorite-star.is-favorite{color:#bc4c7b}
+.map-marker{border:0;background:none}
+.pin{width:34px;height:34px;background:#fff;border:1.8px solid var(--pin);border-radius:50%;transform:none;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 9px #38213235;color:var(--pin);position:relative}
+.pin svg{flex:none}
+.pin-favorite{display:grid;place-items:center;position:absolute;top:-6px;right:-6px;width:17px;height:17px;background:#fff;border:1px solid #e1b8ca;border-radius:50%;color:#b94879;box-shadow:0 1px 4px #49213d20}
+.popup-title{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.popup-title strong{font-size:14px;line-height:1.3}
+.popup .favorite-star{width:35px;height:35px}
+.popup .favorite-star svg{width:20px;height:20px}
+.popup p{margin:8px 0}
+.leaflet-popup-content{margin:11px 14px}
+.leaflet-popup-content-wrapper{border:1px solid #efcddc;box-shadow:0 5px 22px #582b4220!important}
+.map-toolbar .city-picker{border:1px solid #e9c7d5}
+.city-picker button{font-size:12px;font-weight:650}
+.map-toolbar .city-picker button.active{font-weight:750}
+.map-wrap .leaflet-control-zoom{border:1px solid #e9c7d5!important;box-shadow:0 3px 12px #492b4020}
+.map-wrap .leaflet-control-zoom a{background:#fff9fc;color:#94516f;border-color:#e9c7d5}
+.head-actions .sync{font-size:10px}
+.masthead .brand h1{font-weight:400}
+.detail-title{flex:1;min-width:0}
+.detail-top .favorite-star{width:38px;height:38px}
+.detail-top .close-detail{flex:none}
+@media(max-width:720px){
+ .places-panel .panel-content{padding-top:4px}
+ .places-panel .search-label{margin:10px 16px 0}
+ .category-chips{margin-top:12px;gap:7px}
+ .category-chips button{min-height:39px;padding:9px 12px}
+ .places-panel[data-level="peek"]{height:92px;height:calc(92px + env(safe-area-inset-bottom))}
+ .drawer-grab{height:79px}
+ .grab-copy strong{font-size:16px}
+ .grab-copy small{font-size:11px}
+ .panel-actions{padding:11px 16px 12px}
+ .place-detail:not([hidden]){bottom:calc(100px + env(safe-area-inset-bottom))}
+ .place p{-webkit-line-clamp:2}
+ .head-actions .share-button{padding:0 13px}
+}
