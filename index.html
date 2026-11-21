@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#153e36">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Our living Bangkok and Chiang Mai map — independent fashion, niche fragrances, art and places to explore.">
+  <title>Thailand / Living Map</title>
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="masthead">
+      <div class="brand">
+        <div class="eyebrow">Our Thailand era <span aria-hidden="true">✳</span> 2027</div>
+        <h1>Thailand <i>/</i> <em>Living Map</em></h1>
+      </div>
+      <div class="head-actions">
+        <span class="sync" id="sync-status" title="Map data source"><span class="status-dot"></span><span id="sync-label">Loading…</span></span>
+        <button class="head-icon" id="refresh" type="button" title="Refresh places" aria-label="Refresh places">↻</button>
+        <button class="share-button" id="share" type="button">Share <span aria-hidden="true">↗</span></button>
+      </div>
+    </header>
+    <div class="workspace">
+      <main class="map-wrap" aria-label="Interactive trip map">
+        <div id="map" aria-label="Map of saved Thailand destinations"></div>
+        <div class="map-toolbar">
+          <nav class="city-picker" id="map-cities" aria-label="Select city">
+            <button type="button" class="active" data-city="All">All</button>
+            <button type="button" data-city="Bangkok">Bangkok</button>
+            <button type="button" data-city="Chiang Mai">Chiang Mai</button>
+          </nav>
+          <button id="locate" type="button" class="locate" aria-label="Show my current location" title="Show my current location">⌖</button>
+        </div>
+        <div id="map-error" class="map-error" hidden>Map tiles unavailable. You can still use the places list and Google Maps links.</div>
+        <div class="map-legend">🌸 Fragrances · 👕 Fashion · 👜 Replicas · ♻ Vintage · 💍 Artisan · ✦ Design</div>
+      </main>
+      <aside class="places-panel" id="places-panel" data-level="middle" aria-label="Saved places">
+        <button class="drawer-grab" id="drawer-grab" type="button" aria-expanded="true" aria-label="Expand or minimize saved places">
+          <span class="grab-line" aria-hidden="true"></span>
+          <span class="grab-copy"><strong>Places to explore <span aria-hidden="true">✳</span></strong><small id="drawer-summary">Loading destinations…</small></span>
+          <span class="grab-arrow" id="grab-arrow" aria-hidden="true">⌃</span>
+        </button>
+        <div class="panel-content">
+          <div class="panel-intro">
+            <span class="overline">The shopping collection</span>
+            <span class="total" id="total">— saved</span>
+          </div>
+          <nav class="city-picker panel-cities" id="panel-cities" aria-label="Filter destinations by city">
+            <button type="button" class="active" data-city="All">All</button>
+            <button type="button" data-city="Bangkok">Bangkok</button>
+            <button type="button" data-city="Chiang Mai">Chiang Mai</button>
+          </nav>
+          <label class="search-label" for="place-search"><span aria-hidden="true">⌕</span><input id="place-search" type="search" placeholder="Search shops, brands, neighborhoods…" autocomplete="off"></label>
+          <div class="filter-heading">Explore by interest</div>
+          <div id="categories" class="category-chips" aria-label="Shopping categories"></div>
+          <div class="panel-actions">
+            <button type="button" id="top-only" class="top-filter" aria-pressed="false">☆ Our top picks</button>
+            <span id="pin-count" class="pin-count">— on map</span>
+          </div>
+          <div class="result-heading"><h2>Saved destinations</h2><span id="results">Loading…</span></div>
+          <div id="places-list" class="places-list" aria-live="polite"><div class="empty">Loading our saved places…</div></div>
+        </div>
+      </aside>
+      <section id="place-detail" class="place-detail" hidden aria-label="Selected destination" role="region"></section>
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>
