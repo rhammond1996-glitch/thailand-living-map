@@ -6,7 +6,7 @@ A **free, mobile-first, shared map** for our January 2027 Bangkok and Chiang Mai
 
 - **App source:** this repository; edits to `main` automatically republish the GitHub Pages website once Pages is enabled.
 - **Master places:** [Google Sheet](https://docs.google.com/spreadsheets/d/1IBkBs5BBwmalgLfNBYnEakbKVt-Lw4kYu7VIDcxyjx4/edit) → **places** tab (lowercase).
-- **Initial bundled snapshot:** [places.json](./places.json), copied from the Sheet (35 locations, 33 coordinates). Used as a fallback only if the Sheet cannot be accessed.
+- **Initial bundled snapshot:** [places.json](./places.json), copied from the Sheet (39 locations, 37 coordinates). Used as a fallback only if the Sheet cannot be accessed.
 - **Map URL after GitHub Pages setup:** https://rhammond1996-glitch.github.io/thailand-living-map/
 
 ### Required one-time steps
@@ -41,7 +41,7 @@ Headers, in this order:
 
 - Valid `city`: Bangkok, Chiang Mai.
 - Separate multiple categories with `|`: e.g. `Fragrances|Independent fashion`.
-- Categories: Fragrances, Independent fashion, Designer replicas, Vintage, Jewelry & artisan, Creative districts, Gay Nightlife.
+- Categories: Fragrances, Independent fashion, Designer replicas, Vintage, Jewelry & artisan, Creative districts, Gay Nightlife, Underground & Raves.
 - `priority`: Top, High or Medium (normal/blank also works).
 - `status`: Saved (or any non-hidden value); `hidden` and `archived` are excluded.
 - Coordinates are decimal latitude/longitude; blanks are supported.
