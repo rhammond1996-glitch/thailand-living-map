@@ -14,7 +14,8 @@ const CATEGORIES=[
  ['Designer replicas','Replicas','👜','#bd8551'],
  ['Vintage','Vintage','♻','#72956b'],
  ['Jewelry & artisan','Artisan','💍','#bd9664'],
- ['Creative districts','Design districts','✦','#8180b8']
+ ['Creative districts','Design districts','✦','#8180b8'],
+ ['Gay Nightlife','Gay nightlife','🪩','#9a5bba']
 ];
 const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,icon,color])=>[key,{label,icon,color}]));
 const state={places:[],city:'All',category:'All',query:'',top:false,selected:null,level:'middle',source:'',signature:''};
