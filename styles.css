@@ -131,3 +131,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline-color:#c45b88}
  .place p{-webkit-line-clamp:2}
  .head-actions .share-button{padding:0 13px}
 }
+
+/* Prevent the original rotated-pin rule from rotating the new star badge. */
+.pin .pin-favorite{transform:none}
+.pin .pin-favorite svg{transform:none}
