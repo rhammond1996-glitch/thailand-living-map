@@ -8,16 +8,51 @@
   const STYLE='https://tiles.openfreemap.org/styles/dark';
   // Near-black navy with legible electric routes. No map-wide gradient artwork.
   const COLORS={
-    background:'#0A122A', land:'#101B36',water:'#063A57',waterLine:'#20D9F1',
-    park:'#0C4338',building:'#182D4B',minor:'#2D516F',
-    cyan:'#27DFFC',lime:'#D6F64B',pink:'#FA3FA4',
-    road:'#8AD8ED',white:'#F6F6FF',halo:'#091429'
+    background:'#081126',
+    land:'#0E1A33',
+    water:'#0A3550',
+    waterLine:'#2BC7E8',
+    park:'#17392F',
+    building:'#162742',
+    minor:'#304764',
+    lime:'#D6F64B',
+    roadMajor:'#9FB7C9',
+    roadSecondary:'#5F738D',
+    roadMinor:'#3B4C63',
+    boundary:'#7D4B80',
+    white:'#F3F5FF',
+    roadLabel:'#B4BED4',
+    halo:'#091429'
   };
   const EXCLUDED_LABELS=/shield|housenumber|route-number|exit-number|motorway-junction|road-number|oneway/i;
   const NAME_LABELS=/label|name|place|poi|city|town|village|country|state|transport|road|street|waterway|airport|park/i;
   const ENGLISH_NAME=['coalesce',
     ['get','name_en'],['get','name:en'],['get','name:latin'],
     ['get','name:international'],['get','name_int'],['get','name_latin'],['get','name'],['get','ref'],''];
+  // Use actual road layer names and source filters for road hierarchy.
+  // The transportation source-layer contains *every* road class, so its
+  // presence alone must never turn an entire network lime.
+  function roadClass(layer){
+    const id=String(layer.id||'').toLowerCase();
+    const filter=JSON.stringify(layer.filter||[]).toLowerCase();
+    const pedestrian=/footway|path|pedestrian|track|service|steps|cycleway|residential|living.street|minor|alley/.test(id);
+    const rail=/rail|train|subway|tram/.test(id);
+    const minor=/minor|service|residential|path|pedestrian|footway|cycle|track|unclassified|living.street/.test(id);
+    const secondary=/secondary|tertiary|collector/.test(id);
+    const major=/motorway|trunk|primary|expressway|major/.test(id);
+    if(rail)return 'rail';
+    if(pedestrian||minor)return 'minor';
+    if(secondary)return 'secondary';
+    if(major)return 'major';
+
+    // Generic style layer names can carry an explicit class filter. Classify
+    // as major only if that filter does not ALSO include smaller roads.
+    const filterMajor=/motorway|trunk|primary|expressway/.test(filter);
+    const filterOther=/secondary|tertiary|residential|service|minor|path|footway|pedestrian|unclassified/.test(filter);
+    if(filterMajor&&!filterOther)return 'major';
+    if(/secondary|tertiary|collector/.test(filter)&&!filterOther)return 'secondary';
+    return 'local';
+  }
   function applyInkStyle(gl){
     try{
       for(const layer of gl.getStyle()?.layers||[]){
@@ -42,29 +77,43 @@
           }else if(kind==='line'){
             if(/water|ocean|stream|river|canal/.test(name)){
               gl.setPaintProperty(layerId,'line-color',COLORS.waterLine);
-              gl.setPaintProperty(layerId,'line-opacity',0.7);
+              gl.setPaintProperty(layerId,'line-opacity',0.45);
             }else if(/boundary|admin|border|country|province|state/.test(name)){
-              gl.setPaintProperty(layerId,'line-color',COLORS.pink);
-              gl.setPaintProperty(layerId,'line-opacity',0.7);
-            }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|railway|trunk|primary|secondary|tertiary|footway|minor/.test(name)){
-              const main=/motorway|trunk|primary|highway|major/.test(name);
-              const secondary=/secondary|tertiary|railway/.test(name);
-              const pedestrian=/footway|path|pedestrian|track|service/.test(name);
-              gl.setPaintProperty(layerId,'line-color',main?COLORS.lime:secondary?COLORS.cyan:pedestrian?COLORS.minor:COLORS.road);
-              gl.setPaintProperty(layerId,'line-opacity',main?0.92:secondary?0.83:pedestrian?0.5:0.66);
+              gl.setPaintProperty(layerId,'line-color',COLORS.boundary);
+              gl.setPaintProperty(layerId,'line-opacity',0.3);
+            }else if(/building|landcover|park|forest|wood|grass|garden/.test(name)){
+              gl.setPaintProperty(layerId,'line-color',COLORS.minor);
+              gl.setPaintProperty(layerId,'line-opacity',0.38);
+            }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|rail|trunk|primary|secondary|tertiary|footway|track/.test(name)){
+              const cls=roadClass(layer);
+              const ink=cls==='major'?COLORS.lime:
+                cls==='secondary'?COLORS.roadSecondary:
+                cls==='rail'?COLORS.roadSecondary:
+                cls==='minor'?COLORS.roadMinor:COLORS.roadMajor;
+              const opacity=cls==='major'?0.91:
+                cls==='secondary'?0.58:
+                cls==='rail'?0.38:
+                cls==='minor'?0.38:0.46;
+              gl.setPaintProperty(layerId,'line-color',ink);
+              gl.setPaintProperty(layerId,'line-opacity',opacity);
+            }else{
+              // Any extra vector outlines also recede instead of competing
+              // with primary roads and destination markers.
+              gl.setPaintProperty(layerId,'line-color',COLORS.minor);
+              gl.setPaintProperty(layerId,'line-opacity',0.36);
             }
           }else if(kind==='symbol'&&layer.layout&&layer.layout['text-field']){
             if(NAME_LABELS.test(name)&&!EXCLUDED_LABELS.test(name)){
-              gl.setLayoutProperty(layer.id,'text-field',ENGLISH_NAME);
+              gl.setLayoutProperty(layerId,'text-field',ENGLISH_NAME);
             }
             const water=/water|river|ocean|lake/.test(name);
             const road=/road|street|transport|highway/.test(name);
-            gl.setPaintProperty(layer.id,'text-color',water?COLORS.cyan:road?'#D1DDF0':COLORS.white);
-            gl.setPaintProperty(layer.id,'text-halo-color',COLORS.halo);
-            gl.setPaintProperty(layer.id,'text-halo-width',1.8);
+            gl.setPaintProperty(layerId,'text-color',water?'#83CADB':road?COLORS.roadLabel:COLORS.white);
+            gl.setPaintProperty(layerId,'text-halo-color',COLORS.halo);
+            gl.setPaintProperty(layerId,'text-halo-width',1.6);
           }
         }catch(error){
-          console.debug('Map layer styling skipped:',layer.id,error?.message||error);
+          console.debug('Map layer styling skipped:',layerId,error?.message||error);
         }
       }
     }catch(error){console.warn('Dark map styling unavailable:',error);}
