@@ -144,39 +144,86 @@
    '<div class="visit-footer"><a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">GOOGLE MAPS ↗</a>'+
    (o.quickLink?'<a href="'+html(o.quickLink)+'" target="_blank" rel="noopener noreferrer">OFFICIAL GUIDE ↗</a>':"")+'</div></div>';
  }
-  async function fetchPhotos(p,o){
-  const wanted=(o.wiki||"").trim();
-  const query=searchName(p)+" "+p.city;
-  const found=[];
-  try{
-   if(wanted){
-    const params=new URLSearchParams({action:"query",format:"json",origin:"*",prop:"pageimages",titles:wanted,pithumbsize:"1100"});
-    const r=await fetch("https://en.wikipedia.org/w/api.php?"+params.toString());
-    if(r.ok){
-     const j=await r.json();
-     for(const page of Object.values(j.query?.pages||{})){
-      const photo=page.thumbnail?.source;
-      if(photo&&/^https:\/\//.test(photo))found.push({url:photo,page:page.pageimage?"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(page.pageimage.replace(/ /g,"_")):"https://en.wikipedia.org/wiki/"+encodeURIComponent(page.title.replace(/ /g,"_"))});
-     }
-    }
+  function metadataText(value){
+  return String(value||"").replace(/<[^>]*>/g," ").replace(/&(?:nbsp|#160);/gi," ")
+   .replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/\s+/g," ").trim().slice(0,170);
+ }
+ function candidateFromPage(item,curated=false){
+  const info=item.imageinfo?.[0],title=String(item.title||"");
+  if(!info||!/[\s\S]\.(?:jpg|jpeg|png|webp)$/i.test(title))return null;
+  if(/logo|map|diagram|flag|icon|poster|advertis|stamp|seal|document|screenshot|signature|drawing|painting|brochure|floor.?plan|graphic/i.test(title))return null;
+  if(Number(info.width||0)<660||Number(info.height||0)<450)return null;
+  const url=info.thumburl||info.url,page=info.descriptionurl;
+  if(!/^https:\/\//.test(url||"")||!/^https:\/\//.test(page||""))return null;
+  const metadata=info.extmetadata||{};
+  const license=metadataText(metadata.LicenseShortName?.value);
+  if(/all rights reserved|noncommercial|no derivatives/i.test(license))return null;
+  const licenseUrl=String(metadata.LicenseUrl?.value||"");
+  const artist=metadataText(metadata.Artist?.value||metadata.Credit?.value).slice(0,100);
+  const width=Number(info.width)||1200,height=Number(info.height)||800;
+  const ratio=width/height;
+  const keyword=/temple|stupa|chedi|pagoda|gallery|exhibition|cityscape|night|sunset|garden|architec|waterfall|mountain|market|interior|facade|skyline|view|sculpture|art|food/i.test(title);
+  const historical=/^(?:file:)?(?:old|historical)|19[0-7]\d|circa|black.and.white|archive|1900|1930/i.test(title);
+  const score=(curated?25:0)+(ratio>1.25&&ratio<2.7?8:ratio>=0.7?3:0)+
+   (Math.min(5,width/950))+(keyword?3:0)-(historical?14:0);
+  return {title,url,page,artist,license,licenseUrl:/^https:\/\//.test(licenseUrl)?licenseUrl:"",width,height,score,curated};
+ }
+ async function commonsRequest(parameters){
+  const params=new URLSearchParams({action:"query",format:"json",origin:"*",prop:"imageinfo",
+   iiprop:"url|size|extmetadata",iiurlwidth:"1180",...parameters});
+  const response=await fetch("https://commons.wikimedia.org/w/api.php?"+params.toString());
+  if(!response.ok)throw Error("Image search unavailable");
+  const json=await response.json();
+  return Object.values(json.query?.pages||{});
+ }
+ function photoSearchMatch(title,p,o){
+  const key=(o.wiki||searchName(p)).toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
+  const ignored=new Set(["wat","the","and","chiang","mai","bangkok","of","at","one","art","national","market","thailand","temple","museum"]);
+  const parts=key.split(/\s+/).filter(t=>t.length>=3&&!ignored.has(t));
+  const filename=String(title||"").toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
+  if(parts.length===0)return filename.includes(searchName(p).toLowerCase().split(" ")[0]);
+  return parts.every(t=>filename.includes(t));
+ }
+ async function fetchPhotos(p,o){
+  const collected=new Map();
+  function addRows(rows,curated=false){
+   for(const item of rows){
+    const candidate=candidateFromPage(item,curated);
+    if(!candidate||(!curated&&!photoSearchMatch(candidate.title,p,o)))continue;
+    const key=candidate.title.toLowerCase();
+    if(!collected.has(key))collected.set(key,candidate);
    }
-  }catch(e){ /* Wikimedia may be blocked on a travel connection */ }
-  try{
-   const q=new URLSearchParams({action:"query",format:"json",origin:"*",generator:"search",gsrsearch:query,gsrnamespace:"6",gsrlimit:"8",prop:"imageinfo",iiprop:"url",iiurlwidth:"900"});
-   const r=await fetch("https://commons.wikimedia.org/w/api.php?"+q.toString());
-   if(r.ok){
-    const j=await r.json();
-    const pages=Object.values(j.query?.pages||{}).sort((a,b)=>(a.index||0)-(b.index||0));
-    for(const item of pages){
-     const info=item.imageinfo?.[0], title=String(item.title||"");
-     if(!info||!/\.(jpg|jpeg|png|webp)$/i.test(title)||/logo|map|diagram|flag|icon|poster|advertis/i.test(title))continue;
-     const url=info.thumburl||info.url,page=info.descriptionurl;
-     if(url&&page&&/^https:\/\//.test(url)&&/^https:\/\//.test(page)&&!found.some(x=>x.url===url))found.push({url,page});
-     if(found.length>=5)break;
-    }
-   }
-  }catch(e){ /* Graceful offline fallback */ }
-  return found.slice(0,5);
+  }
+  if(o.commonsCategory){
+   try{
+    const pages=await commonsRequest({generator:"categorymembers",
+     gcmtitle:"Category:"+o.commonsCategory,gcmtype:"file",gcmlimit:"50"});
+    addRows(pages,true);
+   }catch(error){console.debug("Commons venue category unavailable",error);}
+  }
+  // A named venue is important: query the exact name first. Broad category
+  // searches, which can show unrelated parts of the city, are not acceptable.
+  const term=String(o.wiki||searchName(p)).trim();
+  const queryNames=[term+" "+p.city,term].filter((x,i,arr)=>x&&arr.indexOf(x)===i);
+  for(const q of queryNames){
+   if(collected.size>=18)break;
+   try{
+    const pages=await commonsRequest({generator:"search",gsrsearch:q,
+      gsrnamespace:"6",gsrlimit:"40"});
+    addRows(pages,false);
+   }catch(error){console.debug("Commons search unavailable",error);}
+  }
+  const ranked=[...collected.values()].sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
+  // Avoid displaying an entire gallery from a single numbered camera burst.
+  const limited=[],seriesCount=new Map();
+  for(const photo of ranked){
+   const series=photo.title.toLowerCase().replace(/\d{1,5}/g,"").replace(/[_()\-.]/g," ").replace(/\s+/g," ").trim();
+   const n=seriesCount.get(series)||0;
+   if(n>=4)continue;
+   limited.push(photo);seriesCount.set(series,n+1);
+   if(limited.length===14)break;
+  }
+  return limited;
  }
  function syncPhotos(id){
   const panel=cardEl(), p=state.places?.find(x=>String(x.id)===String(id));
