@@ -400,6 +400,7 @@ function chooseCity(city){
  state.city=city;closeDetails();
  setMapAreaMenuOpen(false);
  document.querySelectorAll('button[data-city]').forEach(b=>{const on=b.dataset.city===city;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+ syncMapAreaSelector();
  render();
 }
 function init(){
