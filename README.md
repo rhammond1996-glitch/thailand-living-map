@@ -2,6 +2,17 @@
 
 A **free, mobile-first, shared map** for our January 2027 Bangkok and Chiang Mai trip. Powered by **GitHub Pages** (public website), **Google Sheets** (one destination database), Leaflet and OpenStreetMap.
 
+
+## Design studio — three live visual treatments
+
+[Open design comparison](https://rhammond1996-glitch.github.io/thailand-living-map/designs.html).
+
+- **Print Club** — `?design=print`: poster typography, acid lime, cobalt, orange, warm paper. Default for a new visitor.
+- **Soft Signal** — `?design=soft`: soft lavender, peach, periwinkle, rounded bento cards.
+- **Type Lab** — `?design=type`: black and white with lime, grid-aligned, high-contrast lettering.
+
+These are visual themes of **the same interactive app**, not separately deployed copies. The selected treatment is saved to that browser's `localStorage`; using an explicit URL parameter overrides the saved choice. To test the itinerary inside a theme, append `&view=itinerary` to a theme URL. Keep the stylesheet order `styles.css` → `trip.css` → `design-system.css`. The former two hold functional and itinerary styles; the last implements visual variants. No place data was changed by the design study.
+
 ## Where everything lives
 
 - **App source:** this repository; edits to `main` automatically republish the GitHub Pages website once Pages is enabled.
