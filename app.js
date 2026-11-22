@@ -165,10 +165,11 @@ function setFilterOpen(open){
 function placeCard(p,index=0){
  const primary=cats(p)[0]||'All';
  const type=STYLES[primary]||STYLES.All;
- return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="View '+esc(p.name)+' details">'+
- '<div class="place-head"><span class="place-number">'+String(index+1).padStart(2,'0')+'</span><span class="place-color" style="--category:'+type.color+'"></span>'+
- '<div class="place-title"><h3>'+esc(p.name)+'</h3><small>'+esc(p.city)+' / '+esc(type.label)+'</small></div>'+
- favoriteButton(p)+'<span class="place-go" aria-hidden="true">↗</span></div></article>';
+ return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'">'+
+ '<div class="place-head"><button type="button" class="place-open" data-place-open="'+esc(p.id)+'" aria-label="View '+esc(p.name)+' details">'+
+ '<span class="place-number">'+String(index+1).padStart(2,'0')+'</span><span class="place-color" style="--category:'+type.color+'"></span>'+
+ '<span class="place-title"><strong class="place-name">'+esc(p.name)+'</strong><small>'+esc(p.city)+' / '+esc(type.label)+'</small></span>'+
+ '<span class="place-go" aria-hidden="true">↗</span></button>'+favoriteButton(p)+'</div></article>';
 }
 function render(preserveView=false){
  if(window.renderTripMode&&window.renderTripMode(preserveView))return;
@@ -315,7 +316,7 @@ function init(){
  $('place-search').addEventListener('input',e=>{state.query=e.target.value.trim().toLowerCase();render();});
  $('favorites-only').addEventListener('click',()=>{state.favoritesOnly=!state.favoritesOnly;closeDetails();render();});
  $('places-list').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}const c=e.target.closest('.place');if(c)focus(c.dataset.id);});
- $('places-list').addEventListener('keydown',e=>{if(e.target.closest('button[data-favorite]'))return;if(['Enter',' '].includes(e.key)){const c=e.target.closest('.place');if(c){e.preventDefault();focus(c.dataset.id);}}});
+ $('places-list').addEventListener('keydown',e=>{if(e.target.closest('button'))return;if(['Enter',' '].includes(e.key)){const c=e.target.closest('.place');if(c){e.preventDefault();focus(c.dataset.id);}}});
  $('place-detail').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}if(e.target.closest('.close-detail'))closeDetails();});
  $('map').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){e.preventDefault();e.stopPropagation();toggleFavorite(star.dataset.favorite);}});
  $('place-search').addEventListener('focus',()=>{if(mobile()&&state.level==='peek')setLevel('middle');});
