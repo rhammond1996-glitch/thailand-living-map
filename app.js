@@ -122,7 +122,7 @@ function toggleFavorite(id){
  syncFavoriteButtons();
 }
 
-const state={places:[],city:'All',category:'All',query:'',favoritesOnly:false,selected:null,level:'peek',source:'',signature:''};
+const state={places:[],city:'All',category:'All',query:'',favoritesOnly:false,selected:null,source:'',signature:''};
 let map,markers,markerById=new Map(),geoLayer=null,loading=false,feedFailed=false;
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
@@ -214,6 +214,8 @@ function placeCard(p,index=0){
 function render(preserveView=false){
  if(window.renderTripMode&&window.renderTripMode(preserveView))return;
  chips();const list=filtered();
+ const area=$('map-area-indicator');
+ if(area)area.innerHTML=esc(state.city==='All'?'ALL THAILAND':state.city.toUpperCase())+' <span aria-hidden="true">⌄</span>';
  $('results').textContent=list.length+' places';
  $('favorites-count').textContent=favorites.size;
  $('filter-value').textContent=state.category==='All'?'All interests':(STYLES[state.category]?.label||state.category);
@@ -309,24 +311,53 @@ function renderPins(list,preserveView=false){
  }
  if(preserveView)return;
  if(positions.length===1)map.setView(positions[0],14);
- else if(positions.length>1)map.fitBounds(positions,{paddingTopLeft:[35,70],paddingBottomRight:mobile()?[35,220]:[45,45],maxZoom:state.city==='All'?8:14,animate:false});
+ else if(positions.length>1)map.fitBounds(positions,{paddingTopLeft:[35,70],paddingBottomRight:mobile()?[35,45]:[45,45],maxZoom:state.city==='All'?8:14,animate:false});
  else map.setView(state.city==='Bangkok'?[13.75,100.53]:state.city==='Chiang Mai'?[18.79,98.99]:[16.3,99.5],state.city==='All'?6:12);
  setTimeout(()=>map.invalidateSize({pan:false}),100);
 }
-function setLevel(level){
- if(!['peek','middle','full'].includes(level))return;state.level=level;
- $('places-panel').dataset.level=level;
- $('drawer-grab').setAttribute('aria-expanded',String(level!=='peek'));
- $('drawer-grab').setAttribute('aria-label',level==='peek'?'Expand places drawer':level==='middle'?'Expand to full list':'Minimize places drawer');
- $('grab-arrow').textContent=level==='full'?'⌄':'⌃';
- if(map)setTimeout(()=>map.invalidateSize({pan:false}),270);
+/* Discover is a floating, keyboard-accessible dialog, never a persistent sheet. */
+function discoverIsOpen(){return !$('places-panel').hidden;}
+function setDiscoverOpen(open,restoreFocus=false){
+ const panel=$('places-panel'),scrim=$('discover-scrim'),toggle=$('discover-toggle');
+ if(open===discoverIsOpen())return;
+ if(open){
+  closeDetails();
+  panel.hidden=false;
+  scrim.hidden=false;
+  document.body.classList.add('discover-open');
+  toggle.setAttribute('aria-expanded','true');
+  toggle.setAttribute('aria-label',document.body.classList.contains('itinerary-mode')?'Close route panel':'Close Discover destinations');
+  // Focus the close control, not the search input: no surprise iOS keyboard.
+  $('discover-close').focus({preventScroll:true});
+ }else{
+  panel.hidden=true;
+  scrim.hidden=true;
+  document.body.classList.remove('discover-open');
+  toggle.setAttribute('aria-expanded','false');
+  toggle.setAttribute('aria-label',document.body.classList.contains('itinerary-mode')?'Open route panel':'Open Discover destinations');
+  if(restoreFocus)toggle.focus({preventScroll:true});
+ }
+}
+function updateDiscoverLabel(){
+ const route=document.body.classList.contains('itinerary-mode');
+ const toggle=$('discover-toggle'),title=$('discover-title');
+ if(toggle){
+  const label=toggle.querySelector('.discover-button-label');
+  if(label)label.textContent=route?'ROUTE':'DISCOVER';
+  toggle.setAttribute('aria-label',(discoverIsOpen()?'Close ':'Open ')+(route?'route panel':'Discover destinations'));
+ }
+ if(title)title.innerHTML=(route?'YOUR ROUTE':'DISCOVER')+' <span aria-hidden="true">↗</span>';
+ const loc=$('discover-location');
+ if(loc)loc.hidden=route;
+ const indicator=$('map-area-indicator');
+ if(indicator)indicator.hidden=route;
 }
 function closeDetails(){state.selected=null;$('place-detail').hidden=true;document.querySelectorAll('.place').forEach(x=>x.classList.remove('selected'));}
 function focus(id){
  const p=state.places.find(x=>String(x.id)===String(id));if(!p)return;
  state.selected=p.id;
  document.querySelectorAll('.place').forEach(x=>x.classList.toggle('selected',x.dataset.id===String(id)));
- if(mobile())setLevel('peek');
+ setDiscoverOpen(false);
  const marker=markerById.get(p.id);
  // All destinations now open the same contextual dossier on mobile and desktop.
  if(typeof window.openPlaceProfile==='function')window.openPlaceProfile(p);
@@ -357,27 +388,36 @@ function init(){
  $('places-list').addEventListener('keydown',e=>{if(e.target.closest('button'))return;if(['Enter',' '].includes(e.key)){const c=e.target.closest('.place');if(c){e.preventDefault();focus(c.dataset.id);}}});
  $('place-detail').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}if(e.target.closest('.close-detail'))closeDetails();});
  $('map').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){e.preventDefault();e.stopPropagation();toggleFavorite(star.dataset.favorite);}});
- $('place-search').addEventListener('focus',()=>{if(mobile()&&state.level==='peek')setLevel('middle');});
- const grab=$('drawer-grab');let start=null,swiped=false;
- grab.addEventListener('pointerdown',e=>{if(mobile()){start=e.clientY;swiped=false;}});
- grab.addEventListener('pointerup',e=>{if(start===null)return;const dist=e.clientY-start;start=null;if(Math.abs(dist)>35){swiped=true;const levels=['peek','middle','full'];setLevel(levels[Math.max(0,Math.min(2,levels.indexOf(state.level)+(dist<0?1:-1)))]);setTimeout(()=>swiped=false,120);}});
- grab.addEventListener('pointercancel',()=>start=null);
- grab.addEventListener('click',()=>{if(!swiped)setLevel(state.level==='peek'?'middle':state.level==='middle'?'full':'peek');});
+ $('discover-toggle').addEventListener('click',()=>setDiscoverOpen(!discoverIsOpen(),true));
+ $('discover-close').addEventListener('click',()=>setDiscoverOpen(false,true));
+ $('discover-scrim').addEventListener('click',()=>setDiscoverOpen(false,true));
+ $('map-area-indicator').addEventListener('click',()=>setDiscoverOpen(true));
+ // A dialog can be closed without sacrificing map position or filters.
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+   if(discoverIsOpen()){e.preventDefault();setDiscoverOpen(false,true);}
+   else if(state.selected!==null){e.preventDefault();closeDetails();}
+   return;
+  }
+  if(e.key!=='Tab'||!discoverIsOpen())return;
+  const panel=$('places-panel');
+  const focusable=Array.from(panel.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href],select:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+   .filter(el=>el.getClientRects().length>0);
+  if(!focusable.length)return;
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+ });
  $('locate').addEventListener('click',()=>{
   if(!navigator.geolocation){alert('Location is not available on this device.');return;}
   const btn=$('locate');btn.disabled=true;btn.textContent='…';
   navigator.geolocation.getCurrentPosition(pos=>{
    btn.disabled=false;btn.textContent='⌖';
    if(map){const loc=[pos.coords.latitude,pos.coords.longitude];map.setView(loc,14,{animate:true});if(geoLayer)map.removeLayer(geoLayer);geoLayer=L.circleMarker(loc,{radius:8,color:'#fff',weight:3,fillColor:'#276dd5',fillOpacity:1}).addTo(map).bindTooltip('You are here');}
-   setLevel('peek');closeDetails();
+   setDiscoverOpen(false);closeDetails();
   },()=>{btn.disabled=false;btn.textContent='⌖';alert('Location not available or permission was declined.');},{enableHighAccuracy:false,timeout:12000,maximumAge:30000});
  });
- $('share').addEventListener('click',async()=>{
-  try{if(navigator.share)await navigator.share({title:'Thailand Living Map',url:location.href});
-  else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);$('share').textContent='Copied ✓';setTimeout(()=>$('share').textContent='Share ↗',1800);}
-  else prompt('Copy map URL:',location.href);}
-  catch(e){if(e.name!=='AbortError')prompt('Copy map URL:',location.href);}
- });
+ updateDiscoverLabel();
  loadSnapshot().then(syncPlaces);
  setInterval(()=>{if(!document.hidden)syncPlaces();},CONFIG.refreshMs);
 }
