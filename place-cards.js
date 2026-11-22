@@ -86,9 +86,10 @@
  }
   function renderCredits(photos){
   if(!photos.length)return "";
-  return '<details class="visit-photo-credits"><summary>Photo sources &amp; licenses</summary><ol>'+
+  return '<details class="visit-photo-credits"><summary>Image sources &amp; credits</summary><ol>'+
    photos.map((f,i)=>'<li><a href="'+html(f.page)+'" target="_blank" rel="noopener noreferrer">Photo '+(i+1)+'</a>'+
     ' · '+html(f.artist||"Photo source")+
+    (f.kind?' · '+html(f.kind):"")+
     (f.license?' · '+(f.licenseUrl?'<a href="'+html(f.licenseUrl)+'" target="_blank" rel="noopener noreferrer">'+html(f.license)+'</a>':html(f.license)):"")+
     '</li>').join("")+'</ol></details>';
  }
@@ -107,7 +108,7 @@
   const entry=cache.get(p.id);
   if(!entry||entry.loading)return '<div class="visit-gallery-loading"><span class="visit-gallery-orbit" aria-hidden="true"></span>Finding photographs of this place…</div>';
   const photos=entry.photos||[];
-  if(!photos.length)return '<div class="visit-gallery-empty"><p>See what this place actually looks like.</p>'+
+  if(!photos.length)return '<div class="visit-gallery-empty"><p>No reliable photograph selected yet. Check the venue links or browse visitor photos.</p>'+
    renderVenueLinks(o,2)+
    '<a class="visit-google-photos" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">VISITOR PHOTOS &amp; REVIEWS ↗</a></div>';
   return '<div class="visit-gallery-heading"><span>'+html(o.photoLabel||"THE PLACE, IN PICTURES")+'</span><span>'+photos.length+' PHOTOS</span></div>'+
@@ -148,7 +149,7 @@
    '<div class="visit-heading"><div class="visit-identity"><span class="visit-kicker">'+html(sub)+'</span>'+
    '<h2>'+html(displayName(p,o))+'</h2>'+(o.thai?'<div class="visit-thai" lang="th">'+html(o.thai)+'</div>':"")+'</div>'+
    '<div class="visit-actions">'+favoriteButton(p,"detail")+'<button class="close-detail" type="button" aria-label="Close destination card">×</button></div></div>'+
-   '<div class="visit-hero" aria-label="Location photograph">'+renderHero(p,o)+'</div>'+
+   '<div class="visit-hero" aria-label="Destination or collection photography">'+renderHero(p,o)+'</div>'+
    (lead?'<p class="visit-lead">'+html(lead)+'</p>':"")+
    (o.confidence==="needs-review"?'<p class="visit-review-notice">This shop is still on our research list; its storefront has not been confirmed.</p>':"")+
    renderVenueLinks(o,3)+
@@ -231,7 +232,7 @@
    .slice(0,14).map((f,i)=>({
     title:String(f.title||"Verified photo "+(i+1)),url:f.url,page:f.page,
     artist:String(f.artist||"Official source"),license:String(f.license||""),
-    licenseUrl:String(f.licenseUrl||""),curated:true
+    licenseUrl:String(f.licenseUrl||""),kind:String(f.kind||"Source-identified image"),curated:true
    }));
  }
  const RETAIL_PHOTO_CATEGORIES=new Set(["Fragrances","Independent fashion","Designer replicas","Vintage","Jewelry & artisan","Markets & shopping","Wellness & beauty"]);
@@ -364,6 +365,18 @@
    }).catch(()=>{cache.set(p.id,{loading:false,photos:[]});syncPhotos(p.id);});
   }else syncPhotos(p.id);
  };
+ // Remote editorial sites can block hotlinked images or change asset URLs.
+ // Remove a failed image from the current gallery, rather than leaving a
+ // broken-photo icon or retrying another unrelated search result.
+ document.addEventListener("error",function(e){
+  const img=e.target;
+  if(!(img instanceof HTMLImageElement)||!img.closest("#place-detail"))return;
+  const panel=cardEl(),id=panel?.dataset.placeId,entry=cache.get(id);
+  if(!entry?.photos?.length)return;
+  const failed=img.getAttribute("src"),before=entry.photos.length;
+  entry.photos=entry.photos.filter(photo=>photo.url!==failed);
+  if(entry.photos.length!==before)syncPhotos(id);
+ },true);
  document.addEventListener("click",function(e){
   const photo=e.target.closest("#place-detail [data-photo-index]");
   if(photo){
