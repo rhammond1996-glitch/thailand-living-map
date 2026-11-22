@@ -1,0 +1,678 @@
+
+/* THAILAND DESIGN STUDY v1
+   Three visual directions based on user references.
+   Non-destructive visual layer over styles.css and trip.css.
+   Choose via ?design=print | ?design=soft | ?design=type.
+*/
+
+/* Shared layout principles: map first, confident typography, quieter information. */
+html[data-design]{
+  --display-font:"Space Grotesk","Arial Black",Arial,sans-serif;
+  --body-font:"DM Sans",Inter,system-ui,sans-serif;
+  --design-accent:#ef593a;
+  --design-bg:#fff9f3;
+  --design-text:#17201a;
+  --design-panel:#fffefb;
+  --design-muted:#625f5d;
+  --design-border:#23231f;
+  --design-chip:#f2ede2;
+  --design-contrast:#171717;
+  --design-focus:#eefa49;
+  --design-radius:15px;
+  color:var(--design-text);
+  font-family:var(--body-font);
+}
+html[data-design] body{
+  font-family:var(--body-font);
+  background:var(--design-bg);
+  color:var(--design-text);
+}
+html[data-design] .masthead{
+  background:var(--design-bg);
+  border-bottom:2px solid var(--design-border);
+  color:var(--design-text);
+  box-shadow:none;
+  position:relative;
+  z-index:900;
+}
+html[data-design] .brand{min-width:0}
+html[data-design] .brand .eyebrow{
+  color:var(--design-muted);
+  font-family:var(--body-font);
+  text-transform:uppercase;
+  font-weight:800;
+  font-size:9px;
+  letter-spacing:.1em;
+}
+html[data-design] .brand h1{
+  font-family:var(--display-font);
+  font-style:normal;
+  font-weight:700;
+  font-size:27px;
+  letter-spacing:-.09em;
+  line-height:1;
+  color:var(--design-text);
+}
+html[data-design] .brand h1 i,
+html[data-design] .brand h1 em{
+  font-family:var(--display-font);
+  color:var(--design-accent);
+  font-style:normal;
+}
+html[data-design] .mode-picker{
+  border:1.5px solid var(--design-border);
+  background:var(--design-panel);
+  border-radius:var(--design-radius);
+  box-shadow:none;
+  padding:3px;
+}
+html[data-design] .mode-picker button{
+  font-family:var(--body-font);
+  font-size:12px;
+  font-weight:750;
+  border-radius:calc(var(--design-radius) - 5px);
+  color:var(--design-text);
+  background:transparent;
+  box-shadow:none;
+  letter-spacing:-.02em;
+}
+html[data-design] .mode-picker button.active{
+  color:var(--design-panel);
+  background:var(--design-contrast);
+  box-shadow:none;
+}
+html[data-design] .share-button{
+  height:39px;
+  border:1.5px solid var(--design-border);
+  color:var(--design-text);
+  background:var(--design-focus);
+  border-radius:var(--design-radius);
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+html[data-design] .share-button:hover{filter:brightness(.97)}
+html[data-design] .sync{color:var(--design-muted)}
+html[data-design] .status-dot{background:var(--design-accent)}
+html[data-design] .places-panel{
+  background:var(--design-panel);
+  border-color:var(--design-border);
+}
+html[data-design] .drawer-grab{
+  background:var(--design-panel);
+  color:var(--design-text);
+  border-radius:var(--design-radius) var(--design-radius) 0 0;
+}
+html[data-design] .grab-line{background:var(--design-border);opacity:.25}
+html[data-design] .grab-copy strong{
+  font-family:var(--display-font);
+  font-weight:700;
+  font-size:17px;
+  letter-spacing:-.065em;
+  color:var(--design-text);
+}
+html[data-design] .grab-copy small{
+  color:var(--design-muted);
+  font-size:11px;
+}
+html[data-design] .grab-arrow{color:var(--design-text)}
+html[data-design] .map-wrap{background:var(--design-bg)}
+html[data-design] .city-picker,
+html[data-design] .map-toolbar .city-picker,
+html[data-design] .day-picker{
+  background:var(--design-panel);
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  box-shadow:0 3px 0 #00000013;
+}
+html[data-design] .city-picker button,
+html[data-design] .day-picker button{
+  color:var(--design-text);
+  font-weight:700;
+  border-radius:calc(var(--design-radius) - 5px);
+}
+html[data-design] .city-picker button.active,
+html[data-design] .day-picker button.active{
+  color:var(--design-panel);
+  background:var(--design-contrast);
+}
+html[data-design] .locate,
+html[data-design] .map-wrap .leaflet-control-zoom a{
+  border:1.5px solid var(--design-border);
+  color:var(--design-text);
+  background:var(--design-panel);
+  border-radius:var(--design-radius);
+  box-shadow:0 3px 0 #00000013;
+}
+html[data-design] .map-wrap .leaflet-control-zoom{
+  background:var(--design-panel);
+  border-color:var(--design-border)!important;
+  border-radius:var(--design-radius);
+}
+html[data-design] .search-label{
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  background:var(--design-panel);
+  color:var(--design-text);
+  box-shadow:none;
+}
+html[data-design] .search-label input{
+  color:var(--design-text);
+  font-family:var(--body-font);
+  font-weight:500;
+}
+html[data-design] .search-label input::placeholder{color:var(--design-muted);opacity:.8}
+html[data-design] .category-chips button{
+  background:var(--design-chip);
+  color:var(--design-text);
+  border:1.5px solid transparent;
+  border-radius:var(--design-radius);
+  font-weight:700;
+  box-shadow:none;
+}
+html[data-design] .category-chips button.active{
+  background:var(--design-accent);
+  color:#fff;
+  border-color:var(--design-accent);
+}
+html[data-design] .favorites-filter{
+  color:var(--design-text);
+  background:var(--design-panel);
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  box-shadow:none;
+}
+html[data-design] .favorites-filter.active{
+  color:var(--design-panel);
+  background:var(--design-contrast);
+}
+html[data-design] .results-count{color:var(--design-muted)}
+html[data-design] .place{
+  background:var(--design-panel);
+  color:var(--design-text);
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  box-shadow:none;
+  transition:transform .12s ease,background .12s ease;
+}
+html[data-design] .place:active{transform:scale(.99)}
+html[data-design] .place.selected{
+  border-color:var(--design-accent);
+  box-shadow:0 0 0 2px var(--design-accent);
+}
+html[data-design] .place h3,
+html[data-design] .place-title h3{
+  color:var(--design-text);
+  font-family:var(--display-font);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:-.045em;
+}
+html[data-design] .place p,
+html[data-design] .place-title small,
+html[data-design] .place-meta{color:var(--design-muted)}
+html[data-design] .favorite-star{color:var(--design-text)}
+html[data-design] .favorite-star.is-favorite{color:var(--design-accent)}
+html[data-design] .pin{
+  background:var(--design-panel);
+  border:2px solid var(--pin);
+  box-shadow:0 2px 0 #17171729,0 4px 14px #17171729;
+}
+html[data-design] .trip-controls{
+  border-bottom:1px solid var(--design-border);
+  background:var(--design-panel);
+}
+html[data-design] .trip-kicker,
+html[data-design] .trip-controls p,
+html[data-design] .trip-hint,
+html[data-design] .trip-header,
+html[data-design] .trip-footer,
+html[data-design] .trip-option small,
+html[data-design] .trip-stop-main small{color:var(--design-muted)!important}
+html[data-design] .trip-controls h2{
+  color:var(--design-text);
+  font:700 22px/1.08 var(--display-font);
+  letter-spacing:-.055em;
+}
+html[data-design] .trip-stop,
+html[data-design] .trip-option{
+  background:var(--design-panel);
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  box-shadow:none;
+}
+html[data-design] .trip-stop-main strong,
+html[data-design] .trip-option .trip-stop-main strong{
+  font:700 13px/1.3 var(--display-font);
+  letter-spacing:-.035em;
+  color:var(--design-text);
+}
+html[data-design] .trip-index{
+  background:var(--trip-color,var(--design-accent));
+  border-radius:calc(var(--design-radius) - 7px);
+}
+html[data-design] .trip-control-row select,
+html[data-design] .trip-control-row button,
+html[data-design] .trip-stop-actions button,
+html[data-design] .trip-option button{
+  background:var(--design-chip);
+  border:1px solid var(--design-border);
+  color:var(--design-text);
+  border-radius:calc(var(--design-radius) - 6px);
+}
+html[data-design] .trip-map-legend,
+html[data-design] .map-error{
+  background:var(--design-panel);
+  color:var(--design-text);
+  border:1px solid var(--design-border);
+  border-radius:var(--design-radius);
+}
+html[data-design] .place-detail:not([hidden]){
+  background:var(--design-panel);
+  border:1.5px solid var(--design-border);
+  border-radius:var(--design-radius);
+  box-shadow:0 8px 30px #24212625;
+}
+html[data-design] .detail-top strong{
+  color:var(--design-text);
+  font:700 18px/1.15 var(--display-font);
+  letter-spacing:-.05em;
+}
+html[data-design] .detail-sub,
+html[data-design] .place-detail p,
+html[data-design] .detail-foot small{color:var(--design-muted)}
+html[data-design] .close-detail{
+  color:var(--design-text);
+  background:var(--design-chip);
+}
+html[data-design] .directions{
+  background:var(--design-contrast);
+  color:var(--design-panel);
+  border:1px solid var(--design-contrast);
+  border-radius:var(--design-radius);
+}
+html[data-design] .empty{color:var(--design-muted)}
+html[data-design] :is(button,a,input):focus-visible{
+  outline:3px solid var(--design-accent);
+  outline-offset:2px;
+}
+@media(max-width:720px){
+  html[data-design] .masthead{height:72px;padding-inline:13px;gap:5px}
+  html[data-design] .workspace{height:calc(100% - 72px)}
+  html[data-design] .brand h1{font-size:21px}
+  html[data-design] .brand .eyebrow{font-size:8px;letter-spacing:0}
+  html[data-design] .mode-picker{gap:0;margin-left:auto;padding:2px}
+  html[data-design] .mode-picker button{font-size:11px;padding:9px 8px}
+  html[data-design] .share-button{min-width:55px;height:36px;padding:0 8px}
+  html[data-design] .places-panel{
+    border-top:2px solid var(--design-border);
+    border-radius:var(--design-radius) var(--design-radius) 0 0;
+    box-shadow:0 -7px 22px #1510151f;
+  }
+  html[data-design] .drawer-grab{height:80px;padding-top:21px}
+  html[data-design] .place{padding:14px 12px}
+  html[data-design] .place h3{font-size:14px}
+  html[data-design] .map-toolbar{top:13px}
+  html[data-design] .search-label{margin-top:10px}
+}
+@media(max-width:365px){
+ html[data-design] .brand h1{font-size:17px}
+ html[data-design] .mode-picker button{padding:7px 6px;font-size:10px}
+ html[data-design] .share-button{min-width:44px;padding:0 5px;font-size:11px}
+}
+/* ------------------------------------------------------------
+   01 — PRINT CLUB
+   Halftone poster, lime/orange, editorial black typography.
+------------------------------------------------------------- */
+html[data-design="print"]{
+ --design-accent:#f04e2d;
+ --design-bg:#f9f4ea;
+ --design-text:#151517;
+ --design-panel:#fffcf3;
+ --design-muted:#6b625c;
+ --design-border:#151517;
+ --design-chip:#edf0e5;
+ --design-contrast:#172dc7;
+ --design-focus:#dfff40;
+ --design-radius:8px;
+}
+html[data-design="print"] .masthead{
+  background:#dfff40;
+  border-bottom:3px solid #161618;
+}
+html[data-design="print"] .brand .eyebrow{
+  color:#222;
+  background:#fff8e6;
+  display:inline-block;
+  padding:2px 4px;
+}
+html[data-design="print"] .brand h1{
+  font-family:"Archivo Black",Impact,sans-serif;
+  font-size:25px;
+  letter-spacing:-.08em;
+  text-transform:uppercase;
+}
+html[data-design="print"] .brand h1 em{color:#172dc7}
+html[data-design="print"] .mode-picker button.active{
+  color:#fff;
+  background:#171717;
+}
+html[data-design="print"] .share-button{
+  background:#f04e2d;
+  color:#fff;
+  border-color:#171717;
+  box-shadow:3px 3px 0 #171717;
+}
+html[data-design="print"] .drawer-grab{
+ background:
+   radial-gradient(circle at 88% 24%,#f04e2d 0 4px,transparent 4.5px),
+   radial-gradient(circle at 92% 24%,#172dc7 0 4px,transparent 4.5px),
+   radial-gradient(circle at 96% 24%,#172dc7 0 4px,transparent 4.5px),
+   var(--design-panel);
+}
+html[data-design="print"] .grab-copy strong{
+  text-transform:uppercase;
+  font-family:"Archivo Black",Impact,sans-serif;
+  font-size:17px;
+}
+html[data-design="print"] .city-picker button.active,
+html[data-design="print"] .day-picker button.active{background:#172dc7}
+html[data-design="print"] .category-chips button{
+  border-color:#171717;
+  font-weight:800;
+  box-shadow:2px 2px 0 #151517;
+}
+html[data-design="print"] .category-chips button.active{
+ background:#f04e2d;
+ border-color:#171717;
+ color:#fff;
+}
+html[data-design="print"] .favorites-filter{box-shadow:2px 2px 0 #171717}
+html[data-design="print"] .favorites-filter.active{background:#172dc7}
+html[data-design="print"] .place{
+ background:#fffefa;
+ border-color:#202022;
+ box-shadow:3px 3px 0 #15151712;
+}
+html[data-design="print"] .place-category-icon{
+ background:#dfff40!important;
+ border:1px solid #151517;
+ border-radius:4px;
+ color:#171717;
+}
+html[data-design="print"] .place h3,
+html[data-design="print"] .trip-stop-main strong{font-family:"Space Grotesk",Arial,sans-serif}
+html[data-design="print"] .trip-stop:nth-child(3n+1){border-left:6px solid #172dc7}
+html[data-design="print"] .trip-stop:nth-child(3n+2){border-left:6px solid #f04e2d}
+html[data-design="print"] .trip-stop:nth-child(3n){border-left:6px solid #dfff40}
+html[data-design="print"] .trip-index{background:#172dc7}
+html[data-design="print"] .directions{background:#172dc7;color:#fff}
+html[data-design="print"] .trip-controls h2{
+  text-transform:uppercase;
+  font-family:"Archivo Black",Impact,sans-serif;
+  font-size:20px;
+}
+html[data-design="print"] .map-toolbar .city-picker{
+  box-shadow:3px 3px 0 #171717;
+}
+html[data-design="print"] .pin{background:#fffcf3}
+@media(max-width:720px){
+ html[data-design="print"] .brand h1{font-size:19px}
+ html[data-design="print"] .mode-picker button{font-size:10px}
+}
+/* ------------------------------------------------------------
+   02 — SOFT SIGNAL
+   Soft inflatables, peach/cornflower/periwinkle and cobalt.
+------------------------------------------------------------- */
+html[data-design="soft"]{
+ --design-accent:#ee735b;
+ --design-bg:#e4e5fa;
+ --design-text:#232847;
+ --design-panel:#fffaf7;
+ --design-muted:#71718b;
+ --design-border:#c5c7e7;
+ --design-chip:#eae8ff;
+ --design-contrast:#3447bf;
+ --design-focus:#ffc9c7;
+ --design-radius:23px;
+}
+html[data-design="soft"] .masthead{
+  background:linear-gradient(108deg,#a2b6ff,#cfb5f3 55%,#f9c6ce);
+  border-color:#7f8ace;
+  border-bottom:1px solid #8994d6;
+}
+html[data-design="soft"] .brand .eyebrow{color:#434775}
+html[data-design="soft"] .brand h1{
+  font-weight:700;
+  letter-spacing:-.08em;
+}
+html[data-design="soft"] .brand h1 em{color:#3447bf}
+html[data-design="soft"] .mode-picker{
+  background:#ffffffa9;
+  border-color:#ffffff;
+  box-shadow:0 6px 15px #5f58ae1a;
+}
+html[data-design="soft"] .mode-picker button.active{
+  background:#29294e;
+  color:#fff;
+}
+html[data-design="soft"] .share-button{
+ background:#fddec7;
+ border-color:#f8d0c5;
+ box-shadow:0 4px 12px #936bad2b;
+}
+html[data-design="soft"] .places-panel{
+ background:linear-gradient(#fffaf7,#fcf7f6);
+ border-color:#ffffff;
+ box-shadow:0 -14px 34px #6963b42a;
+}
+html[data-design="soft"] .drawer-grab{
+ background:linear-gradient(103deg,#fffaf7 0%,#faf1ff 75%,#e6e7ff 100%);
+}
+html[data-design="soft"] .grab-copy strong{font-size:19px}
+html[data-design="soft"] .grab-line{background:#8790c8;opacity:.45}
+html[data-design="soft"] .category-chips button{
+  background:#eaeaff;
+  border:1px solid #dedffa;
+}
+html[data-design="soft"] .category-chips button:nth-child(3n+2){background:#ffe7d5;border-color:#fadac5}
+html[data-design="soft"] .category-chips button:nth-child(3n){background:#e0f3dc;border-color:#cbebce}
+html[data-design="soft"] .category-chips button.active{
+  background:#3447bf;
+  border-color:#3447bf;
+  color:white;
+}
+html[data-design="soft"] .search-label,
+html[data-design="soft"] .favorites-filter,
+html[data-design="soft"] .city-picker,
+html[data-design="soft"] .day-picker{
+  border-color:#dcd6ec;
+  box-shadow:0 4px 16px #8f7ec41a;
+}
+html[data-design="soft"] .city-picker button.active,
+html[data-design="soft"] .day-picker button.active{background:#3447bf}
+html[data-design="soft"] .favorites-filter.active{background:#3447bf;color:#fff}
+html[data-design="soft"] .place{
+  border:1px solid #e6ddea;
+  box-shadow:0 6px 16px #9294bb17;
+  background:linear-gradient(135deg,#fffdfa 0 82%,#f1edfe 100%);
+  border-radius:20px;
+}
+html[data-design="soft"] .place-category-icon{
+ background:linear-gradient(135deg,#e4e3ff,#ffe5e0)!important;
+ color:#3447bf;
+ border-color:#e1ddfa;
+ border-radius:13px;
+}
+html[data-design="soft"] .place.selected{border-color:#5f72d9}
+html[data-design="soft"] .trip-stop{
+  border:1px solid #e3d8e8;
+  background:linear-gradient(125deg,#fff 0%,#f4efff 100%);
+  box-shadow:0 5px 15px #6f71ae17;
+  border-radius:20px;
+}
+html[data-design="soft"] .trip-option{
+  border:1px dashed #afafe0;
+  background:#faf8ff;
+  border-radius:17px;
+}
+html[data-design="soft"] .trip-index{border-radius:12px}
+html[data-design="soft"] .trip-controls h2{font-size:24px}
+html[data-design="soft"] .trip-map-legend{border-color:#d1c6e4}
+html[data-design="soft"] .place-detail:not([hidden]){border-color:#ded7ef}
+html[data-design="soft"] .directions{background:#3447bf;color:#fff}
+html[data-design="soft"] .pin{background:#fffdfb;box-shadow:0 4px 16px #6563a338}
+html[data-design="soft"] .map-toolbar .city-picker{box-shadow:0 6px 17px #7b6eab29}
+/* ------------------------------------------------------------
+   03 — TYPE LAB
+   Black, white and acid-lime. Swiss/editorial grid with electric accent.
+------------------------------------------------------------- */
+html[data-design="type"]{
+ --design-accent:#a7fe27;
+ --design-bg:#ecf4f0;
+ --design-text:#141616;
+ --design-panel:#fff;
+ --design-muted:#5f6c68;
+ --design-border:#111;
+ --design-chip:#eff2ec;
+ --design-contrast:#111;
+ --design-focus:#a7fe27;
+ --design-radius:3px;
+}
+html[data-design="type"] .masthead{
+  color:#fff;
+  background:#111;
+  border-bottom:4px solid #a7fe27;
+}
+html[data-design="type"] .brand .eyebrow{color:#a7fe27}
+html[data-design="type"] .brand h1{
+ color:#fff;
+ font:900 26px/1 "Archivo Black","Arial Black",Impact,sans-serif;
+ letter-spacing:-.08em;
+ text-transform:uppercase;
+}
+html[data-design="type"] .brand h1 em{color:#a7fe27}
+html[data-design="type"] .brand h1 i{color:#7fc6ff}
+html[data-design="type"] .mode-picker{
+ border:1px solid #858585;
+ background:#262626;
+}
+html[data-design="type"] .mode-picker button{color:#fff}
+html[data-design="type"] .mode-picker button.active{background:#a7fe27;color:#111}
+html[data-design="type"] .share-button{
+ background:#a7fe27;color:#151515;border:1px solid #a7fe27;
+ font-weight:850;
+}
+html[data-design="type"] .sync{color:#fff}
+html[data-design="type"] .status-dot{background:#a7fe27}
+html[data-design="type"] .places-panel{
+ background:#fff;
+ border-color:#171717;
+ box-shadow:0 -6px 0 #a7fe27;
+}
+html[data-design="type"] .drawer-grab{
+ background:#fff;
+ border-bottom:1px solid #dedede;
+}
+html[data-design="type"] .grab-copy strong{
+  font:900 21px/.95 "Archivo Black",Impact,sans-serif;
+  letter-spacing:-.06em;
+  text-transform:uppercase;
+}
+html[data-design="type"] .grab-line{background:#111;opacity:1}
+html[data-design="type"] .city-picker button.active,
+html[data-design="type"] .day-picker button.active{
+ background:#a7fe27;
+ color:#111;
+}
+html[data-design="type"] .search-label{
+ background:#fff;
+ border-width:2px;
+ box-shadow:3px 3px 0 #171717;
+}
+html[data-design="type"] .category-chips button{
+ background:#fff;
+ border:1px solid #151515;
+ font-weight:750;
+}
+html[data-design="type"] .category-chips button.active{
+ background:#111;
+ color:#a7fe27;
+ border-color:#111;
+}
+html[data-design="type"] .favorites-filter{
+ background:#a7fe27;
+ border-width:2px;
+ font-weight:850;
+ box-shadow:2px 2px 0 #111;
+}
+html[data-design="type"] .favorites-filter.active{
+ background:#111;
+ color:#a7fe27;
+}
+html[data-design="type"] .place{
+ border:0;
+ border-bottom:2px solid #141414;
+ border-radius:0;
+ background:#fff;
+ padding:16px 8px 14px;
+ margin-bottom:0;
+}
+html[data-design="type"] .place:first-child{border-top:2px solid #111}
+html[data-design="type"] .place.selected{
+ background:#f0ffd4;box-shadow:none;border-color:#111;
+}
+html[data-design="type"] .place h3{
+ font-family:"Space Grotesk",Arial,sans-serif;
+ font-size:16px;
+ font-weight:700;
+}
+html[data-design="type"] .place-category-icon{
+ background:#a7fe27!important;
+ border:1px solid #111;
+ border-radius:1px;
+ color:#111;
+}
+html[data-design="type"] .favorite-star.is-favorite{color:#111;background:#a7fe27}
+html[data-design="type"] .trip-controls{background:#a7fe27;border-bottom:2px solid #111}
+html[data-design="type"] .trip-controls h2{
+  font:900 22px/.99 "Archivo Black","Arial Black",sans-serif;
+  text-transform:uppercase;
+  letter-spacing:-.08em;
+}
+html[data-design="type"] .trip-stop,
+html[data-design="type"] .trip-option{
+ border-radius:0;
+ border:2px solid #151515;
+ box-shadow:3px 3px 0 #111;
+ margin-bottom:11px;
+}
+html[data-design="type"] .trip-stop:nth-child(even){background:#ebf4fc}
+html[data-design="type"] .trip-index{
+ border:2px solid #111;
+ border-radius:0;
+ color:#111;
+ background:#a7fe27;
+}
+html[data-design="type"] .trip-option{
+ border:2px dashed #111;
+ box-shadow:none;
+}
+html[data-design="type"] .directions{
+ background:#a7fe27;
+ color:#111;
+}
+html[data-design="type"] .map-toolbar .city-picker{box-shadow:3px 3px 0 #111}
+html[data-design="type"] .pin{
+ background:#fff;border-color:#111;
+ color:#111;
+ box-shadow:2px 2px 0 #a7fe27;
+}
+html[data-design="type"] .pin-favorite{color:#111;background:#a7fe27;border-color:#111}
+@media(max-width:720px){
+ html[data-design="type"] .brand h1{font-size:19px}
+ html[data-design="type"] .mode-picker{border-color:#777}
+ html[data-design="type"] .mode-picker button{padding:8px 6px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ html[data-design] .place{transition:none}
+}
