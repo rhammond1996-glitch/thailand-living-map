@@ -928,3 +928,34 @@ body.itinerary-mode #places-panel .discover-head-actions .discover-location{
   flex:0 0 auto;
  }
 }
+
+/* v8 / centered Saved star, independent of count badge */
+#places-panel .discover-panel-head #favorites-only.favorites-filter{
+  position:relative;
+  display:block;
+  box-sizing:border-box;
+  padding:0;
+  line-height:0;
+  text-align:center;
+  isolation:isolate;
+}
+#places-panel .discover-panel-head #favorites-only.favorites-filter > svg{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:23px;
+  height:23px;
+  margin:0;
+  padding:0;
+  transform:translate(-50%,-50%);
+  display:block;
+  pointer-events:none;
+}
+#places-panel .discover-panel-head #favorites-count{
+  position:absolute;
+  top:-7px;
+  right:-7px;
+  z-index:2;
+  margin:0;
+  pointer-events:none;
+}
