@@ -330,7 +330,7 @@ function setCityMenuOpen(open){
 function syncCityMenuLabel(){
  const button=$('city-toggle'),label=$('city-label');
  if(!button||!label)return;
- const text=state.city==='All'?'ALL':state.city==='Bangkok'?'BKK':'CHIANG MAI';
+ const text=state.city==='All'?'ALL':state.city.toUpperCase();
  label.textContent=text;
  button.setAttribute('aria-label','Choose city: '+(state.city==='All'?'All Thailand':state.city));
 }
