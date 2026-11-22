@@ -22,35 +22,36 @@
     try{
       for(const layer of gl.getStyle()?.layers||[]){
         const id=String(layer.id||'').toLowerCase();
+        const layerId=layer.id;
         const sourceLayer=String(layer['source-layer']||'').toLowerCase();
         const name=id+' '+sourceLayer;
         const kind=layer.type;
         try{
           if(kind==='background'){
-            gl.setPaintProperty(id,'background-color',COLORS.background);
+            gl.setPaintProperty(layerId,'background-color',COLORS.background);
           }else if(kind==='fill'){
             if(/water|ocean|lake|river|wetland/.test(name)&&!/landcover/.test(name)){
-              gl.setPaintProperty(id,'fill-color',COLORS.water);
+              gl.setPaintProperty(layerId,'fill-color',COLORS.water);
             }else if(/park|forest|wood|grass|garden|nature|protected|landcover|green/.test(name)){
-              gl.setPaintProperty(id,'fill-color',COLORS.park);
+              gl.setPaintProperty(layerId,'fill-color',COLORS.park);
             }else if(/building/.test(name)){
-              gl.setPaintProperty(id,'fill-color',COLORS.building);
+              gl.setPaintProperty(layerId,'fill-color',COLORS.building);
             }else if(/land|earth|residential|industrial/.test(name)){
-              gl.setPaintProperty(id,'fill-color',COLORS.land);
+              gl.setPaintProperty(layerId,'fill-color',COLORS.land);
             }
           }else if(kind==='line'){
             if(/water|ocean|stream|river|canal/.test(name)){
-              gl.setPaintProperty(id,'line-color',COLORS.waterLine);
-              gl.setPaintProperty(id,'line-opacity',0.7);
+              gl.setPaintProperty(layerId,'line-color',COLORS.waterLine);
+              gl.setPaintProperty(layerId,'line-opacity',0.7);
             }else if(/boundary|admin|border|country|province|state/.test(name)){
-              gl.setPaintProperty(id,'line-color',COLORS.pink);
-              gl.setPaintProperty(id,'line-opacity',0.7);
+              gl.setPaintProperty(layerId,'line-color',COLORS.pink);
+              gl.setPaintProperty(layerId,'line-opacity',0.7);
             }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|railway|trunk|primary|secondary|tertiary|footway|minor/.test(name)){
               const main=/motorway|trunk|primary|highway|major/.test(name);
               const secondary=/secondary|tertiary|railway/.test(name);
               const pedestrian=/footway|path|pedestrian|track|service/.test(name);
-              gl.setPaintProperty(id,'line-color',main?COLORS.lime:secondary?COLORS.cyan:pedestrian?COLORS.minor:COLORS.road);
-              gl.setPaintProperty(id,'line-opacity',main?0.92:secondary?0.83:pedestrian?0.5:0.66);
+              gl.setPaintProperty(layerId,'line-color',main?COLORS.lime:secondary?COLORS.cyan:pedestrian?COLORS.minor:COLORS.road);
+              gl.setPaintProperty(layerId,'line-opacity',main?0.92:secondary?0.83:pedestrian?0.5:0.66);
             }
           }else if(kind==='symbol'&&layer.layout&&layer.layout['text-field']){
             if(NAME_LABELS.test(name)&&!EXCLUDED_LABELS.test(name)){
