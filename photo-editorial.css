@@ -305,3 +305,10 @@
  #place-detail .visit-venue-links{gap:6px}
  #place-detail .visit-venue-links a{font-size:9px;padding:7px 8px;min-height:35px}
 }
+
+/* Discovery list: discreetly mark the sole shop candidate still needing review. */
+#places-panel .place-title small .place-to-review{
+ color:#c32383;
+ font-weight:900;
+ letter-spacing:.025em;
+}
