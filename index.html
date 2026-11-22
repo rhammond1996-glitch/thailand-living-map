@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="./design-system.css?v=1">
   <link rel="stylesheet" href="./print-club.css?v=5">
   <link rel="stylesheet" href="./place-cards.css?v=1">
-  <link rel="stylesheet" href="./discover-overlay.css?v=5">
+  <link rel="stylesheet" href="./discover-overlay.css?v=6">
 </head>
 <body>
   <div id="app">
@@ -59,9 +59,8 @@
           </div>
           <div class="discover-head-actions">
             <div class="discover-location" id="discover-location">
-              <button id="city-toggle" class="discover-city-toggle" type="button" aria-controls="map-cities" aria-haspopup="true" aria-expanded="false" aria-label="Choose city: All Thailand"><span id="city-label">ALL</span><span aria-hidden="true">⌄</span></button>
-              <nav class="city-picker" id="map-cities" hidden aria-label="Choose city">
-                <button type="button" class="active" data-city="All" aria-pressed="true">All Thailand</button>
+              <nav class="city-picker city-segments" id="map-cities" aria-label="Show destinations by city">
+                <button type="button" class="active" data-city="All" aria-pressed="true">All</button>
                 <button type="button" data-city="Bangkok" aria-pressed="false">Bangkok</button>
                 <button type="button" data-city="Chiang Mai" aria-pressed="false">Chiang Mai</button>
               </nav>
@@ -96,8 +95,8 @@
   <script src="./map-basemap.js?v=3" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
   <script src="./place-profiles.js?v=1" defer></script>
-  <script src="./app.js?v=16" defer></script>
-  <script src="./trip-itinerary.js?v=5" defer></script>
+  <script src="./app.js?v=17" defer></script>
+  <script src="./trip-itinerary.js?v=6" defer></script>
   <script src="./place-cards.js?v=3" defer></script>
 </body>
 </html>
