@@ -5,51 +5,78 @@
  */
 (function(){
   'use strict';
-  const STYLE='https://tiles.openfreemap.org/styles/positron';
-  const PAPER='#fbf7ec',INK='#24252b',WATER='#cbe6f7',PARK='#dbedbd';
+  const STYLE='https://tiles.openfreemap.org/styles/dark';
+  // Near-black navy with legible electric routes. No map-wide gradient artwork.
+  const COLORS={
+    background:'#0A122A', land:'#101B36',water:'#063A57',waterLine:'#20D9F1',
+    park:'#0C4338',building:'#182D4B',minor:'#2D516F',
+    cyan:'#27DFFC',lime:'#D6F64B',pink:'#FA3FA4',
+    road:'#8AD8ED',white:'#F6F6FF',halo:'#091429'
+  };
   const EXCLUDED_LABELS=/shield|housenumber|route-number|exit-number|motorway-junction|road-number|oneway/i;
   const NAME_LABELS=/label|name|place|poi|city|town|village|country|state|transport|road|street|waterway|airport|park/i;
   const ENGLISH_NAME=['coalesce',
     ['get','name_en'],['get','name:en'],['get','name:latin'],
     ['get','name:international'],['get','name_int'],['get','name_latin'],['get','name'],['get','ref'],''];
-  function stylePrintCartography(gl){
+  function applyInkStyle(gl){
     try{
-      const layers=gl.getStyle()?.layers||[];
-      for(const layer of layers){
-        const id=layer.id||'',kind=layer.type;
+      for(const layer of gl.getStyle()?.layers||[]){
+        const id=String(layer.id||'').toLowerCase();
+        const sourceLayer=String(layer['source-layer']||'').toLowerCase();
+        const name=id+' '+sourceLayer;
+        const kind=layer.type;
         try{
           if(kind==='background'){
-            gl.setPaintProperty(id,'background-color',PAPER);
+            gl.setPaintProperty(id,'background-color',COLORS.background);
           }else if(kind==='fill'){
-            if(/water|ocean|lake|river/i.test(id)&&!/land/i.test(id))gl.setPaintProperty(id,'fill-color',WATER);
-            else if(/park|wood|forest|nature|garden|grass/i.test(id))gl.setPaintProperty(id,'fill-color',PARK);
-          }else if(kind==='symbol'&&layer.layout&&layer.layout['text-field']){
-            if(NAME_LABELS.test(id)&&!EXCLUDED_LABELS.test(id)){
-              // The underlying vector tiles may lack an English name for
-              // a smaller local POI, so original/local text is the fallback.
-              gl.setLayoutProperty(id,'text-field',ENGLISH_NAME);
+            if(/water|ocean|lake|river|wetland/.test(name)&&!/landcover/.test(name)){
+              gl.setPaintProperty(id,'fill-color',COLORS.water);
+            }else if(/park|forest|wood|grass|garden|nature|protected|landcover|green/.test(name)){
+              gl.setPaintProperty(id,'fill-color',COLORS.park);
+            }else if(/building/.test(name)){
+              gl.setPaintProperty(id,'fill-color',COLORS.building);
+            }else if(/land|earth|residential|industrial/.test(name)){
+              gl.setPaintProperty(id,'fill-color',COLORS.land);
             }
-            gl.setPaintProperty(id,'text-color',INK);
-            gl.setPaintProperty(id,'text-halo-color','#fffdf6');
-            gl.setPaintProperty(id,'text-halo-width',1.35);
+          }else if(kind==='line'){
+            if(/water|ocean|stream|river|canal/.test(name)){
+              gl.setPaintProperty(id,'line-color',COLORS.waterLine);
+              gl.setPaintProperty(id,'line-opacity',0.7);
+            }else if(/boundary|admin|border|country|province|state/.test(name)){
+              gl.setPaintProperty(id,'line-color',COLORS.pink);
+              gl.setPaintProperty(id,'line-opacity',0.7);
+            }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|railway|trunk|primary|secondary|tertiary|footway|minor/.test(name)){
+              const main=/motorway|trunk|primary|highway|major/.test(name);
+              const secondary=/secondary|tertiary|railway/.test(name);
+              const pedestrian=/footway|path|pedestrian|track|service/.test(name);
+              gl.setPaintProperty(id,'line-color',main?COLORS.lime:secondary?COLORS.cyan:pedestrian?COLORS.minor:COLORS.road);
+              gl.setPaintProperty(id,'line-opacity',main?0.92:secondary?0.83:pedestrian?0.5:0.66);
+            }
+          }else if(kind==='symbol'&&layer.layout&&layer.layout['text-field']){
+            if(NAME_LABELS.test(name)&&!EXCLUDED_LABELS.test(name)){
+              gl.setLayoutProperty(layer.id,'text-field',ENGLISH_NAME);
+            }
+            const water=/water|river|ocean|lake/.test(name);
+            const road=/road|street|transport|highway/.test(name);
+            gl.setPaintProperty(layer.id,'text-color',water?COLORS.cyan:road?'#D1DDF0':COLORS.white);
+            gl.setPaintProperty(layer.id,'text-halo-color',COLORS.halo);
+            gl.setPaintProperty(layer.id,'text-halo-width',1.8);
           }
         }catch(error){
-          // Third-party style layers have diverse paint/expression layouts.
-          // A single unsupported layer must not blank the entire map.
-          console.debug('Cartography layer skipped:',id,error?.message||error);
+          console.debug('Map layer styling skipped:',layer.id,error?.message||error);
         }
       }
-    }catch(error){console.warn('Could not apply English-first map labels:',error);}
+    }catch(error){console.warn('Dark map styling unavailable:',error);}
   }
   function installFallback(map){
-    const raster=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    const raster=L.tileLayer('https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
       maxZoom:19,
-      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
     });
     raster.addTo(map);
     const notice=document.getElementById('map-error');
     if(notice){
-      notice.textContent='English-first map temporarily unavailable. Standard map shown; our place names and directions remain in English.';
+      notice.textContent='Detailed vector map unavailable; showing a simplified dark map. Place names and directions remain available.';
       notice.hidden=false;
     }
     return raster;
@@ -72,7 +99,7 @@
       const onLoad=()=>{
         if(abandoned)return;
         loaded=true;
-        stylePrintCartography(gl);
+        applyInkStyle(gl);
       };
       if(gl.isStyleLoaded())onLoad();else gl.once('load',onLoad);
       // Browser/WebGL/CDN failures should never leave a permanently blank map.
