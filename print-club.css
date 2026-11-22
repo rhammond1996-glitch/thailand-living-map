@@ -833,3 +833,56 @@ html[data-design="print"] .trip-popup .trip-popup-actions button{
 @media(prefers-reduced-motion:reduce){
  html[data-design="print"] .place{transition:none}
 }
+
+/* Explicit, separate touch targets for opening a place and starring it. */
+html[data-design="print"] .place .place-head{
+ padding:0;
+ gap:0;
+ min-height:0;
+}
+html[data-design="print"] .place .place-open{
+ flex:1 1 auto;
+ display:flex;
+ align-items:center;
+ min-width:0;
+ gap:9px;
+ text-align:left;
+ color:#171719;
+ background:transparent;
+ border:0;
+ padding:11px 3px 11px 17px;
+ min-height:68px;
+ cursor:pointer;
+ font:inherit;
+}
+html[data-design="print"] .place .place-open:active{background:#f1f2d6}
+html[data-design="print"] .place .place-open:focus-visible{
+ outline:3px solid #192ecb;
+ outline-offset:-3px;
+}
+html[data-design="print"] .place .place-name{
+ display:block;
+ max-width:100%;
+ font:750 14px/1.15 "Space Grotesk",Arial,sans-serif;
+ letter-spacing:-.045em;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ color:#171719;
+}
+html[data-design="print"] .place .place-go{margin:0 2px 0 4px}
+html[data-design="print"] .place .favorite-star{
+ margin:0 10px 0 0;
+ min-height:44px;
+ min-width:44px;
+}
+html[data-design="print"] .print-pin .pin-graphic{transform:none}
+@media(max-width:720px){
+ html[data-design="print"] .place .place-open{
+  padding:10px 1px 10px 12px;
+  min-height:65px;
+  gap:7px;
+ }
+ html[data-design="print"] .place .place-name{font-size:14px}
+ html[data-design="print"] .place .favorite-star{margin-right:7px}
+}
