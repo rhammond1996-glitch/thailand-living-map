@@ -20,7 +20,7 @@ window.MAP_PROFILES = {
   quickLink:"https://www.centralworld.co.th/en",
   more:"One shopping complex, many saved stops: use the directory as a flexible checklist. The Bangkok Art Biennale also has a venue here during our dates."
  },
- "bkk-bab-wat-pho":{
+ "bkk-bab-wat-pho":{commonsCategory:"Wat Pho",
   title:"Wat Pho",thai:"วัดโพธิ์",eyebrow:"BANGKOK ART BIENNALE / TEMPLE",
   hours:"Daily · 08:00–19:30", dates:"29 Oct 2026 – 28 Feb 2027",
   visit:"Art route · 30 min", count:"8 artworks",transit:"MRT Sanam Chai · Tha Tien Pier",
@@ -36,7 +36,7 @@ window.MAP_PROFILES = {
   more:"The 30-minute time is the biennale's own suggested art-viewing time; allow extra for temple architecture and the Reclining Buddha.",
   quickLink:"https://maps26.bkkartbiennale.com/"
  },
- "bkk-bab-wat-arun":{
+ "bkk-bab-wat-arun":{commonsCategory:"Wat Arun",
   title:"Wat Arun",thai:"วัดอรุณ",eyebrow:"BIENNALE / RIVERSIDE TEMPLE",
   dates:"29 Oct 2026 – 28 Feb 2027",wiki:"Wat Arun",listing:"ARTWORKS",
   transit:"Chao Phraya ferry · Wat Arun Pier",visit:"Allow 45–90 min",
@@ -67,7 +67,7 @@ window.MAP_PROFILES = {
   intro:"Contemporary installations inside a museum devoted to the making and interpretation of Thai identity.",
   items:[{name:"Biennale installations",where:"Museum Siam",note:"Works and rooms should be confirmed on arrival."},{name:"Historic building",where:"Architectural context",note:"Neoclassical setting near Wat Pho."}]
  },
- "bkk-bab-bacc":{
+ "bkk-bab-bacc":{commonsCategory:"Bangkok Art and Culture Centre",
   title:"Bangkok Art & Culture Centre",eyebrow:"BIENNALE / MAIN EXHIBITION HUB",
   dates:"29 Oct 2026 – 28 Feb 2027",wiki:"Bangkok Art and Culture Centre",listing:"ARTWORKS",
   transit:"BTS National Stadium",visit:"Allow 1–2 hours",
@@ -114,4 +114,21 @@ window.MAP_PROFILES = {
   listing:"SEE & DO",intro:"Hand-painted umbrellas, village workshops, and a colorful public craft festival. Our anticipated January dates are not yet confirmed.",
   items:[{name:"Umbrella painting",where:"Bo Sang craft village",note:"Visit makers at work."},{name:"Festival streets",where:"Bo Sang",note:"Check final dates and parade program."}]
  }
+ , "cm-saundok":{
+   title:"Wat Suan Dok",
+   eyebrow:"CHIANG MAI / LANNA ARCHITECTURE",
+   wiki:"Wat Suan Dok",
+   commonsCategory:"Wat Suan Dok",
+   listing:"DON'T MISS",
+   intro:"A golden chedi rises from a sea of brilliant white royal stupas. One of Chiang Mai's most striking architectural compositions—and a place to wander slowly, not just photograph.",
+   items:[
+     {name:"Royal white chedis",where:"Temple grounds",note:"Follow the repeating forms, shadows and gold details around the cemetery."},
+     {name:"Main golden stupa",where:"Central courtyard",note:"The central landmark gives the whole ensemble its scale and rhythm."},
+     {name:"Monk chat",where:"Ask on arrival",note:"A conversation with local monks could be a memorable cultural exchange; days and times must be checked separately."}
+   ],
+   practical:"The monk-chat program has its own schedule. Visit the temple independently even if a session is unavailable."
+ }
+ , "cm-inthanon":{commonsCategory:"Doi Inthanon National Park",wiki:"Doi Inthanon"},
+   "cm-twinpagodas":{commonsCategory:"Royal chedis of Doi Inthanon",wiki:"Doi Inthanon"}
+
 };
