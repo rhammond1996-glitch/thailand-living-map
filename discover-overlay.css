@@ -317,6 +317,11 @@ body.itinerary-mode #places-panel .places-list{padding-top:10px}
   html[data-design] .map-wrap .leaflet-bottom.leaflet-left{
     bottom:15px;
   }
+  /* The location dossier now uses the newly available lower map area, too. */
+  #place-detail.place-detail:not([hidden]),
+  html[data-design="print"] #place-detail.place-detail:not([hidden]){
+    bottom:calc(12px + env(safe-area-inset-bottom));
+  }
   .masthead #discover-toggle{
     height:37px;
     padding:0 9px;
