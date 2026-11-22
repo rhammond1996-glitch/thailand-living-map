@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#dfff40">
+  <title>Phone Preview / Thailand Living Map</title>
+  <style>
+    :root{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#171719;background:#ecebe5}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;height:100%}
+    body{display:flex;flex-direction:column}
+    button,a{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,a:focus-visible{outline:3px solid #192ecb;outline-offset:3px}
+    .top{background:#dfff40;border-bottom:3px solid #171719;padding:12px clamp(14px,3vw,28px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .title{display:flex;align-items:center;gap:14px}
+    .wordmark{font-size:clamp(16px,2.1vw,22px);font-weight:1000;letter-spacing:-.085em;line-height:1}
+    .wordmark span{color:#192ecb}
+    .eyebrow{font-size:10px;text-transform:uppercase;font-weight:850;letter-spacing:.07em;margin-top:4px}
+    .tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .device-tabs{display:flex;align-items:center;padding:3px;border:2px solid #171719;border-radius:5px;background:white;gap:2px}
+    .device-tabs button{border:0;background:transparent;color:#171719;border-radius:3px;font-size:12px;font-weight:850;padding:9px 12px;white-space:nowrap}
+    .device-tabs button.active{color:white;background:#192ecb}
+    .tool-button{background:#fffef6;border:2px solid #171719;border-radius:4px;padding:10px 13px;color:#171719;text-decoration:none;font-size:12px;font-weight:850}
+    .tool-button:hover{background:#fff7cc}
+    .stage{flex:1;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:16px 12px;background:radial-gradient(circle,#d7d8ce 1px,transparent 1px) 0 0/16px 16px}
+    #phone-slot{position:relative;flex-shrink:0}
+    #phone{position:absolute;left:0;top:0;border:6px solid #181818;border-radius:40px;background:#181818;box-shadow:0 15px 0 #12121213,0 20px 50px #15151533;overflow:hidden;transform-origin:top left}
+    #screen{display:block;border:0;background:#f9f4e8;border-radius:31px;width:100%;height:100%}
+    .bottom{background:#fffefa;border-top:2px solid #171719;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .bottom p{margin:0;font-size:11px;line-height:1.45;color:#4b4b46}
+    #dimensions{font-weight:850;color:#171719;white-space:nowrap}
+    @media(max-width:700px){
+      .top{align-items:flex-start}
+      .tools{width:100%}
+      .device-tabs{flex:1}
+      .device-tabs button{flex:1;padding:9px 6px;font-size:11px}
+      .tool-button{padding:10px 9px;font-size:11px}
+      .stage{min-height:400px}
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="title">
+      <div>
+        <div class="wordmark">THAILAND<span>/</span>MAP</div>
+        <div class="eyebrow">Live phone preview / Print Club</div>
+      </div>
+    </div>
+    <div class="tools">
+      <nav class="device-tabs" aria-label="Preview screen size" id="devices">
+        <button type="button" data-device="se" aria-pressed="false">iPhone SE</button>
+        <button type="button" data-device="standard" aria-pressed="true" class="active">iPhone</button>
+        <button type="button" data-device="plus" aria-pressed="false">iPhone Plus</button>
+      </nav>
+      <button type="button" id="reload" class="tool-button" title="Reload the live map">↻ Refresh</button>
+      <a href="./" target="_blank" rel="noopener" class="tool-button">Full website ↗</a>
+    </div>
+  </header>
+  <main class="stage" id="stage" aria-label="Live map displayed at an iPhone screen width">
+    <div id="phone-slot">
+      <div id="phone">
+        <iframe id="screen" title="Live Thailand Living Map at iPhone viewport size" src="./" loading="eager" allow="geolocation"></iframe>
+      </div>
+    </div>
+  </main>
+  <footer class="bottom">
+    <p>Changes to the real map appear here after a refresh. Click, scroll, search, and filter inside the phone frame.</p>
+    <p id="dimensions" aria-live="polite">393 × 852 CSS px</p>
+  </footer>
+  <script>
+    (() => {
+      "use strict";
+      const devices={
+        se:{width:375,height:667},
+        standard:{width:393,height:852},
+        plus:{width:430,height:932}
+      };
+      const phone=document.getElementById("phone");
+      const slot=document.getElementById("phone-slot");
+      const screen=document.getElementById("screen");
+      const stage=document.getElementById("stage");
+      const tabs=document.getElementById("devices");
+      const dimensions=document.getElementById("dimensions");
+      let current="standard";
+      function fit(){
+        const {width,height}=devices[current];
+        const outerW=width+12,outerH=height+12;
+        const scale=Math.min(1,Math.max(.35,Math.min((stage.clientWidth-28)/outerW,(stage.clientHeight-28)/outerH)));
+        phone.style.width=outerW+"px";
+        phone.style.height=outerH+"px";
+        phone.style.transform="scale("+scale+")";
+        slot.style.width=outerW*scale+"px";
+        slot.style.height=outerH*scale+"px";
+        screen.style.width=width+"px";
+        screen.style.height=height+"px";
+        dimensions.textContent=width+" × "+height+" CSS px · "+Math.round(scale*100)+"% preview scale";
+      }
+      tabs.addEventListener("click",e=>{
+        const button=e.target.closest("button[data-device]");
+        if(!button)return;
+        current=button.dataset.device;
+        for(const b of tabs.querySelectorAll("button[data-device]")){
+          const active=b===button;
+          b.classList.toggle("active",active);
+          b.setAttribute("aria-pressed",String(active));
+        }
+        fit();
+      });
+      document.getElementById("reload").addEventListener("click",()=>{
+        // Same-origin frame; a cache-busting navigation also refreshes the HTML entry point.
+        const url=new URL("./",location.href);
+        url.searchParams.set("preview_refresh",Date.now().toString());
+        screen.src=url.href;
+      });
+      window.addEventListener("resize",fit);
+      if("ResizeObserver" in window)new ResizeObserver(fit).observe(stage);
+      fit();
+    })();
+  </script>
+</body>
+</html>
