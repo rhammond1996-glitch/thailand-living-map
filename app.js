@@ -27,27 +27,63 @@ const CATEGORIES=[
  ['Markets & shopping','Markets','#E62BB9'],
  ['Wellness & beauty','Wellness','#07B2A1']
 ];
-const CATEGORY_CODES={
- 'All':'ALL','Fragrances':'FR','Independent fashion':'FA',
- 'Designer replicas':'RP','Vintage':'VT','Jewelry & artisan':'JE',
- 'Creative districts':'DS','Gay Nightlife':'GN','Underground & Raves':'RV',
- 'Architecture & heritage':'AC','Temples & culture':'TM',
- 'Art & design':'AT','Nature & adventure':'NT','Wildlife':'WL',
- 'Markets & shopping':'MK','Wellness & beauty':'WB'
+/* PRINT CLUB / graphic symbol language.
+ * Handmade 32×32 SVGs, built from geometric silhouettes, not stock pictograms.
+ * Reused unchanged on map markers, filter options, list rows and place details.
+ * Every icon's background is the fixed solid category color.
+ */
+const CATEGORY_SYMBOLS={
+  // Four connected petals: one place, many interests
+  'All':'<rect x="13" y="4" width="6" height="24" rx="3"/><rect x="4" y="13" width="24" height="6" rx="3"/><circle cx="16" cy="16" r="4"/>',
+  // Abstract fragrance droplet
+  'Fragrances':'<path d="M16 2C13 8 6.4 13.3 6.4 20a9.6 9.6 0 0 0 19.2 0C25.6 13.3 19 8 16 2Z"/>',
+  // Reduced folded garment with sculpted neckline
+  'Independent fashion':'<path fill-rule="evenodd" d="M10 4 16 7l6-3 8 8-6 6-3-3v14H11V15l-3 3-6-6 8-8Zm3 3a3 3 0 0 0 6 0l-3 1.5L13 7Z"/>',
+  // Interlocked tags, referencing alternative design and exchange
+  'Designer replicas':'<path fill-rule="evenodd" d="M3 7a4 4 0 0 1 4-4h11l11 11-12 12L3 12V7Zm8 1.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/><path d="m13 25 4 4 12-12-3-3-13 11Z"/>',
+  // Eight-point printmaking burst
+  'Vintage':'<path d="m16 1.8 3.1 8.2 8.5-4.6-4.6 8.5 8.2 3.1-8.2 3.1 4.6 8.5-8.5-4.6-3.1 8.2-3.1-8.2-8.5 4.6 4.6-8.5-8.2-3.1 8.2-3.1-4.6-8.5 8.5 4.6Z"/>',
+  // Jewel as an architectural facet
+  'Jewelry & artisan':'<path fill-rule="evenodd" d="M8 3h16l7 10-15 17L1 13 8 3Zm3 5L7 13h18l-4-5H11ZM16 25l6-10H10l6 10Z"/>',
+  // Modular grid with one offset cell
+  'Creative districts':'<rect x="3" y="3" width="12" height="12" rx="1.5"/><rect x="18" y="3" width="11" height="11" rx="1.5"/><rect x="3" y="18" width="11" height="11" rx="1.5"/><rect x="19" y="19" width="10" height="10" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  // Clover-like blooming club mark
+  'Gay Nightlife':'<circle cx="16" cy="8" r="7"/><circle cx="24" cy="16" r="7"/><circle cx="16" cy="24" r="7"/><circle cx="8" cy="16" r="7"/><circle cx="16" cy="16" r="4.5"/>',
+  // Opposed strobe bars, expressive X silhouette
+  'Underground & Raves':'<path d="M7 3 16 12 25 3l4 4-9 9 9 9-4 4-9-9-9 9-4-4 9-9-9-9 4-4Z"/><rect x="14" y="1" width="4" height="5" rx="1"/><rect x="14" y="26" width="4" height="5" rx="1"/>',
+  // Single monumental arch
+  'Architecture & heritage':'<path fill-rule="evenodd" d="M3 29V15C3 7.8 8.8 2 16 2s13 5.8 13 13v14H3Zm9-1h8V15a4 4 0 1 0-8 0v13Z"/>',
+  // Abstract tiered roof silhouette
+  'Temples & culture':'<path d="M16 1 22 8H10L16 1ZM7 10h18l5 7H2l5-7ZM5 19h22l3 5H2l3-5ZM7 26h18v5H7v-5Z"/>',
+  // Offset cross-spark with diamond accents
+  'Art & design':'<path d="M13 1h6l-1 11 11-1v6l-11-1 1 11h-6l1-11-11 1v-6l11 1-1-11Z"/><circle cx="26" cy="26" r="4"/><circle cx="5" cy="27" r="2"/>',
+  // Leaf, sharply pointed and asymmetrical
+  'Nature & adventure':'<path fill-rule="evenodd" d="M29 3C14 3 4 9 4 19c0 5.5 3.5 9 8.5 9C23 28 29 16 29 3ZM7 29l2 2C16 22 21 16 28 9c-11 6-17 13-21 20Z"/>',
+  // Graphic paw cluster
+  'Wildlife':'<ellipse cx="8" cy="9" rx="3" ry="4.5" transform="rotate(-25 8 9)"/><ellipse cx="16" cy="6" rx="3" ry="4.5"/><ellipse cx="24" cy="9" rx="3" ry="4.5" transform="rotate(25 24 9)"/><path d="M16 14c-4.4 0-5.6 3.3-9.8 7.4C1.6 26 6.3 30 11 28.6c3-1 7-1 10 0C25.7 30 30.4 26 25.8 21.4 21.6 17.3 20.4 14 16 14Z"/>',
+  // Market stall canopy reduced to modular bars
+  'Markets & shopping':'<path d="M5 4h22l4 11H1L5 4ZM5 17h22v13H5V17Zm6 4v9h10v-9H11Z"/><rect x="11" y="22" width="10" height="2" fill="#fff9f0"/>',
+  // Four balanced petals / recovery emblem
+  'Wellness & beauty':'<ellipse cx="16" cy="9" rx="5" ry="8"/><ellipse cx="23" cy="16" rx="8" ry="5"/><ellipse cx="16" cy="23" rx="5" ry="8"/><ellipse cx="9" cy="16" rx="8" ry="5"/><circle cx="16" cy="16" r="3"/>'
 };
 const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[
- key,{label,color,code:CATEGORY_CODES[key]||'POI'}
+ key,{label,color,symbol:CATEGORY_SYMBOLS[key]||CATEGORY_SYMBOLS.All}
 ]));
-// High-contrast foreground, computed against a solid (never gradient) category ink.
+// Contrast-aware foreground: black graphic marks on bright pigments,
+// white on the handful of deep colors where black would disappear.
 function categoryInk(hex){
  const channels=hex.replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)/255);
  const linear=channels.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
  const luminance=.2126*linear[0]+.7152*linear[1]+.0722*linear[2];
  return luminance>.18?'#151515':'#FFFFFF';
 }
+function symbolSVG(category,size=21){
+ const path=CATEGORY_SYMBOLS[category]||CATEGORY_SYMBOLS.All;
+ return '<svg class="category-icon" width="'+size+'" height="'+size+'" viewBox="0 0 32 32" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+path+'</svg>';
+}
 function categoryStamp(category){
  const item=STYLES[category]||STYLES.All;
- return '<span class="category-swatch" style="--category:'+item.color+';--category-ink:'+categoryInk(item.color)+'">'+item.code+'</span>';
+ return '<span class="category-swatch" style="--category:'+item.color+';--category-ink:'+categoryInk(item.color)+'" aria-hidden="true">'+symbolSVG(category,20)+'</span>';
 }
 const STAR_PATH='<path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/>';
 function starSVG(active,size=19){
@@ -260,7 +296,7 @@ function renderPins(list,preserveView=false){
   const primary=cats(p)[0]||'All';
   const t=STYLES[primary]||STYLES.All;
   const saved=favorites.has(String(p.id));
-  const markup='<div class="print-stamp-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+';--pin-ink:'+categoryInk(t.color)+'" aria-label="'+esc(t.label)+'"><span class="stamp-code">'+t.code+'</span><span class="stamp-punch" aria-hidden="true"></span>'+(saved?'<span class="stamp-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
+  const markup='<div class="print-stamp-pin graphic-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+';--pin-ink:'+categoryInk(t.color)+'" aria-label="'+esc(t.label)+'"><span class="stamp-symbol">'+symbolSVG(primary,24)+'</span>'+(saved?'<span class="stamp-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
   const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[38,38],iconAnchor:[19,19]});
   const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
   const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).bindPopup(popup).addTo(markers);
@@ -292,7 +328,7 @@ function focus(id){
   setLevel('peek');
   const top=cats(p)[0]||'All';
   const category=STYLES[top]||STYLES.All;
-  $('place-detail').innerHTML='<div class="detail-top"><div class="detail-title"><span class="detail-kicker">PLACE / '+esc(category.label)+'</span><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+'</div></div>'+
+  $('place-detail').innerHTML='<div class="detail-top">'+categoryStamp(top)+'<div class="detail-title"><span class="detail-kicker">PLACE / '+esc(category.label)+'</span><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+'</div></div>'+
    favoriteButton(p,'detail')+'<button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
    '<p class="detail-description">'+esc(p.highlights||p.location_type||'')+'</p>'+
    '<div class="detail-foot"><small>'+esc(p.location_type||category.label)+'</small><a class="directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
