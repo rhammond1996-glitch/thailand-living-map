@@ -1,4 +1,4 @@
-/* Source-screened venue reference overlay, updated 2026-11-22. */
+/* Source-screened venue reference overlay; curated image sources verified by venue association, 2026-11-22. */
 window.VENUE_RESEARCH = {
   "bkk-centralworld": {
     "confidence": "established",
@@ -11,6 +11,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "CentralWorld Bangkok"
+    ],
+    "photoLabel": "CENTRALWORLD / SHOPPING COMPLEX",
+    "photoSelections": [
+      {
+        "title": "CentralWorld shopping complex, Bangkok",
+        "url": "https://img.salehere.co.th/p/1200x0/2024/03/21/fqwuucyavhyi.jpg",
+        "page": "https://salehere.co.th/articles/central-world-walking-guide",
+        "artist": "Sale Here",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-mith": {
@@ -24,6 +34,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "MITH Bangkok Siam Square"
+    ],
+    "photoLabel": "MITH / OFFICIAL PERFUME COLLECTION",
+    "photoSelections": [
+      {
+        "title": "MITH Bangkok — Summer Dream perfume",
+        "url": "https://glindee.com/cdn/shop/files/LINE_ALBUM_812568BE_250108_21_LE_upscale_balanced_x2_d4ffdef8-50b6-4db0-916c-530f3229f9d8.jpg?v=1736471426",
+        "page": "https://glindee.com/collections/mith-fragrances",
+        "artist": "Glin Dee — official US distributor",
+        "kind": "Fragrance product photograph"
+      }
     ]
   },
   "bkk-dragon": {
@@ -37,6 +57,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Rebellion Lab Perfume Bar Dragon Town"
+    ],
+    "photoLabel": "REBELLION LAB / SCENT BAR",
+    "photoSelections": [
+      {
+        "title": "Rebellion Lab and Perfume Bar interior",
+        "url": "https://files.gqthailand.com/uploads/temp_media/Rebellion-Lab-and-Perfume-Bar.webp",
+        "page": "https://www.gqthailand.com/article/gq-style-vol-88",
+        "artist": "GQ Thailand",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-gaysorn": {
@@ -50,6 +80,23 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "SKONX Gaysorn Bangkok"
+    ],
+    "photoLabel": "GAYSORN / SKONX PERFUMERY",
+    "photoSelections": [
+      {
+        "title": "SKONX Perfumery — niche perfume bar",
+        "url": "https://media.thairath.co.th/image/db98UfgnvQU6y1Mfr3JUwbuVFW2BV2WgzUs1a2hrkZRpwzge9vA1.jpg",
+        "page": "https://plus.thairath.co.th/topic/everydaylife/105703",
+        "artist": "Thairath — SKONX editorial",
+        "kind": "SKONX brand interior, branch not established"
+      },
+      {
+        "title": "Gaysorn Tower and retail podium",
+        "url": "https://www.azbil.com/case/bsc/app_033/__icsFiles/afieldfile/2022/02/25/app_033_05.jpg",
+        "page": "https://www.azbil.com/case/bsc/app_033/index.html",
+        "artist": "Azbil — Gaysorn building case study",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-daniya": {
@@ -89,6 +136,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "PROMTHONG Bangkok"
+    ],
+    "photoLabel": "PROMTHONG / FASHION COLLECTION",
+    "photoSelections": [
+      {
+        "title": "Promthong fashion collection look",
+        "url": "https://img.ws.mms.shopee.co.th/3041c5257a9528c77b03fb980786c943",
+        "page": "https://shopee.co.th/promthong.official",
+        "artist": "PROMTHONG official store on Shopee",
+        "kind": "Collection photograph; not storefront"
+      }
     ]
   },
   "bkk-garcon": {
@@ -106,6 +163,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Garcon Dept Bangkok"
+    ],
+    "photoLabel": "GARÇON DEPT. / OFFICIAL STOREFRONT",
+    "photoSelections": [
+      {
+        "title": "Garçon Dept. Siam Square store exterior",
+        "url": "https://garcon-dept.com/_nuxt/location1.CA1EmdNS.webp",
+        "page": "https://garcon-dept.com/location",
+        "artist": "Garçon Dept. official website",
+        "kind": "Brand location photograph"
+      }
     ]
   },
   "bkk-loft": {
@@ -140,6 +207,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Carnival Bangkok sneaker store"
+    ],
+    "photoLabel": "CARNIVAL / BANGKOK STREETWEAR",
+    "photoSelections": [
+      {
+        "title": "Carnival sneaker retailer exterior",
+        "url": "https://images.squarespace-cdn.com/content/v1/57825361440243db4a4b7830/1711009457625-B9WX05C496BYCRMJ1HFR/C2-2%28whitespace%2Bwebsite%29.jpg",
+        "page": "https://sabukaru.online/articles/how-to-build-a-sneaker-legacy-in-bangkok-a-talk-with-carnival",
+        "artist": "sabukaru editorial",
+        "kind": "Brand storefront; branch not independently confirmed"
+      }
     ]
   },
   "bkk-matter": {
@@ -170,6 +247,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Gongdid Design Bangkok"
+    ],
+    "photoLabel": "GONGDID / PLEATED FASHION",
+    "photoSelections": [
+      {
+        "title": "Gongdid Design collection in showroom",
+        "url": "https://media.thairath.co.th/image/FcsusUQDWaEYxB3TeHCVN03NCoGSjvZVN6BtkOWdgPAe9vA1.jpg",
+        "page": "https://mirrorthailand.com/style/fashion/102593",
+        "artist": "Mirror Thailand",
+        "kind": "Brand editorial photograph"
+      }
     ]
   },
   "bkk-siamcenter": {
@@ -183,6 +270,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Siam Center Bangkok"
+    ],
+    "photoLabel": "SIAM CENTER / RETAIL",
+    "photoSelections": [
+      {
+        "title": "Siam Center building at night",
+        "url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/5b/54/1a/near-siam-station-the.jpg?h=800&s=1&w=1000",
+        "page": "https://www.tripadvisor.com/Attractions-g293916-Activities-c26-t143-zfn8308060-Bangkok.html",
+        "artist": "Tripadvisor visitor photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-songwat": {
@@ -191,6 +288,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Song Wat Road Bangkok"
+    ],
+    "photoLabel": "SONG WAT / CREATIVE STREET",
+    "photoSelections": [
+      {
+        "title": "Song Wat creative district streetscape",
+        "url": "https://ak-d.tripcdn.com/images/1mi0t224x99qt5qp16738_R_600_400_R5_Q90.jpg?proc=source%2Ftrip",
+        "page": "https://sa.trip.com/moments/detail/bangkok-191-147291146?locale=en-SA",
+        "artist": "Trip.com traveler photograph",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-warehouse30": {
@@ -199,6 +306,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Warehouse 30 Bangkok"
+    ],
+    "photoLabel": "WAREHOUSE 30 / CHAREON KRUNG",
+    "photoSelections": [
+      {
+        "title": "Warehouse 30 industrial adaptive-reuse entrance",
+        "url": "https://vivre-en-thailande.com/wp-content/uploads/2018/08/KIAA9193-Custom-1050x700-1024x683.png",
+        "page": "https://vivre-en-thailande.com/les-5-spots-arty-incontournables-bangkok/452760/",
+        "artist": "Vivre en Thaïlande",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-att19": {
@@ -207,6 +324,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "ATT 19 Bangkok art gallery"
+    ],
+    "photoLabel": "ATT 19 / ART & DESIGN",
+    "photoSelections": [
+      {
+        "title": "ATT 19 Bangkok interior gallery",
+        "url": "https://1672travelbuddy.com/article_images/daa98f7f79b853ddb630ad98f18bd3da.jpg",
+        "page": "https://1672travelbuddy.com/",
+        "artist": "Tourism Authority of Thailand — 1672 TravelBuddy",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-mbk": {
@@ -215,6 +342,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "MBK Center Bangkok"
+    ],
+    "photoLabel": "MBK / SHOPPING COMPLEX",
+    "photoSelections": [
+      {
+        "title": "MBK shopping center exterior",
+        "url": "https://cdn.sanity.io/images/nxpteyfv/goguides/6529036069046811a3a0976019491c4618c0cb54-1600x1066.jpg",
+        "page": "https://no.hotels.com/go/thailand/mbk-shopping-center",
+        "artist": "Hotels.com Go Guides",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-patpong": {
@@ -223,6 +360,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Patpong Night Market Bangkok"
+    ],
+    "photoLabel": "PATPONG / NIGHT MARKET",
+    "photoSelections": [
+      {
+        "title": "Patpong Night Market clothing stall",
+        "url": "https://www.tripatrek.com/wp-content/uploads/2023/10/T-Shits-for-sale-at-Patpong-Night-Market-Bangkok.jpg",
+        "page": "https://www.tripatrek.com/patpong-night-market-bangkok/",
+        "artist": "tripAtrek travel photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-chatuchak": {
@@ -232,7 +379,17 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Chatuchak Weekend Market Bangkok"
     ],
-    "commonsCategory": "Chatuchak Market"
+    "commonsCategory": "Chatuchak Market",
+    "photoLabel": "CHATUCHAK / MARKET STALLS",
+    "photoSelections": [
+      {
+        "title": "Chatuchak Weekend Market textile stall",
+        "url": "https://www.reisroutes.nl/userfiles/fotos/chatuchak-weekendmarkt-bangkok_36102_xl.jpg",
+        "page": "https://www.reisroutes.nl/blog/thailand/bezienswaardigheden-thailand/",
+        "artist": "Reisroutes.nl travel photography",
+        "kind": "Venue photograph"
+      }
+    ]
   },
   "cm-onenimman": {
     "confidence": "established",
@@ -249,6 +406,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "One Nimman Chiang Mai"
+    ],
+    "photoLabel": "ONE NIMMAN / COURTYARD",
+    "photoSelections": [
+      {
+        "title": "One Nimman brick shopping courtyard and clocktower",
+        "url": "https://res.klook.com/image/upload/fl_lossy.progressive%2Cw_1200%2Ch_630%2Cc_fill%2Cq_85/One_Nimman_1_aurjrd.jpg",
+        "page": "https://www.klook.com/destination/p50056823-one-nimman/",
+        "artist": "Klook venue photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-mith": {
@@ -262,6 +429,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "MITH Chiang Mai"
+    ],
+    "photoLabel": "MITH / FRAGRANCE COLLECTION",
+    "photoSelections": [
+      {
+        "title": "MITH Bangkok — Summer Dream perfume",
+        "url": "https://glindee.com/cdn/shop/files/LINE_ALBUM_812568BE_250108_21_LE_upscale_balanced_x2_d4ffdef8-50b6-4db0-916c-530f3229f9d8.jpg?v=1736471426",
+        "page": "https://glindee.com/collections/mith-fragrances",
+        "artist": "Glin Dee — official US distributor",
+        "kind": "Fragrance product photograph; not Chiang Mai storefront"
+      }
     ]
   },
   "cm-galaxy": {
@@ -275,6 +452,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "GALAXYCNX Nimman Chiang Mai"
+    ],
+    "photoLabel": "GALAXYCNX / STREETWEAR STORE",
+    "photoSelections": [
+      {
+        "title": "GALAXYCNX streetwear boutique collage",
+        "url": "https://www.soul4street.com/wp-content/uploads/2023/07/05-scaled.jpg",
+        "page": "https://soul4street.com/chiang-mai-tour-%E0%B8%84%E0%B8%B1%E0%B8%A1%E0%B8%A0%E0%B8%B5%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B8%B5%E0%B8%97%E0%B9%81%E0%B8%A7%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3/",
+        "artist": "Soul4Street",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-palit": {
@@ -359,6 +546,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Baan Kang Wat Chiang Mai"
+    ],
+    "photoLabel": "BAAN KANG WAT / ARTIST VILLAGE",
+    "photoSelections": [
+      {
+        "title": "Baan Kang Wat artist village artisan storefront",
+        "url": "https://changpuakmagazine.com/images/article/25243BaanKW_June2022.jpg",
+        "page": "https://changpuakmagazine.com/en-article/BAAN-KANG-WAT/23537/",
+        "artist": "Chang Puak Magazine",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-vintage": {
@@ -399,6 +596,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Jing Jai Market Chiang Mai"
+    ],
+    "photoLabel": "JING JAI / HANDCRAFT MARKET",
+    "photoSelections": [
+      {
+        "title": "Jing Jai Market artisan stalls and woven lamps",
+        "url": "https://ak-d.tripcdn.com/images/1mi49224x8un11m1t99D6_Q90.jpg?proc=source%2Ftrip",
+        "page": "https://sg.trip.com/moments/detail/chiang-mai-209-121365077/",
+        "artist": "Trip.com traveler photograph",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-metal": {
@@ -412,6 +619,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Metal Studio Jewelry Chiang Mai"
+    ],
+    "photoLabel": "METAL STUDIO / OFFICIAL SHOWROOM",
+    "photoSelections": [
+      {
+        "title": "Metal Studio handmade jewelry showroom",
+        "url": "https://www.metal-studio-thailand.com/images/public/sd_5f23be5f40ccd.jpg?no_cache=1596185215",
+        "page": "https://metal-studio-thailand.com/",
+        "artist": "Metal Studio official website",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-wualai": {
@@ -420,6 +637,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Wua Lai Saturday Walking Street Chiang Mai"
+    ],
+    "photoLabel": "WUA LAI / SATURDAY MARKET",
+    "photoSelections": [
+      {
+        "title": "Wualai Walking Street craft vendors",
+        "url": "https://catmotors.net/wp-content/uploads/2023/01/Artisan-Crafts-wualai-market-chiang-mai.jpg",
+        "page": "https://catmotors.net/travel/wualai-walking-street/",
+        "artist": "Cat Motors travel guide",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-warorot": {
@@ -428,6 +655,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Warorot Market Chiang Mai"
+    ],
+    "photoLabel": "WAROROT / MARKET INTERIOR",
+    "photoSelections": [
+      {
+        "title": "Warorot Market food and dried-goods aisle",
+        "url": "https://www.theblondtravels.com/_next/image?q=75&url=https%3A%2F%2Fwww.theblondtravels.com%2Fwp-content%2Fuploads%2F2017%2F06%2Fthailand-chiang-mai-warorot-market-1024x678.jpg&w=828",
+        "page": "https://www.theblondtravels.com/shopping-chiang-mai",
+        "artist": "The Blond Travels",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-bosang": {
@@ -441,6 +678,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Bo Sang Umbrella Village Chiang Mai"
+    ],
+    "photoLabel": "BO SANG / UMBRELLA WORKSHOPS",
+    "photoSelections": [
+      {
+        "title": "Bo Sang umbrella-painting artisans",
+        "url": "https://beautiful-chiangmai.com/images/markets/umbrella-village-bo-sang-san-kamphaeng/hero.jpg",
+        "page": "https://beautiful-chiangmai.com/shopping/",
+        "artist": "Beautiful Chiang Mai",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-horn": {
@@ -708,6 +955,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Jim Thompson Art Center Bangkok"
+    ],
+    "photoLabel": "JIM THOMPSON / ART CENTER",
+    "photoSelections": [
+      {
+        "title": "Jim Thompson Art Center facade",
+        "url": "https://art4d.com/wp-content/uploads/2022/06/3W2A9090-Pano_low-res.jpg",
+        "page": "https://art4d.com/en/2022/06/jim-thompson-art-center",
+        "artist": "art4d architectural photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-art-citycity": {
@@ -734,6 +991,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "100 Tonson Foundation Bangkok"
+    ],
+    "photoLabel": "100 TONSON / FOUNDATION",
+    "photoSelections": [
+      {
+        "title": "100 Tonson Foundation street entrance",
+        "url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/0a/71/16/caption.jpg?h=-1&s=1&w=800",
+        "page": "https://www.tripadvisor.com/Articles-lhaTSoTRM1WU-Local_guide_to_bangkoks_galleries_and_bars.html",
+        "artist": "Tripadvisor editorial imagery",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-inthanon": {
@@ -762,6 +1029,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Kew Mae Pan Nature Trail"
+    ],
+    "photoLabel": "KEW MAE PAN / HIKING TRAIL",
+    "photoSelections": [
+      {
+        "title": "Kew Mae Pan nature trail on a mountain ridge",
+        "url": "https://cdn.getyourguide.com/image/format%3Dauto%2Cfit%3Dcrop%2Cgravity%3Dauto%2Cquality%3D60%2Cwidth%3D400%2Cheight%3D265%2Cdpr%3D2/tour_img/d4590d7073dd4c58d44ce6368de215321f64f27dabff0e8d54d8e74fb9c67d5e.jpg",
+        "page": "https://www.getyourguide.com/kew-mae-pan-nature-trail-l198193/",
+        "artist": "GetYourGuide tour photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-twinpagodas": {
@@ -781,7 +1058,17 @@ window.VENUE_RESEARCH = {
       "Wachirathan Waterfall",
       "Wachirathan"
     ],
-    "wiki": "Wachirathan Waterfall"
+    "wiki": "Wachirathan Waterfall",
+    "photoLabel": "WACHIRATHAN / WATERFALL",
+    "photoSelections": [
+      {
+        "title": "Wachirathan Waterfall in Doi Inthanon",
+        "url": "https://thumb.tidesquare.com/tour/public/product/PRV3006455682/PRD3006898260/origin/2-145.jpg?type=wide",
+        "page": "https://tourvis.com/activity/product/PRD3006898260",
+        "artist": "Tourvis photography",
+        "kind": "Venue photograph"
+      }
+    ]
   },
   "cm-elephantnature": {
     "confidence": "established",
@@ -844,6 +1131,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Fah Lanna Spa Old Town"
+    ],
+    "photoLabel": "FAH LANNA SPA / OLD CITY",
+    "photoSelections": [
+      {
+        "title": "Fah Lanna Spa entrance and gardens",
+        "url": "https://dry7pvlp22cox.cloudfront.net/mrt-images-prod/2025/10/19/EFIe/Z5wvfBEZnV.jpg",
+        "page": "https://experiences.myrealtrip.com/products/4887658",
+        "artist": "MyRealTrip venue photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-nightbazaar": {
@@ -916,6 +1213,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Kalm Village Chiang Mai"
+    ],
+    "photoLabel": "KALM VILLAGE / DESIGN ARCHITECTURE",
+    "photoSelections": [
+      {
+        "title": "Kalm Village courtyard and art installation",
+        "url": "https://images.squarespace-cdn.com/content/v1/5ac2ddf285ede15e39a57666/1620203506793-JC1W0WZNGTSCSZXNE61K/Design-Anthology-2021-05%2BKalm%2BVillage%2C%2BChiang%2BMai-KALM_Simple_HI-RES_01.jpg",
+        "page": "https://design-anthology.com/story/kalm-village",
+        "artist": "Design Anthology",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-silvertemple": {
@@ -955,6 +1262,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "MAIIAM Contemporary Art Museum Chiang Mai"
+    ],
+    "photoLabel": "MAIIAM / ART MUSEUM FACADE",
+    "photoSelections": [
+      {
+        "title": "MAIIAM Contemporary Art Museum mirror-clad exterior",
+        "url": "https://www.fun-d.net/wp-content/uploads/2022/08/MAIIAM-Contemporary-Art-Museum-1.jpg",
+        "page": "https://www.fun-d.net/locations/maiiam-contemporary-art-museum/",
+        "artist": "Fun-D travel photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-bosangfestival": {
@@ -980,6 +1297,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Coconut Market Kad Ba Pao Chiang Mai"
+    ],
+    "photoLabel": "COCONUT MARKET / ACTUAL ENTRANCE",
+    "photoSelections": [
+      {
+        "title": "Kad Ba Pao Coconut Market entrance banner",
+        "url": "https://www.taithaione.com/gt/webp/ai/c/2024/05/31/1378-e77b240a.webp",
+        "page": "https://www.taithaione.com/tw/article/1378",
+        "artist": "Thai Thai One",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-buatong": {
@@ -993,6 +1320,16 @@ window.VENUE_RESEARCH = {
     "photoHeroPrefer": [
       "Buatong",
       "Bua Tong"
+    ],
+    "photoLabel": "BUA TONG / STICKY FALLS",
+    "photoSelections": [
+      {
+        "title": "Visitors climb Bua Tong limestone falls",
+        "url": "https://cdn.getyourguide.com/img/tour/649418777d2c1.jpeg/148.jpg",
+        "page": "https://www.getyourguide.com/chiang-mai-l271/climb-sticky-waterfall-like-spiderman-t478873/",
+        "artist": "GetYourGuide tour photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-huaytungtao": {
