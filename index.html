@@ -14,26 +14,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     (function(){
-      const allowed=['print','soft','type'];
-      const urlChoice=new URLSearchParams(location.search).get('design');
-      let remembered='';
-      try{remembered=localStorage.getItem('thailand-living-map:design:v1')||''}catch(e){}
-      const choice=allowed.includes(urlChoice)?urlChoice:allowed.includes(remembered)?remembered:'print';
-      document.documentElement.dataset.design=choice;
-      if(allowed.includes(urlChoice)){try{localStorage.setItem('thailand-living-map:design:v1',urlChoice)}catch(e){}}
+      const preview=new URLSearchParams(location.search).get('design');
+      document.documentElement.dataset.design=['soft','type'].includes(preview)?preview:'print';
     })();
   </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="./styles.css?v=4">
   <link rel="stylesheet" href="./trip.css?v=1">
   <link rel="stylesheet" href="./design-system.css?v=1">
+  <link rel="stylesheet" href="./print-club.css?v=1">
 </head>
 <body>
   <div id="app">
     <header class="masthead">
       <div class="brand">
-        <div class="eyebrow">Thailand trip · 2027</div>
-        <h1>Thailand <i>/</i> <em>Map</em></h1>
+        <div class="eyebrow">FIELD GUIDE / 2027</div>
+        <h1>THAILAND<i>/</i><em>MAP</em></h1>
       </div>
       <nav class="mode-picker" id="mode-picker" aria-label="Map mode"><button type="button" class="active" data-mode="explore" aria-pressed="true">Explore</button><button type="button" data-mode="itinerary" aria-pressed="false">Itinerary</button></nav>
       <div class="head-actions">
@@ -58,16 +54,22 @@
       <aside class="places-panel" id="places-panel" data-level="peek" aria-label="Explore places">
         <button class="drawer-grab" id="drawer-grab" type="button" aria-expanded="true" aria-label="Expand or minimize saved places">
           <span class="grab-line" aria-hidden="true"></span>
-          <span class="grab-copy"><strong>Explore places</strong><small id="drawer-summary">Tap to browse destinations</small></span>
+          <span class="grab-copy"><strong>DISCOVER <span class="drawer-arrow">↗</span></strong><small id="drawer-summary">Places around Thailand</small></span>
           <span class="grab-arrow" id="grab-arrow" aria-hidden="true">⌃</span>
         </button>
         <div class="panel-content">
           <section id="trip-controls" class="trip-controls" hidden aria-label="Itinerary options"></section>
-          <label class="search-label" for="place-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg></span><input id="place-search" type="search" placeholder="Search places…" autocomplete="off"></label>
-          <div id="categories" class="category-chips" aria-label="Filter by category"></div>
-          <div class="panel-actions">
-            <button type="button" id="favorites-only" class="favorites-filter" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg> Favorites <span id="favorites-count">0</span></button>
-            <span id="results" class="results-count">Loading…</span>
+          <div class="browse-tools">
+            <div class="browse-kicker"><span>01 / DISCOVER</span><span id="results" class="results-count">Loading…</span></div>
+            <label class="search-label" for="place-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg></span><input id="place-search" type="search" placeholder="Find a place…" autocomplete="off"></label>
+            <div class="browse-actions">
+              <button type="button" id="category-toggle" aria-controls="filter-panel" aria-expanded="false" class="filter-toggle"><span>FILTER</span><span id="filter-value">All interests</span><span aria-hidden="true">⌄</span></button>
+              <button type="button" id="favorites-only" class="favorites-filter" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg><span>SAVED</span><span id="favorites-count">0</span></button>
+            </div>
+            <div id="filter-panel" class="filter-panel" hidden>
+              <div class="filter-heading-row"><strong>INTERESTS</strong><button type="button" id="clear-category">Clear</button></div>
+              <div id="categories" class="category-chips" aria-label="Filter by category"></div>
+            </div>
           </div>
 
           <div id="places-list" class="places-list" aria-live="polite"><div class="empty">Loading our saved places…</div></div>
@@ -78,7 +80,7 @@
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
-  <script src="./app.js?v=6" defer></script>
-  <script src="./trip-itinerary.js?v=1" defer></script>
+  <script src="./app.js?v=7" defer></script>
+  <script src="./trip-itinerary.js?v=2" defer></script>
 </body>
 </html>
