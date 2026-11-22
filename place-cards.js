@@ -228,6 +228,7 @@
     const candidate=candidateFromPage(item,curated);
     if(!candidate)continue;
     if((o.photoExclude||[]).some(x=>candidate.title.toLowerCase().includes(String(x).toLowerCase())))continue;
+    if(curated&&(o.photoInclude||[]).length&&!(o.photoInclude||[]).some(x=>candidate.title.toLowerCase().includes(String(x).toLowerCase())))continue;
     if(!curated&&!photoSearchMatch(candidate.title,p,o))continue;
     const key=candidate.title.toLowerCase();
     if(!collected.has(key))collected.set(key,candidate);
