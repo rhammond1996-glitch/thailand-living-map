@@ -214,8 +214,7 @@ function placeCard(p,index=0){
 function render(preserveView=false){
  if(window.renderTripMode&&window.renderTripMode(preserveView))return;
  chips();const list=filtered();
- const area=$('map-area-indicator');
- if(area)area.innerHTML=esc(state.city==='All'?'ALL THAILAND':state.city.toUpperCase())+' <span aria-hidden="true">⌄</span>';
+ syncMapAreaSelector();
  $('results').textContent=list.length+' places';
  $('favorites-count').textContent=favorites.size;
  $('filter-value').textContent=state.category==='All'?'FILTER':(STYLES[state.category]?.label||'FILTER');
@@ -321,6 +320,7 @@ function renderPins(list,preserveView=false){
 /* Discover is a floating, keyboard-accessible dialog, never a persistent sheet. */
 function discoverIsOpen(){return !$('places-panel').hidden;}
 function setDiscoverOpen(open,restoreFocus=false){
+ if(open)setMapAreaMenuOpen(false);
  const panel=$('places-panel'),scrim=$('discover-scrim'),toggle=$('discover-toggle');
  if(open===discoverIsOpen())return;
  if(open){
@@ -352,8 +352,9 @@ function updateDiscoverLabel(){
  if(title)title.textContent=route?'YOUR ROUTE':'DISCOVER';
  const loc=$('discover-location');
  if(loc)loc.hidden=route;
- const indicator=$('map-area-indicator');
- if(indicator)indicator.hidden=route;
+ const selector=$('map-area-selector');
+ if(selector)selector.hidden=route;
+ if(route)setMapAreaMenuOpen(false);
 }
 function closeDetails(){state.selected=null;$('place-detail').hidden=true;document.querySelectorAll('.place').forEach(x=>x.classList.remove('selected'));}
 function focus(id){
@@ -373,9 +374,31 @@ function focus(id){
   map.flyTo([Number(p.lat),Number(p.lng)],Math.max(13,map.getZoom()),{duration:.45});
  }
 }
+function setMapAreaMenuOpen(open,restoreFocus=false){
+ const menu=$('map-area-menu'),button=$('map-area-indicator');
+ if(!menu||!button)return;
+ menu.hidden=!open;
+ button.setAttribute('aria-expanded',String(open));
+ button.classList.toggle('is-open',open);
+ if(restoreFocus)button.focus({preventScroll:true});
+}
+function syncMapAreaSelector(){
+ const name=state.city==='All'?'All Thailand':state.city;
+ const button=$('map-area-indicator');
+ if(button){
+  button.innerHTML=esc(name.toUpperCase())+' <span aria-hidden="true">⌄</span>';
+  button.setAttribute('aria-label','Choose map area: '+name);
+ }
+ document.querySelectorAll('button[data-map-city]').forEach(b=>{
+  const selected=b.dataset.mapCity===state.city;
+  b.classList.toggle('active',selected);
+  b.setAttribute('aria-pressed',String(selected));
+ });
+}
 function chooseCity(city){
  if(!['All','Bangkok','Chiang Mai'].includes(city))return;
  state.city=city;closeDetails();
+ setMapAreaMenuOpen(false);
  document.querySelectorAll('button[data-city]').forEach(b=>{const on=b.dataset.city===city;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
  render();
 }
@@ -394,10 +417,18 @@ function init(){
  $('discover-toggle').addEventListener('click',()=>setDiscoverOpen(!discoverIsOpen(),true));
  $('discover-close').addEventListener('click',()=>setDiscoverOpen(false,true));
  $('discover-scrim').addEventListener('click',()=>setDiscoverOpen(false,true));
- $('map-area-indicator').addEventListener('click',()=>{setDiscoverOpen(true);const selected=$('map-cities').querySelector('[aria-pressed="true"]');if(selected)selected.focus({preventScroll:true});});
+ $('map-area-indicator').addEventListener('click',()=>setMapAreaMenuOpen($('map-area-menu').hidden));
+ $('map-area-menu').addEventListener('click',e=>{
+  const selected=e.target.closest('button[data-map-city]');
+  if(selected){chooseCity(selected.dataset.mapCity);$('map-area-indicator').focus({preventScroll:true});}
+ });
+ document.addEventListener('pointerdown',e=>{
+  if(!$('map-area-menu').hidden&&!e.target.closest('#map-area-selector'))setMapAreaMenuOpen(false);
+ });
  // A dialog can be closed without sacrificing map position or filters.
  document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
+   if(!$('map-area-menu').hidden){e.preventDefault();setMapAreaMenuOpen(false,true);return;}
    if(discoverIsOpen()){e.preventDefault();setDiscoverOpen(false,true);}
    else if(state.selected!==null){e.preventDefault();closeDetails();}
    return;
