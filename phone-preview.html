@@ -62,12 +62,12 @@
   <main class="stage" id="stage" aria-label="Live map displayed at an iPhone screen width">
     <div id="phone-slot">
       <div id="phone">
-        <iframe id="screen" title="Live Thailand Living Map at iPhone viewport size" src="./" loading="eager" allow="geolocation"></iframe>
+        <iframe id="screen" title="Live Thailand Living Map at iPhone viewport size" src="about:blank" loading="eager" allow="geolocation"></iframe>
       </div>
     </div>
   </main>
   <footer class="bottom">
-    <p>Changes to the real map appear here after a refresh. Click, scroll, search, and filter inside the phone frame.</p>
+    <p>Automatically loads the latest map when opened or revisited. The Refresh button is available too.</p>
     <p id="dimensions" aria-live="polite">393 × 852 CSS px</p>
   </footer>
   <script>
@@ -85,6 +85,8 @@
       const tabs=document.getElementById("devices");
       const dimensions=document.getElementById("dimensions");
       let current="standard";
+      let lastLoaded=0;
+      let backgroundedAt=0;
       function fit(){
         const {width,height}=devices[current];
         const outerW=width+12,outerH=height+12;
@@ -109,15 +111,33 @@
         }
         fit();
       });
-      document.getElementById("reload").addEventListener("click",()=>{
-        // Same-origin frame; a cache-busting navigation also refreshes the HTML entry point.
+      function loadFreshMap(force=false){
+        // A new document URL bypasses normal HTML navigation caches.
+        // The map's CSS and JS also have separately versioned asset URLs.
+        const now=Date.now();
+        if(!force&&now-lastLoaded<15000)return;
+        lastLoaded=now;
         const url=new URL("./",location.href);
-        url.searchParams.set("preview_refresh",Date.now().toString());
+        url.searchParams.set("phone_preview","1");
+        url.searchParams.set("refresh",String(now));
         screen.src=url.href;
+      }
+      document.getElementById("reload").addEventListener("click",()=>loadFreshMap(true));
+      document.addEventListener("visibilitychange",()=>{
+        if(document.hidden){backgroundedAt=Date.now();return;}
+        // When switching back from the design chat, pick up the latest deployment.
+        if(backgroundedAt&&Date.now()-backgroundedAt>15000)loadFreshMap();
+      });
+      window.addEventListener("focus",()=>{
+        if(Date.now()-lastLoaded>30000)loadFreshMap();
+      });
+      window.addEventListener("pageshow",event=>{
+        if(event.persisted)loadFreshMap(true);
       });
       window.addEventListener("resize",fit);
       if("ResizeObserver" in window)new ResizeObserver(fit).observe(stage);
       fit();
+      loadFreshMap(true);
     })();
   </script>
 </body>
