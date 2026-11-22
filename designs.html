@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f9f4ea">
+<meta name="description" content="Three editorial design directions for our Thailand Living Map. Compare and open the real interactive map.">
+<title>Thailand Map — Design Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#171717;--paper:#f9f4ea}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1220px;margin:auto;padding:30px 24px 76px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.wordmark{font:900 15px/.95 "Archivo Black",Impact,sans-serif;letter-spacing:-.06em}
+.return{border:1px solid #171717;border-radius:100px;padding:12px 16px;font-weight:800;font-size:12px}
+.kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:900;margin-top:68px}
+h1{max-width:890px;margin:11px 0 17px;font:900 clamp(45px,8.5vw,104px)/.96 "Archivo Black",Impact,sans-serif;letter-spacing:-.085em}
+.lead{max-width:650px;font-size:15px;line-height:1.55;color:#454542;margin-bottom:36px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.card{border:2px solid #171717;overflow:hidden;display:flex;flex-direction:column;background:white}
+.card .preview{height:425px;position:relative;overflow:hidden}
+.mini-head{height:66px;display:flex;align-items:center;justify-content:space-between;padding:11px 15px;gap:10px;position:relative;z-index:2}
+.mini-title small{display:block;font-size:9px;letter-spacing:.09em;text-transform:uppercase;font-weight:800}
+.mini-title strong{display:block;font-size:21px;line-height:1;letter-spacing:-.08em}
+.mini-tabs{display:flex;font-size:9px;font-weight:800;border-radius:9px;overflow:hidden;border:1px solid currentColor}
+.mini-tabs span{padding:8px 6px}
+.mini-tabs span:first-child{background:currentColor}
+.mini-tabs span:first-child b{filter:invert(1)}
+.mini-map{height:calc(100% - 66px);position:relative;background-color:var(--map-bg);background-image:linear-gradient(28deg,transparent 48%,var(--map-line) 48.4%,var(--map-line) 49.5%,transparent 50%),linear-gradient(118deg,transparent 43%,var(--map-line) 43.3%,var(--map-line) 44.5%,transparent 45%),linear-gradient(0deg,transparent 77%,var(--map-line) 77.3%,var(--map-line) 79%,transparent 79.3%);background-size:140px 120px,110px 90px,190px 110px}
+.mini-roads{position:absolute;inset:10% 0 0;opacity:.45;background:linear-gradient(85deg,transparent 40%,var(--map-line) 40% 43%,transparent 43%),linear-gradient(-24deg,transparent 54%,var(--map-line) 54% 58%,transparent 58%);background-size:120px 100px,170px 150px}
+.pin{width:31px;height:31px;border:2px solid #161616;border-radius:50%;display:grid;place-items:center;background:white;position:absolute;box-shadow:2px 2px 0 #17171722}
+.pin svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pin.a{left:25%;top:27%;color:#de664d}.pin.b{left:68%;top:33%;color:#3657ac}.pin.c{left:48%;top:60%;color:#a45d9e}
+.mini-sheet{position:absolute;bottom:0;left:0;right:0;z-index:1;background:var(--sheet);height:158px;border-radius:22px 22px 0 0;padding:18px 18px 10px;box-shadow:0 -5px 20px #19191915}
+.handle{width:38px;height:4px;background:currentColor;opacity:.25;border-radius:100px;margin:-7px auto 12px}
+.mini-sheet h3{font-size:20px;letter-spacing:-.07em;margin:0 0 10px}
+.pills{display:flex;gap:6px;overflow:hidden;margin-bottom:11px}
+.pills i{font-style:normal;font-size:9px;font-weight:800;border:1px solid currentColor;border-radius:100px;padding:5px 9px;white-space:nowrap}
+.mini-place{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--place-bg);border:1px solid var(--place-border);border-radius:8px;font-size:10px;font-weight:800}
+.mini-place i{font-style:normal;font-size:12px;margin-left:auto}
+.card-info{padding:23px;display:flex;flex-direction:column;gap:9px;flex:1}
+.number{font-size:11px;font-weight:900;letter-spacing:.12em}
+.card-info h2{font:900 28px/.98 "Archivo Black",Impact,sans-serif;letter-spacing:-.07em;margin:0}
+.card-info p{font-size:13px;line-height:1.55;margin:0 0 12px;flex:1;color:#575452}
+.go{display:flex;align-items:center;justify-content:space-between;background:#181818;color:#fff;padding:14px 16px;font-size:13px;font-weight:900;transition:transform .15s}
+.go:hover{transform:translateY(-2px)}
+.print{--map-bg:#f4eddf;--map-line:#dfd3bb;--sheet:#fffcf3;--place-bg:#fff;--place-border:#151517;border-radius:8px}
+.print .preview{background:#e4f864}
+.print .mini-head{background:#dfff40;border-bottom:3px solid #151517}
+.print .mini-title strong{font-family:"Archivo Black",Impact,sans-serif;text-transform:uppercase}
+.print .mini-sheet{border-top:3px solid #171717;border-radius:8px 8px 0 0}
+.print .mini-sheet h3{font-family:"Archivo Black",Impact,sans-serif;text-transform:uppercase;font-size:17px}
+.print .pills i:first-child{background:#f04e2d;color:white}
+.print .go{background:#f04e2d}
+.soft{--map-bg:#dfe7ee;--map-line:#bacbd8;--sheet:#fffaf7;--place-bg:#f7efff;--place-border:#ded6ef;border-color:#9498cb;border-radius:25px}
+.soft .preview{background:#d5d4f3}
+.soft .mini-head{background:linear-gradient(100deg,#9bacfa,#f4c1d0);color:#202548}
+.soft .mini-tabs{background:#ffffff80;border-color:#ffffff80}
+.soft .mini-title strong{font-family:"Space Grotesk",sans-serif}
+.soft .mini-sheet{border-radius:27px 27px 0 0;box-shadow:0 -8px 20px #8787a83b}
+.soft .mini-sheet h3{font-family:"Space Grotesk",sans-serif}
+.soft .pills i{background:#e7e9fd;border:0}
+.soft .pills i:nth-child(2){background:#ffe1cf}
+.soft .pills i:nth-child(3){background:#dff6dd}
+.soft .go{background:#3447bf;border-radius:15px}
+.type{--map-bg:#e8f1ed;--map-line:#c0d4ca;--sheet:#fff;--place-bg:#fff;--place-border:#111;border-radius:0}
+.type .preview{background:#f0f6ee}
+.type .mini-head{background:#111;color:#fff;border-bottom:4px solid #abff32}
+.type .mini-title strong{font-family:"Archivo Black",Impact,sans-serif;text-transform:uppercase;font-size:18px}
+.type .mini-tabs{color:#141414;border-color:#a7fe27;background:#a7fe27}
+.type .mini-sheet{border-top:5px solid #a7fe27;border-radius:2px 2px 0 0}
+.type .mini-sheet h3{font-family:"Archivo Black",Impact,sans-serif;text-transform:uppercase;font-size:19px}
+.type .pills i{border-radius:2px}
+.type .pills i:first-child{background:#a7fe27}
+.type .mini-place{border-width:0 0 2px;border-radius:0}
+.type .go{background:#a7fe27;color:#111}
+.footer{margin-top:32px;font-size:12px;line-height:1.6;color:#5c5a56;max-width:790px}
+.footer a{text-decoration:underline}
+@media(max-width:960px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card .preview{height:390px}}
+@media(max-width:600px){.wrap{padding:21px 15px 60px}.top{gap:6px}.return{font-size:11px;padding:9px 11px}.kicker{margin-top:41px}h1{font-size:51px}.lead{font-size:14px}.grid{grid-template-columns:1fr;gap:19px}.card .preview{height:375px}.card-info{padding:20px}.card-info h2{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top"><span class="wordmark">THAILAND / MAP<br>DESIGN STUDIES</span><a class="return" href="./?design=print">Open main map ↗</a></header>
+ <div class="kicker">DESIGN EXPLORATIONS — 01 / 03</div>
+ <h1>ONE MAP.<br>THREE MOODS.</h1>
+ <p class="lead">Three visual directions based on your references: experimental print graphics, soft modular shapes, and punchy editorial typography. These are <strong>real themes on the same live map</strong>—your destinations, itinerary, and favorites stay intact.</p>
+ <main class="grid">
+  <article class="card print">
+   <div class="preview" aria-hidden="true"><div class="mini-head"><div class="mini-title"><small>THAILAND TRIP — 2027</small><strong>THAILAND/MAP</strong></div><div class="mini-tabs"><span><b>EXPLORE</b></span><span>ROUTE</span></div></div><div class="mini-map"><div class="mini-roads"></div><div class="pin a"><svg viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3"/></svg></div><div class="pin b"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1 12H6L5 9z"/></svg></div><div class="pin c"><svg viewBox="0 0 24 24"><path d="m8 4 4 2 4-2 5 5-3 3-2-2v11H8V10l-2 2-3-3 5-5z"/></svg></div></div><div class="mini-sheet"><div class="handle"></div><h3>EXPLORE PLACES</h3><div class="pills"><i>ALL</i><i>FRAGRANCE</i><i>FASHION</i></div><div class="mini-place">CENTRALWORLD <i>☆</i></div></div></div>
+   <div class="card-info"><div class="number">01 — BOLD / GRAPHIC</div><h2>PRINT CLUB</h2><p>Acid-lime header, warm paper, cobalt navigation, orange accents, poster typography. A nod to the Thai lettering and halftone references without sacrificing map legibility.</p><a class="go" href="./?design=print">Explore live map <span>↗</span></a></div>
+  </article>
+  <article class="card soft">
+   <div class="preview" aria-hidden="true"><div class="mini-head"><div class="mini-title"><small>Our Thailand trip</small><strong>Thailand / Map</strong></div><div class="mini-tabs"><span><b>Explore</b></span><span>Route</span></div></div><div class="mini-map"><div class="mini-roads"></div><div class="pin a"><svg viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3"/></svg></div><div class="pin b"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1 12H6L5 9z"/></svg></div><div class="pin c"><svg viewBox="0 0 24 24"><path d="m8 4 4 2 4-2 5 5-3 3-2-2v11H8V10l-2 2-3-3 5-5z"/></svg></div></div><div class="mini-sheet"><div class="handle"></div><h3>Explore places</h3><div class="pills"><i>All</i><i>Fragrance</i><i>Fashion</i></div><div class="mini-place">CentralWorld <i>☆</i></div></div></div>
+   <div class="card-info"><div class="number">02 — PLAYFUL / WARM</div><h2>SOFT SIGNAL</h2><p>Periwinkle, peach, lavender and buttercream. Rounded cards, soft dimensionality, bright but friendly controls. The most approachable of the three.</p><a class="go" href="./?design=soft">Explore live map <span>↗</span></a></div>
+  </article>
+  <article class="card type">
+   <div class="preview" aria-hidden="true"><div class="mini-head"><div class="mini-title"><small>THAILAND — 2027</small><strong>THAILAND/MAP</strong></div><div class="mini-tabs"><span><b>EXPL.</b></span><span>ROUTE</span></div></div><div class="mini-map"><div class="mini-roads"></div><div class="pin a"><svg viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3"/></svg></div><div class="pin b"><svg viewBox="0 0 24 24"><path d="M5 9h14l-1 12H6L5 9z"/></svg></div><div class="pin c"><svg viewBox="0 0 24 24"><path d="m8 4 4 2 4-2 5 5-3 3-2-2v11H8V10l-2 2-3-3 5-5z"/></svg></div></div><div class="mini-sheet"><div class="handle"></div><h3>EXPLORE PLACES</h3><div class="pills"><i>ALL</i><i>FRAGRANCE</i><i>FASHION</i></div><div class="mini-place">CENTRALWORLD <i>☆</i></div></div></div>
+   <div class="card-info"><div class="number">03 — EDITORIAL / TYPE</div><h2>TYPE LAB</h2><p>Black, white and neon lime. Oversized modern type, sharp grid lines, poster-inspired navigation, and deliberate contrast. Closest to the bold architecture-app reference.</p><a class="go" href="./?design=type">Explore live map <span>↗</span></a></div>
+  </article>
+ </main>
+ <p class="footer">The miniature panels above illustrate the color and UI treatment; they are not screenshots of the live map. Use each card's <strong>Explore live map</strong> link to try its actual, interactive version. Your design choice is remembered on this browser. The shared data and itinerary remain unchanged.</p>
+</div>
+</body>
+</html>
