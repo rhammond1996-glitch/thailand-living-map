@@ -491,3 +491,298 @@ body.itinerary-mode #places-panel .discover-panel-head{
   #places-panel .discover-panel-head p{font-size:9px}
   #places-panel .discover-panel-head{gap:6px}
 }
+
+
+/* DISCOVER / compact header — 2026-11-22
+ * City and personal Saved sit in the title bar. Search + Filter share one line.
+ * No duplicated city/saved rows; the location menu overlays rather than
+ * pushing the results list down.
+ */
+#places-panel .discover-panel-head{
+ position:relative;
+ z-index:5;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ padding:8px 10px;
+ min-height:55px;
+ overflow:visible;
+}
+#places-panel .discover-head-copy{
+ display:block;
+ flex:1 1 auto;
+ min-width:0;
+}
+#places-panel .discover-panel-head h2{
+ margin:0;
+ font-size:clamp(17px,4.6vw,22px);
+ line-height:1;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ letter-spacing:-.068em;
+}
+#places-panel .visually-hidden{
+ position:absolute!important;
+ width:1px!important;
+ height:1px!important;
+ padding:0!important;
+ margin:-1px!important;
+ overflow:hidden!important;
+ clip:rect(0,0,0,0)!important;
+ white-space:nowrap!important;
+ border:0!important;
+}
+#places-panel .discover-head-actions{
+ display:flex;
+ align-items:center;
+ justify-content:flex-end;
+ gap:6px;
+ flex:0 0 auto;
+}
+#places-panel .discover-panel-head .discover-location{
+ position:relative;
+ display:block;
+ flex:0 0 auto;
+ padding:0;
+ border:0;
+ margin:0;
+ width:auto;
+ min-width:0;
+}
+#places-panel #city-toggle{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+ min-height:36px;
+ height:36px;
+ max-width:100px;
+ padding:0 7px;
+ background:#fffcf4;
+ color:#171719;
+ border:1.5px solid #171719;
+ border-radius:3px;
+ font:900 10px/1 "DM Sans",Arial,sans-serif;
+ letter-spacing:.015em;
+ white-space:nowrap;
+ cursor:pointer;
+}
+#places-panel #city-label{
+ display:block;
+ min-width:0;
+ overflow:hidden;
+ white-space:nowrap;
+ text-overflow:ellipsis;
+}
+#places-panel #city-toggle.is-open{
+ background:#192ecb;
+ color:#fff;
+}
+#places-panel .discover-panel-head #map-cities.city-picker{
+ position:absolute;
+ display:flex;
+ flex-direction:column;
+ align-items:stretch;
+ justify-content:flex-start;
+ top:calc(100% + 8px);
+ right:0;
+ left:auto;
+ width:187px;
+ max-width:min(65vw,210px);
+ min-width:160px;
+ height:auto;
+ padding:5px;
+ gap:3px;
+ border:2px solid #171719;
+ border-radius:5px;
+ background:#fffcf4;
+ box-shadow:4px 4px 0 #171719;
+ z-index:11;
+ overflow:visible;
+}
+#places-panel .discover-panel-head #map-cities[hidden]{display:none!important}
+#places-panel .discover-panel-head #map-cities button{
+ width:100%;
+ flex:0 0 auto;
+ min-width:0;
+ min-height:40px;
+ height:auto;
+ padding:12px 10px;
+ display:block;
+ border:0;
+ border-radius:2px;
+ background:transparent;
+ color:#171719;
+ font:850 12px/1.15 "DM Sans",Arial,sans-serif;
+ text-align:left;
+ letter-spacing:0;
+}
+#places-panel .discover-panel-head #map-cities button.active{
+ background:#192ecb;
+ color:#fff;
+}
+#places-panel .discover-panel-head #favorites-only.favorites-filter{
+ position:relative;
+ flex:0 0 37px;
+ display:grid;
+ place-items:center;
+ gap:0;
+ width:37px;
+ min-width:37px;
+ height:37px;
+ min-height:37px;
+ padding:0;
+ margin:0;
+ background:#fffcf4;
+ border:1.5px solid #171719;
+ border-radius:3px;
+ color:#171719;
+ box-shadow:none;
+ cursor:pointer;
+}
+#places-panel .discover-panel-head #favorites-only.favorites-filter.active{
+ color:#fff;
+ background:#192ecb;
+ border-color:#171719;
+}
+#places-panel .discover-panel-head #favorites-only svg{
+ width:21px;
+ height:21px;
+}
+#places-panel .discover-panel-head #favorites-count{
+ position:absolute;
+ top:-6px;
+ right:-6px;
+ display:grid;
+ place-items:center;
+ min-width:15px;
+ height:15px;
+ padding:0 2px;
+ border:1.5px solid #171719;
+ border-radius:9px;
+ background:#dfff40;
+ color:#171719;
+ font:900 9px/1 "DM Sans",Arial,sans-serif;
+ opacity:1;
+}
+#places-panel .discover-panel-head #discover-close{
+ flex:0 0 36px;
+ width:36px;
+ min-width:36px;
+ height:36px;
+ font-size:26px;
+ margin:0;
+}
+#places-panel .browse-tools{
+ padding:9px 10px;
+ margin:0;
+}
+#places-panel .discover-search-row{
+ display:flex;
+ align-items:stretch;
+ gap:8px;
+ min-width:0;
+}
+#places-panel .discover-search-row .search-label{
+ flex:1 1 auto;
+ min-width:0;
+ width:auto;
+ min-height:43px;
+ height:43px;
+ margin:0!important;
+ border:2px solid #171719;
+ background:#fff;
+}
+#places-panel .discover-search-row .search-label input{
+ min-width:0;
+ width:100%;
+ min-height:39px;
+ height:39px;
+ padding:8px 7px;
+ font-size:16px;
+}
+#places-panel .discover-search-row #category-toggle.filter-toggle{
+ flex:0 0 96px;
+ width:96px;
+ min-width:0;
+ max-width:96px;
+ min-height:43px;
+ height:43px;
+ display:flex;
+ justify-content:space-between;
+ gap:4px;
+ align-items:center;
+ padding:6px 8px;
+ background:#fffcf4;
+ border:2px solid #171719;
+ border-radius:3px;
+ color:#171719;
+ font:900 10px/1 "DM Sans",Arial,sans-serif;
+ cursor:pointer;
+}
+#places-panel .discover-search-row #category-toggle.has-filter{
+ background:#dfff40;
+}
+#places-panel .discover-search-row #filter-value{
+ flex:1 1 auto;
+ overflow:hidden;
+ white-space:nowrap;
+ text-overflow:ellipsis;
+ min-width:0;
+}
+#places-panel .browse-tools #filter-panel{
+ margin-top:8px;
+}
+#places-panel .places-list{
+ padding-top:7px;
+}
+body.itinerary-mode #places-panel .discover-head-actions #favorites-only,
+body.itinerary-mode #places-panel .discover-head-actions .discover-location{
+ display:none!important;
+}
+@media(max-width:720px){
+ #places-panel .discover-panel-head{
+  padding:8px 10px;
+  min-height:54px;
+  gap:6px;
+ }
+ #places-panel .discover-panel-head h2{font-size:clamp(17px,4.9vw,21px)}
+ #places-panel .discover-head-actions{gap:5px}
+ #places-panel .discover-panel-head #discover-close{
+  width:34px;height:36px;min-width:34px;flex-basis:34px
+ }
+ #places-panel #city-toggle{
+  min-height:36px;height:36px;max-width:88px;
+  padding:0 6px;font-size:10px;
+ }
+ #places-panel .discover-panel-head #favorites-only.favorites-filter{
+  width:35px;min-width:35px;flex-basis:35px;height:36px;
+ }
+ #places-panel .browse-tools{
+  padding:8px 10px;
+ }
+ #places-panel .discover-search-row{
+  gap:7px;
+ }
+ #places-panel .discover-search-row #category-toggle.filter-toggle{
+  flex-basis:84px;
+  width:84px;
+  max-width:84px;
+  font-size:10px;
+  min-height:42px;
+  height:42px;
+  padding:5px 7px;
+ }
+ #places-panel .discover-search-row .search-label{min-height:42px;height:42px}
+ #places-panel .discover-search-row .search-label input{min-height:38px;height:38px}
+ #places-panel .places-list{padding-top:5px}
+}
+@media(max-width:360px){
+ #places-panel .discover-panel-head h2{font-size:17px}
+ #places-panel .discover-head-actions{gap:4px}
+ #places-panel #city-toggle{max-width:74px}
+ #places-panel .discover-panel-head #favorites-only.favorites-filter{width:33px;min-width:33px;flex-basis:33px}
+ #places-panel .discover-panel-head #discover-close{width:33px;min-width:33px;flex-basis:33px}
+ #places-panel .discover-search-row #category-toggle.filter-toggle{width:77px;max-width:77px;flex-basis:77px}
+}
