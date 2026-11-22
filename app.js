@@ -302,7 +302,7 @@ function renderPins(list,preserveView=false){
   const markup='<div class="print-stamp-pin graphic-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+';--pin-ink:'+categoryInk(t.color)+'" aria-label="'+esc(t.label)+'"><span class="stamp-symbol">'+symbolSVG(primary,24)+'</span>'+(saved?'<span class="stamp-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
   const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[38,38],iconAnchor:[19,19]});
   const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
-  const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).bindPopup(popup).addTo(markers);
+  const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).addTo(markers);
   marker.on('click',()=>focus(p.id));
   markerById.set(p.id,marker);
   positions.push(marker.getLatLng());
@@ -326,24 +326,18 @@ function focus(id){
  const p=state.places.find(x=>String(x.id)===String(id));if(!p)return;
  state.selected=p.id;
  document.querySelectorAll('.place').forEach(x=>x.classList.toggle('selected',x.dataset.id===String(id)));
- const marker=markerById.get(id);
- if(mobile()){
-  setLevel('peek');
-  const top=cats(p)[0]||'All';
-  const category=STYLES[top]||STYLES.All;
-  $('place-detail').innerHTML='<div class="detail-top">'+categoryStamp(top)+'<div class="detail-title"><span class="detail-kicker">PLACE / '+esc(category.label)+'</span><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+'</div></div>'+
-   favoriteButton(p,'detail')+'<button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
-   '<p class="detail-description">'+esc(p.highlights||p.location_type||'')+'</p>'+
-   '<div class="detail-foot"><small>'+esc(p.location_type||category.label)+'</small><a class="directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
-   '<details class="detail-extra"><summary>Location & more info <span aria-hidden="true">+</span></summary><div class="detail-extra-body">'+
-   (p.address?'<div><b>ADDRESS</b><p>'+esc(p.address)+'</p></div>':'')+
-   (p.price_note?'<div><b>PRICE / NOTES</b><p>'+esc(p.price_note)+'</p></div>':'')+
-   (p.verification?'<div><b>BEFORE YOU GO</b><p>'+esc(p.verification)+'</p></div>':'')+
-   '<a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open location in Google Maps ↗</a></div></details>';
-  $('place-detail').hidden=false;
-  if(marker&&map){map.flyTo(marker.getLatLng(),Math.max(14,map.getZoom()),{duration:.4});setTimeout(()=>{if(state.selected===p.id)map.panBy([0,65],{animate:true,duration:.2});},450);}
- }else if(marker&&map){map.flyTo(marker.getLatLng(),Math.max(14,map.getZoom()),{duration:.5});marker.openPopup();}
- else window.open(gmaps(p),'_blank','noopener');
+ if(mobile())setLevel('peek');
+ const marker=markerById.get(p.id);
+ // All destinations now open the same contextual dossier on mobile and desktop.
+ if(typeof window.openPlaceProfile==='function')window.openPlaceProfile(p);
+ if(marker&&map){
+  if(typeof marker.closePopup==='function')marker.closePopup();
+  const destination=marker.getLatLng();
+  map.flyTo(destination,Math.max(14,map.getZoom()),{duration:.45});
+  if(!mobile())map.once('moveend',()=>{if(state.selected===p.id)map.panBy([Math.min(175,Math.max(0,Math.floor(map.getSize().x/4))),0],{animate:true,duration:.25});});
+ }else if(map&&coords(p)){
+  map.flyTo([Number(p.lat),Number(p.lng)],Math.max(13,map.getZoom()),{duration:.45});
+ }
 }
 function chooseCity(city){
  if(!['All','Bangkok','Chiang Mai'].includes(city))return;
