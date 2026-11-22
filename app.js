@@ -157,24 +157,30 @@ async function syncPlaces(){
 function chips(){
  $('categories').innerHTML=CATEGORIES.map(([key,label])=>'<button type="button" data-category="'+esc(key)+'" aria-pressed="'+(state.category===key)+'" class="'+(state.category===key?'active':'')+'">'+iconSVG(key,16)+' '+esc(label)+'</button>').join('');
 }
-function placeCard(p){
+function setFilterOpen(open){
+ $('filter-panel').hidden=!open;
+ $('category-toggle').setAttribute('aria-expanded',String(open));
+ $('places-panel').classList.toggle('filters-open',open);
+}
+function placeCard(p,index=0){
  const primary=cats(p)[0]||'All';
  const type=STYLES[primary]||STYLES.All;
- return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="Show '+esc(p.name)+'">'+
- '<div class="place-head"><span class="place-category-icon" style="--category:'+type.color+'">'+iconSVG(primary,19)+'</span><div class="place-title"><h3>'+esc(p.name)+'</h3><small>'+esc(p.city)+' · '+esc(type.label)+'</small></div>'+favoriteButton(p)+'</div>'+
- '<p>'+esc(p.highlights||p.location_type||'')+'</p>'+
- (p.price_note?'<div class="place-meta">'+esc(p.price_note)+'</div>':'')+
- (!coords(p)?'<div class="place-meta">Location to confirm</div>':'')+'</article>';
+ return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'" role="button" tabindex="0" aria-label="View '+esc(p.name)+' details">'+
+ '<div class="place-head"><span class="place-number">'+String(index+1).padStart(2,'0')+'</span><span class="place-color" style="--category:'+type.color+'"></span>'+
+ '<div class="place-title"><h3>'+esc(p.name)+'</h3><small>'+esc(p.city)+' / '+esc(type.label)+'</small></div>'+
+ favoriteButton(p)+'<span class="place-go" aria-hidden="true">↗</span></div></article>';
 }
 function render(preserveView=false){
  if(window.renderTripMode&&window.renderTripMode(preserveView))return;
  chips();const list=filtered();
  $('results').textContent=list.length+' places';
  $('favorites-count').textContent=favorites.size;
+ $('filter-value').textContent=state.category==='All'?'All interests':(STYLES[state.category]?.label||state.category);
+ $('category-toggle').classList.toggle('has-filter',state.category!=='All');
  $('favorites-only').classList.toggle('active',state.favoritesOnly);
  $('favorites-only').setAttribute('aria-pressed',String(state.favoritesOnly));
  $('drawer-summary').textContent=list.length+' places'+(state.city==='All'?'':' · '+state.city);
- $('places-list').innerHTML=list.length?list.map(placeCard).join(''):'<div class="empty">'+(state.favoritesOnly?'No favorites here yet. Choose All places and tap a star to save something.':'No places match these filters. Try another category.')+'</div>';
+ $('places-list').innerHTML=list.length?list.map((p,i)=>placeCard(p,i)).join(''):'<div class="empty">'+(state.favoritesOnly?'No favorites here yet. Choose All places and tap a star to save something.':'No places match these filters. Try another category.')+'</div>';
  renderPins(list,preserveView);
 }
 
@@ -248,7 +254,7 @@ function renderPins(list,preserveView=false){
   const primary=cats(p)[0]||'All';
   const t=STYLES[primary]||STYLES.All;
   const saved=favorites.has(String(p.id));
-  const markup='<div class="pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'">'+iconSVG(primary,19)+(saved?'<span class="pin-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
+  const markup='<div class="pin print-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'"><span class="pin-graphic">'+iconSVG(primary,17)+'</span>'+(saved?'<span class="pin-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
   const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[34,34],iconAnchor:[17,17]});
   const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
   const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).bindPopup(popup).addTo(markers);
@@ -280,8 +286,15 @@ function focus(id){
   setLevel('peek');
   const top=cats(p)[0]||'All';
   const category=STYLES[top]||STYLES.All;
-  $('place-detail').innerHTML='<div class="detail-top"><div class="detail-title"><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+' · '+esc(category.label)+'</div></div>'+favoriteButton(p,'detail')+'<button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
-   '<p>'+esc(p.highlights||p.location_type)+'</p><div class="detail-foot"><small>'+esc(p.price_note||p.location_type)+'</small><a class="directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div>';
+  $('place-detail').innerHTML='<div class="detail-top"><div class="detail-title"><span class="detail-kicker">PLACE / '+esc(category.label)+'</span><strong>'+esc(p.name)+'</strong><div class="detail-sub">'+esc(p.city)+'</div></div>'+
+   favoriteButton(p,'detail')+'<button class="close-detail" type="button" aria-label="Close place details">×</button></div>'+
+   '<p class="detail-description">'+esc(p.highlights||p.location_type||'')+'</p>'+
+   '<div class="detail-foot"><small>'+esc(p.location_type||category.label)+'</small><a class="directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
+   '<details class="detail-extra"><summary>Location & more info <span aria-hidden="true">+</span></summary><div class="detail-extra-body">'+
+   (p.address?'<div><b>ADDRESS</b><p>'+esc(p.address)+'</p></div>':'')+
+   (p.price_note?'<div><b>PRICE / NOTES</b><p>'+esc(p.price_note)+'</p></div>':'')+
+   (p.verification?'<div><b>BEFORE YOU GO</b><p>'+esc(p.verification)+'</p></div>':'')+
+   '<a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open location in Google Maps ↗</a></div></details>';
   $('place-detail').hidden=false;
   if(marker&&map){map.flyTo(marker.getLatLng(),Math.max(14,map.getZoom()),{duration:.4});setTimeout(()=>{if(state.selected===p.id)map.panBy([0,65],{animate:true,duration:.2});},450);}
  }else if(marker&&map){map.flyTo(marker.getLatLng(),Math.max(14,map.getZoom()),{duration:.5});marker.openPopup();}
@@ -296,7 +309,9 @@ function chooseCity(city){
 function init(){
  initializeMap();
  $('map-cities').addEventListener('click',e=>{const b=e.target.closest('button[data-city]');if(b)chooseCity(b.dataset.city);});
- $('categories').addEventListener('click',e=>{const b=e.target.closest('button[data-category]');if(b){state.category=b.dataset.category;closeDetails();render();}});
+ $('categories').addEventListener('click',e=>{const b=e.target.closest('button[data-category]');if(b){state.category=b.dataset.category;closeDetails();render();setFilterOpen(false);}});
+ $('category-toggle').addEventListener('click',()=>setFilterOpen($('filter-panel').hidden));
+ $('clear-category').addEventListener('click',()=>{state.category='All';closeDetails();render();setFilterOpen(false);});
  $('place-search').addEventListener('input',e=>{state.query=e.target.value.trim().toLowerCase();render();});
  $('favorites-only').addEventListener('click',()=>{state.favoritesOnly=!state.favoritesOnly;closeDetails();render();});
  $('places-list').addEventListener('click',e=>{const star=e.target.closest('button[data-favorite]');if(star){toggleFavorite(star.dataset.favorite);return;}const c=e.target.closest('.place');if(c)focus(c.dataset.id);});
