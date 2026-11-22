@@ -163,6 +163,7 @@
    document.querySelectorAll('button[data-city]').forEach(b=>b.classList.toggle('active',b.dataset.city===state.city));
   }
   document.body.classList.toggle('itinerary-mode',mode==='itinerary');
+  if(typeof updateDiscoverLabel==='function')updateDiscoverLabel();
   $('trip-day-picker').hidden=mode!=='itinerary';
   $('trip-controls').hidden=mode!=='itinerary';
   document.querySelectorAll('#mode-picker button[data-mode]').forEach(b=>{const selected=b.dataset.mode===mode;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
