@@ -364,7 +364,7 @@ function updateDiscoverLabel(){
   if(label)label.textContent=route?'ROUTE':'DISCOVER';
   toggle.setAttribute('aria-label',(discoverIsOpen()?'Close ':'Open ')+(route?'route panel':'Discover destinations'));
  }
- if(title)title.innerHTML=(route?'YOUR ROUTE':'DISCOVER')+' <span aria-hidden="true">↗</span>';
+ if(title)title.textContent=route?'YOUR ROUTE':'DISCOVER';
  const loc=$('discover-location');
  if(loc)loc.hidden=route;
  if(route)setCityMenuOpen(false);
