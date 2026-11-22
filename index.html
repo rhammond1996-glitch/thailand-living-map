@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="./design-system.css?v=1">
   <link rel="stylesheet" href="./print-club.css?v=5">
   <link rel="stylesheet" href="./place-cards.css?v=1">
-  <link rel="stylesheet" href="./discover-overlay.css?v=9">
+  <link rel="stylesheet" href="./discover-overlay.css?v=10">
 </head>
 <body>
   <div id="app">
@@ -45,7 +45,14 @@
         <div id="map" aria-label="Map of saved Thailand destinations"></div>
         <div class="map-toolbar">
           <nav class="day-picker" id="trip-day-picker" hidden aria-label="Select itinerary day"></nav>
-          <button id="map-area-indicator" class="map-area-indicator" type="button" aria-label="Choose the city in Discover">ALL THAILAND <span aria-hidden="true">⌄</span></button>
+          <div id="map-area-selector" class="map-area-selector">
+            <button id="map-area-indicator" class="map-area-indicator" type="button" aria-haspopup="true" aria-controls="map-area-menu" aria-expanded="false" aria-label="Choose map area: All Thailand">ALL THAILAND <span aria-hidden="true">⌄</span></button>
+            <div id="map-area-menu" class="map-area-menu" role="group" aria-label="Choose map area" hidden>
+              <button type="button" data-map-city="All" class="active" aria-pressed="true">All Thailand</button>
+              <button type="button" data-map-city="Bangkok" aria-pressed="false">Bangkok</button>
+              <button type="button" data-map-city="Chiang Mai" aria-pressed="false">Chiang Mai</button>
+            </div>
+          </div>
           <button id="locate" type="button" class="locate" aria-label="Show my current location" title="Show my current location">⌖</button>
         </div>
         <div id="map-error" class="map-error" hidden>Map tiles unavailable. You can still use the places list and Google Maps links.</div>
@@ -95,7 +102,7 @@
   <script src="./map-basemap.js?v=3" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
   <script src="./place-profiles.js?v=1" defer></script>
-  <script src="./app.js?v=18" defer></script>
+  <script src="./app.js?v=19" defer></script>
   <script src="./trip-itinerary.js?v=7" defer></script>
   <script src="./place-cards.js?v=3" defer></script>
 </body>
