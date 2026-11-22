@@ -997,3 +997,99 @@ body.itinerary-mode #places-panel .discover-head-actions{
     min-width:32px;
   }
 }
+
+
+/* v10 / Map-only area selector
+   Tapping the chip opens this small three-option dropdown, not Discover.
+   Keep the map completely visible, with strong Print Club contrast.
+*/
+html[data-design] .map-toolbar{
+  overflow:visible;
+}
+html[data-design] .map-toolbar #map-area-selector{
+  position:relative;
+  flex:0 0 auto;
+  min-width:0;
+  max-width:min(230px,72vw);
+  margin-right:auto;
+  z-index:5;
+}
+html[data-design] .map-toolbar #map-area-selector[hidden],
+html[data-design] .map-toolbar #map-area-menu[hidden]{
+  display:none!important;
+}
+html[data-design] .map-toolbar #map-area-indicator{
+  margin-right:0;
+  cursor:pointer;
+  background:#fffcf4;
+  color:#171719;
+}
+html[data-design] .map-toolbar #map-area-indicator.is-open{
+  background:#dfff40;
+  box-shadow:2px 2px 0 #171719;
+}
+html[data-design] .map-toolbar #map-area-indicator span{
+  color:#ef532f;
+  margin-left:3px;
+}
+html[data-design] .map-toolbar #map-area-menu{
+  position:absolute;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:2px;
+  top:calc(100% + 8px);
+  left:0;
+  min-width:176px;
+  width:max-content;
+  max-width:min(230px,76vw);
+  padding:5px;
+  background:#fffcf4;
+  border:2px solid #171719;
+  border-radius:5px;
+  box-shadow:3px 3px 0 #171719;
+  z-index:710;
+}
+html[data-design] .map-toolbar #map-area-menu button{
+  display:block;
+  width:100%;
+  min-height:42px;
+  padding:11px 13px;
+  margin:0;
+  border:0;
+  border-radius:2px;
+  background:transparent;
+  color:#192ecb;
+  text-align:left;
+  font:850 12px/1.1 "DM Sans",Arial,sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.01em;
+  white-space:nowrap;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+html[data-design] .map-toolbar #map-area-menu button.active{
+  background:#192ecb;
+  color:#fff;
+}
+html[data-design] .map-toolbar #map-area-menu button:not(.active):hover{
+  background:#e7edff;
+}
+html[data-design] .map-toolbar #map-area-menu button:focus-visible{
+  outline:2px solid #171719;
+  outline-offset:-2px;
+}
+body.itinerary-mode #map-area-selector{
+  display:none!important;
+}
+@media(max-width:720px){
+  html[data-design] .map-toolbar #map-area-menu{
+    top:calc(100% + 7px);
+    min-width:170px;
+    padding:4px;
+  }
+  html[data-design] .map-toolbar #map-area-menu button{
+    min-height:44px;
+    padding:12px 11px;
+  }
+}
