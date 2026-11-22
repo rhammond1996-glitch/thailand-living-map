@@ -1,0 +1,303 @@
+/* THAILAND / MAP — CMY INK EDITION
+   A digitized 1980s printed field guide: overlapping transparent inks,
+   clean cartography, high-contrast glyphs and a very fine even paper screen.
+   IMPORTANT: purely visual; preserves current Discover/Explore/Itinerary layout.
+*/
+html[data-design="print"]{
+ --design-bg:#0b142d;
+ --design-panel:#fff9f0;
+ --design-text:#101a35;
+ --design-muted:#52546b;
+ --design-accent:#f32996;
+ --design-contrast:#1939e9;
+ --design-focus:#ddff3a;
+ --design-chip:#f6f4f2;
+ --design-border:#121b36;
+ --design-radius:7px;
+ --ink-navy:#0a132b;
+ --ink-cyan:#24dafa;
+ --ink-magenta:#f32996;
+ --ink-lime:#ddff3a;
+ --ink-blue:#1a39f1;
+ --ink-paper:#fff9f0;
+}
+html[data-design="print"] body{
+ background:#0a132b;
+ color:#101a35;
+}
+html[data-design="print"] .map-wrap,
+html[data-design="print"] #map{
+ background:#0a132b!important;
+}
+/* Zero decorative gradients, circles, or halftones on the actual map. */
+html[data-design="print"] #map::before,
+html[data-design="print"] #map::after{
+ content:none!important;
+}
+html[data-design="print"] .masthead{
+ /* Overprinted translucent flat ink shapes, confined strictly to navigation. */
+ background-color:#d9fd4a;
+ background-image:
+   linear-gradient(115deg,transparent 0 29%,rgb(255 38 158 / 65%) 29% 42%,transparent 42%),
+   linear-gradient(90deg,rgb(45 207 239 / 60%) 0 32%,transparent 32% 61%,rgb(253 41 161 / 63%) 61% 100%),
+   radial-gradient(circle,rgb(8 22 41 / 9%) .4px,transparent .55px);
+ background-size:auto,auto,4px 4px;
+ border-bottom:3px solid #10172e;
+ box-shadow:0 3px 0 rgb(12 13 31 / 50%);
+}
+html[data-design="print"] .brand .eyebrow{
+ color:#10172e;
+ letter-spacing:.11em;
+ font-weight:900;
+ text-shadow:0 1px 0 #fff9f0a8;
+}
+html[data-design="print"] .brand h1{color:#0b1534;filter:drop-shadow(1px 1px 0 #fff9f096)}
+html[data-design="print"] .brand h1 i{color:#f32996}
+html[data-design="print"] .brand h1 em{color:#133bea}
+html[data-design="print"] .mode-picker{
+ background:#fff9f0;
+ border:2px solid #0a132b;
+ box-shadow:3px 3px 0 #0a132b;
+}
+html[data-design="print"] .mode-picker button{
+ color:#0d1631;
+}
+html[data-design="print"] .mode-picker button.active{
+ background:#0a132b;
+ color:#fff9f0;
+}
+html[data-design="print"] .masthead #discover-toggle,
+html[data-design="print"] .masthead #discover-toggle[aria-expanded="true"]{
+ background:#f32996;
+ color:#fff;
+ border:2px solid #0a132b;
+ box-shadow:3px 3px 0 #0a132b;
+}
+html[data-design="print"] .masthead #discover-toggle svg{stroke-width:2.4}
+
+/* The map navigation remains clean and light against navy tiles. */
+html[data-design="print"] .map-toolbar #map-area-indicator,
+html[data-design="print"] .map-toolbar #map-area-indicator.is-open,
+html[data-design="print"] .map-wrap .locate,
+html[data-design="print"] .map-wrap .leaflet-control-zoom a{
+ background:#fff9f0;
+ border-color:#0b1430;
+ color:#131d3e;
+ box-shadow:3px 3px 0 #050a18;
+}
+html[data-design="print"] .map-toolbar #map-area-indicator span{color:#ef288e}
+html[data-design="print"] .map-toolbar #map-area-menu{
+ background:#fff9f0;
+ border-color:#0b1430;
+ box-shadow:3px 3px 0 #050a18;
+}
+html[data-design="print"] .map-toolbar #map-area-menu button{color:#1238de}
+html[data-design="print"] .map-toolbar #map-area-menu button.active{
+ color:#fff;
+ background:#1939e9;
+}
+html[data-design="print"] .day-picker{
+ background:#fff9f0;border-color:#101b37;
+}
+html[data-design="print"] .day-picker button.active{background:#1939e9;color:#fff}
+html[data-design="print"] .map-wrap .leaflet-control-attribution{
+ color:#c6daeb;
+ background:rgba(9,18,39,.88);
+ font-size:10px;
+}
+html[data-design="print"] .map-wrap .leaflet-control-attribution a{
+ color:#9beefe;
+}
+html[data-design="print"] #map-error{
+ background:#fff9f0;
+ border:2px solid #0b1430;
+ color:#111a36;
+}
+
+/* Destination symbols: saturated tile inks with a little offset dark printing. */
+html[data-design="print"] .print-stamp-pin.graphic-pin{
+ background:var(--pin,#f32996);
+ border:2px solid #081327;
+ border-radius:5px;
+ box-shadow:2px 3px 0 #081327,0 0 0 1px #fff9f0;
+ color:#fff9f0;
+}
+html[data-design="print"] .graphic-pin .stamp-symbol{
+ display:grid;place-items:center;
+ width:30px;height:30px;
+}
+html[data-design="print"] .graphic-pin .stamp-symbol .category-icon{
+ width:28px;height:28px;
+ overflow:visible;
+ filter:drop-shadow(0 1px 0 rgba(10,16,40,.45));
+}
+html[data-design="print"] .graphic-pin .stamp-favorite{
+ background:#ddff3a;color:#091429;
+ box-shadow:1px 1px 0 #081327;
+}
+html[data-design="print"] .category-swatch{
+ border-color:#091429;
+ background:var(--category);
+ box-shadow:2px 2px 0 #091429;
+}
+html[data-design="print"] .category-swatch svg{
+ width:23px;height:23px;
+ filter:drop-shadow(0 1px 0 rgba(10,16,40,.32));
+}
+html[data-design="print"] .place .category-swatch svg{
+ width:24px;height:24px;
+}
+
+/* Discover stays our existing floating, compact interface. Only the inks shift. */
+html[data-design="print"] #discover-scrim:not([hidden]){
+ background:rgb(3 10 28 / 63%);
+}
+html[data-design="print"] #places-panel.places-panel:not([hidden]){
+ background:#fff9f0;
+ color:#101a35;
+ border:2px solid #0a132b;
+ box-shadow:5px 5px 0 #071129,0 12px 36px #04091455;
+}
+html[data-design="print"] #places-panel .discover-panel-head{
+ background-color:#fff9f0;
+ background-image:
+   linear-gradient(116deg,rgba(38,216,247,.12) 0 18%,transparent 18% 84%,rgba(245,31,146,.16) 84% 100%),
+   radial-gradient(circle,rgba(12,24,51,.08) .38px,transparent .55px);
+ background-size:auto,4px 4px;
+ color:#101a35;
+ border-bottom:2px solid #0a132b;
+}
+html[data-design="print"] #places-panel .discover-panel-head h2{
+ color:#0c1636;
+ letter-spacing:-.075em;
+}
+html[data-design="print"] #places-panel .discover-panel-head #map-cities.city-picker{
+ background:#fff;
+ border:2px solid #1a39f1;
+ box-shadow:2px 2px 0 #0a132b;
+}
+html[data-design="print"] #places-panel .discover-panel-head #map-cities.city-picker button{
+ background:#fff;
+ color:#1a39f1;
+}
+html[data-design="print"] #places-panel .discover-panel-head #map-cities.city-picker button.active{
+ background:#1a39f1;
+ color:#fff;
+}
+html[data-design="print"] #places-panel .discover-panel-head #favorites-only,
+html[data-design="print"] #places-panel .discover-panel-head #discover-close{
+ background:#fffaf2;
+ border-color:#101a35;
+ color:#101a35;
+}
+html[data-design="print"] #places-panel .discover-panel-head #favorites-only.active{
+ background:#1a39f1;
+ color:#fff;
+}
+html[data-design="print"] #places-panel .discover-panel-head #favorites-count{
+ background:#ddff3a;
+ color:#0a132b;
+}
+html[data-design="print"] #places-panel .panel-content,
+html[data-design="print"] #places-panel .browse-tools,
+html[data-design="print"] #places-panel .places-list{
+ background-color:#fff9f0;
+ background-image:radial-gradient(circle,rgba(10,21,40,.06) .38px,transparent .55px);
+ background-size:4px 4px;
+}
+html[data-design="print"] #places-panel .browse-tools{
+ border-bottom:1.5px solid #101a3540;
+}
+html[data-design="print"] #places-panel .search-label,
+html[data-design="print"] #places-panel .filter-toggle{
+ background:#fffdfa;
+ border:2px solid #121b39;
+ color:#101a35;
+ box-shadow:2px 2px 0 #101a351b;
+}
+html[data-design="print"] #places-panel #category-toggle.has-filter{
+ background:#ddff3a;
+}
+html[data-design="print"] #places-panel .filter-panel{
+ border-top:1.5px solid #101a35;
+}
+html[data-design="print"] #places-panel .category-chips button{
+ background:#fffefa;
+ border:1.5px solid #101a35;
+ color:#101a35;
+}
+html[data-design="print"] #places-panel .category-chips button.active{
+ background:#ddff3a;color:#0b1430;
+}
+html[data-design="print"] .place,
+html[data-design="print"] #places-panel .place{
+ background:transparent;
+ border-bottom:1.5px solid #111a35;
+ color:#0d1838;
+ box-shadow:none;
+}
+html[data-design="print"] #places-panel .place.selected{
+ background:rgba(34,219,242,.13);
+ box-shadow:inset 4px 0 0 #1a39f1;
+}
+html[data-design="print"] .place .place-name,
+html[data-design="print"] .place .place-number{
+ color:#0e1736;
+}
+html[data-design="print"] .place .place-title small{
+ color:#606077;
+}
+html[data-design="print"] .place .place-go{color:#143eec}
+html[data-design="print"] .place .favorite-star{
+ color:#182044;
+}
+html[data-design="print"] .place .favorite-star.is-favorite{
+ color:#f32996;
+}
+html[data-design="print"] .place .place-open:active{background:#24daf916}
+html[data-design="print"] .places-list::-webkit-scrollbar-thumb{background:#c9bbd0}
+
+/* Dossiers and itinerary get the same pale print stock. */
+html[data-design="print"] #place-detail.place-detail:not([hidden]){
+ background:#fff9f0;
+ color:#101a35;
+ border-color:#091630;
+ box-shadow:5px 5px 0 #050b1f;
+}
+html[data-design="print"] #place-detail .visit-shell{
+ background-color:#fff9f0;
+ background-image:radial-gradient(circle,rgba(12,23,45,.055) .38px,transparent .56px);
+ background-size:4px 4px;
+ --visit-paper:#fff9f0;
+ --visit-ink:#101a35;
+ --visit-soft:#565973;
+ --visit-line:#142249;
+ --visit-button:#1a39f1;
+}
+html[data-design="print"] #place-detail .visit-actions .favorite-star.is-favorite{
+ background:#ddff3a;color:#f32996;
+}
+html[data-design="print"] #place-detail .visit-poster{
+ background:#dfff3a;
+}
+html[data-design="print"] #places-panel .trip-controls,
+html[data-design="print"] #places-panel .trip-stop,
+html[data-design="print"] #places-panel .trip-option{
+ background:#fff9f0;
+ color:#101a35;
+}
+html[data-design="print"] #places-panel .trip-controls h2{color:#0e1534}
+html[data-design="print"] #places-panel .trip-index{background:#1a39f1}
+html[data-design="print"] #places-panel .trip-header{
+ background:#ddff3a;
+ color:#091630;
+}
+html[data-design="print"] #places-panel .trip-stop-actions a.trip-directions{
+ background:#1a39f1;
+ color:#fff;
+}
+
+/* No new margins/heights/grid changes: preserve approved layout precisely. */
+@media(prefers-reduced-motion:reduce){
+ html[data-design="print"] .graphic-pin{transition:none}
+}
