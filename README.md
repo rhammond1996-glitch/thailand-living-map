@@ -17,7 +17,7 @@ These are visual themes of **the same interactive app**, not separately deployed
 
 - **App source:** this repository; edits to `main` automatically republish the GitHub Pages website once Pages is enabled.
 - **Master places:** [Google Sheet](https://docs.google.com/spreadsheets/d/1IBkBs5BBwmalgLfNBYnEakbKVt-Lw4kYu7VIDcxyjx4/edit) → **places** tab (lowercase).
-- **Initial bundled snapshot:** [places.json](./places.json), copied from the Sheet (39 locations, 37 coordinates). Used as a fallback only if the Sheet cannot be accessed.
+- **Initial bundled snapshot:** [places.json](./places.json), copied from the Sheet (52 locations, 50 coordinates). Used as a fallback only if the Sheet cannot be accessed.
 - **Map URL after GitHub Pages setup:** https://rhammond1996-glitch.github.io/thailand-living-map/
 
 ### Required one-time steps
@@ -61,7 +61,7 @@ Headers, in this order:
 
 - Valid `city`: Bangkok, Chiang Mai.
 - Separate multiple categories with `|`: e.g. `Fragrances|Independent fashion`.
-- Categories: Fragrances, Independent fashion, Designer replicas, Vintage, Jewelry & artisan, Creative districts, Gay Nightlife, Underground & Raves.
+- Categories: Fragrances, Independent fashion, Designer replicas, Vintage, Jewelry & artisan, Creative districts, Gay Nightlife, Underground & Raves, Bangkok Art Biennale, Art & design, plus Chiang Mai itinerary categories.
 - `priority`: Top, High or Medium (normal/blank also works).
 - `status`: Saved (or any non-hidden value); `hidden` and `archived` are excluded.
 - Coordinates are decimal latitude/longitude; blanks are supported.
@@ -76,3 +76,10 @@ Do not import `places.json` or the original CSV back over your existing Sheet: t
 - The shared Sheet must be accessible for **live** updates. When it isn't, the site uses the bundled snapshot rather than showing an empty map. The snapshot itself changes only when a code commit updates `places.json`.
 - Some pins represent a mall, neighborhood or market rather than an exact storefront. Verify before visiting.
 - The old Google Apps Script deployment is left intact. This repository is a separate new public frontend.
+
+### Bangkok Art Biennale 2026–27 locations (November 22, 2026)
+
+- The Google Sheet now marks all **11 official Bangkok Art Biennale 2026–27 venues** under `Bangkok Art Biennale`. `CentralWorld` is an existing shopping pin with an additional category, not a duplicate. Another ten venue pins were added with art and nearby-architecture tags. Dates: 29 October 2026–28 February 2027.
+- Three extra venues — Jim Thompson Art Center, BANGKOK CITYCITY GALLERY, and 100 Tonson Foundation — are independent art-space bookmarks (`Art & design`), **not** confirmed BAB main venues. Check January programming before visiting.
+- The `Biennale` filter and its graphic starburst stamp are part of Explore. Existing Chiang Mai day routes and nearby-alternative behavior are untouched; Bangkok itinerary days have not yet been scheduled.
+- Official 2026 venue list: https://www.bkkartbiennale.com/venues (the lower route section of this page still contains 2024 itinerary information).
