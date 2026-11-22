@@ -1,4 +1,4 @@
-/* Source-screened venue reference overlay; curated image sources verified by venue association, 2026-11-22. */
+/* Source-screened venue reference overlay; curated images with explicit provenance. Updated 2026-11-22. */
 window.VENUE_RESEARCH = {
   "bkk-centralworld": {
     "confidence": "established",
@@ -100,17 +100,16 @@ window.VENUE_RESEARCH = {
     ]
   },
   "bkk-daniya": {
-    "confidence": "business",
+    "confidence": "location-check",
     "status": "Saved",
     "links": [
       [
-        "OFFICIAL PERFUMERY",
-        "https://daniyaperfumes.com/"
+        "BANGKOK PERFUME STORE GUIDE",
+        "https://your-perfume-guide.com/bangkok/"
       ]
     ],
-    "photoQueries": [
-      "Daniya Perfumes Bangkok"
-    ]
+    "photoQueries": [],
+    "photoReviewNote": "Bangkok store is listed in the independent perfume guide; prior purported official website could not be tied to this branch. No verified photographs."
   },
   "bkk-tres": {
     "confidence": "business",
@@ -559,7 +558,8 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "September Sunshine Chiang Mai vintage"
-    ]
+    ],
+    "photoReviewNote": "Named business exists in local listings; no unambiguous source photo identified. Do not substitute nearby vintage shops."
   },
   "cm-baan": {
     "confidence": "established",
@@ -592,7 +592,8 @@ window.VENUE_RESEARCH = {
     "confidence": "needs-review",
     "status": "Saved",
     "links": [],
-    "photoQueries": []
+    "photoQueries": [],
+    "photoReviewNote": "Named business exists in local listings; no unambiguous source photo identified. Do not substitute nearby vintage shops."
   },
   "cm-hola": {
     "confidence": "location-check",
@@ -791,11 +792,11 @@ window.VENUE_RESEARCH = {
     "photoLabel": "6IXCRET / CABARET PERFORMANCE",
     "photoSelections": [
       {
-        "title": "6ixcret Show performers on stage",
-        "url": "https://mindtrip.ai/attractions/dd44/8290/7379/774b/8922/6bb0/8dbd/007b",
-        "page": "https://mindtrip.ai/attraction/chiang-mai/6ixcret-show/at-3mNLY4Al",
+        "title": "6ixcret Show entrance in Chiang Mai",
+        "url": "https://tcdn.mindtrip.ai/images/467399/1bn8s8t.png",
+        "page": "https://mindtrip.ai/restaurant/chiang-mai/6ixcret-show/re-OnUFoAXR",
         "artist": "Mindtrip venue imagery",
-        "kind": "Show photograph"
+        "kind": "Venue entrance, not generic drag-event image"
       }
     ]
   },
@@ -1198,7 +1199,8 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "King and Queen Pagodas Doi Inthanon",
       "Naphamethinidon pagoda"
-    ]
+    ],
+    "photoLabel": "TWIN PAGODAS / LOCATION PHOTOGRAPHY"
   },
   "cm-wachirathan": {
     "confidence": "established",
