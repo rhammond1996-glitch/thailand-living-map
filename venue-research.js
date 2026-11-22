@@ -533,7 +533,10 @@ window.VENUE_RESEARCH = {
       "Wat Arun Bangkok"
     ],
     "wiki": "Wat Arun",
-    "commonsCategory": "Wat Arun"
+    "commonsCategory": "Wat Arun",
+    "photoHeroPrefer": [
+      "Wat Arun"
+    ]
   },
   "bkk-bab-wat-prayoon": {
     "confidence": "established",
@@ -700,7 +703,17 @@ window.VENUE_RESEARCH = {
       "Doi Inthanon mountain forest"
     ],
     "wiki": "Doi Inthanon",
-    "commonsCategory": "Doi Inthanon National Park"
+    "commonsCategory": "Doi Inthanon National Park",
+    "photoExclude": [
+      "waterfall",
+      "elephant",
+      "zoo",
+      "market"
+    ],
+    "photoHeroPrefer": [
+      "Ang Ka",
+      "Doi Inthanon"
+    ]
   },
   "cm-kewmaepan": {
     "confidence": "established",
@@ -733,6 +746,10 @@ window.VENUE_RESEARCH = {
     "confidence": "established",
     "status": "Saved",
     "links": [
+      [
+        "OFFICIAL HALF-DAY VISITS",
+        "https://elephantnaturepark.org/visit-volunteer/half-day-morning-visit-to-elephant-nature-park/"
+      ],
       [
         "OFFICIAL DAY VISITS / BOOKINGS",
         "https://elephantnaturepark.org/"
