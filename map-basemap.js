@@ -29,32 +29,15 @@
   const ENGLISH_NAME=['coalesce',
     ['get','name_en'],['get','name:en'],['get','name:latin'],
     ['get','name:international'],['get','name_int'],['get','name_latin'],['get','name'],['get','ref'],''];
-  // Use actual road layer names and source filters for road hierarchy.
-  // The transportation source-layer contains *every* road class, so its
-  // presence alone must never turn an entire network lime.
-  function roadClass(layer){
-    const id=String(layer.id||'').toLowerCase();
-    const filter=JSON.stringify(layer.filter||[]).toLowerCase();
-    const pedestrian=/footway|path|pedestrian|track|service|steps|cycleway|residential|living.street|minor|alley/.test(id);
-    const rail=/rail|train|subway|tram/.test(id);
-    const minor=/minor|service|residential|path|pedestrian|footway|cycle|track|unclassified|living.street/.test(id);
-    const secondary=/secondary|tertiary|collector/.test(id);
-    const major=/motorway|trunk|primary|expressway|major/.test(id);
-    if(rail)return 'rail';
-    if(pedestrian||minor)return 'minor';
-    if(secondary)return 'secondary';
-    if(major)return 'major';
-
-    // Generic style layer names can carry an explicit class filter. Classify
-    // as major only if that filter does not ALSO include smaller roads.
-    const filterMajor=/motorway|trunk|primary|expressway/.test(filter);
-    const filterSecondary=/secondary|tertiary|collector/.test(filter);
-    const filterMinor=/residential|service|minor|path|footway|pedestrian|unclassified|track|cycle/.test(filter);
-    if(filterMajor&&!filterSecondary&&!filterMinor)return 'major';
-    if(filterSecondary&&!filterMajor&&!filterMinor)return 'secondary';
-    if(filterMinor&&!filterMajor&&!filterSecondary)return 'minor';
-    return 'local';
-  }
+  // OpenFreeMap's highway_major_inner contains primary AND secondary AND
+  // tertiary roads. Color must be data-driven by each feature's class;
+  // coloring the whole 'highway_major' layer neon is why the street grid glowed.
+  const ROAD_COLORS=['match',['get','class'],
+    ['motorway','trunk','primary'],COLORS.lime,
+    ['secondary','tertiary'],COLORS.roadSecondary,
+    ['minor','service','track','path','pedestrian','residential','living_street','unclassified'],COLORS.roadMinor,
+    COLORS.roadMajor
+  ];
   function applyInkStyle(gl){
     try{
       for(const layer of gl.getStyle()?.layers||[]){
@@ -87,17 +70,25 @@
               gl.setPaintProperty(layerId,'line-color',COLORS.minor);
               gl.setPaintProperty(layerId,'line-opacity',0.38);
             }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|rail|trunk|primary|secondary|tertiary|footway|track/.test(name)){
-              const cls=roadClass(layer);
-              const ink=cls==='major'?COLORS.lime:
-                cls==='secondary'?COLORS.roadSecondary:
-                cls==='rail'?COLORS.roadSecondary:
-                cls==='minor'?COLORS.roadMinor:COLORS.roadMajor;
-              const opacity=cls==='major'?0.91:
-                cls==='secondary'?0.58:
-                cls==='rail'?0.38:
-                cls==='minor'?0.38:0.46;
-              gl.setPaintProperty(layerId,'line-color',ink);
-              gl.setPaintProperty(layerId,'line-opacity',opacity);
+              const casing=/casing|outline/.test(id);
+              const rail=/railway|rail|transit|tram|subway/.test(id);
+              const minor=/highway_minor|highway_path|footway|pedestrian|service|track|cycle/.test(id);
+              if(casing){
+                // Casings should be tonal even when framing an arterial.
+                gl.setPaintProperty(layerId,'line-color','#162641');
+                gl.setPaintProperty(layerId,'line-opacity',0.63);
+              }else if(rail){
+                gl.setPaintProperty(layerId,'line-color',COLORS.roadSecondary);
+                gl.setPaintProperty(layerId,'line-opacity',0.35);
+              }else if(minor){
+                gl.setPaintProperty(layerId,'line-color',COLORS.roadMinor);
+                gl.setPaintProperty(layerId,'line-opacity',0.34);
+              }else{
+                // Class-match expression is evaluated per physical road.
+                // For mixed highway_major layers this is crucial.
+                gl.setPaintProperty(layerId,'line-color',ROAD_COLORS);
+                gl.setPaintProperty(layerId,'line-opacity',0.82);
+              }
             }else{
               // Any extra vector outlines also recede instead of competing
               // with primary roads and destination markers.
