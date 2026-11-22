@@ -86,29 +86,31 @@
  }
  function listOneDay(d){
   const ids=dayIds(d);
-  return '<div class="trip-header" style="color:'+d.color+'">Day '+d.id+' · '+escapeText(d.date)+' · '+escapeText(d.short)+'</div>'+
+  return '<div class="trip-header" style="--trip-color:'+d.color+'"><span>DAY '+d.id+'</span><span>'+escapeText(d.date)+' / '+escapeText(d.short)+'</span></div>'+
    (!ids.length?'<div class="empty">All stops skipped for this day. Use nearby suggestions or Reset.</div>':'')+
    ids.map((id,i)=>{
     const p=lookup(id);if(!p)return '';
-    const originalIndex=d.stops.indexOf(id),transfer=originalIndex>=0?d.transfers[originalIndex]:'Inserted near the closest planned stop · travel time not estimated';
+    const originalIndex=d.stops.indexOf(id),transfer=originalIndex>=0?d.transfers[originalIndex]:'Inserted near the closest planned stop; travel time not estimated';
     return '<article class="trip-stop" style="--trip-color:'+d.color+'"><div class="trip-stop-top"><div class="trip-index">'+(i+1)+'</div>'+
-     '<div class="trip-stop-main" role="button" tabindex="0" data-trip-focus="'+escapeText(id)+'"><strong>'+escapeText(p.name)+'</strong><small>'+escapeText(cats(p)[0]||p.location_type)+'</small></div></div>'+
-     '<div class="trip-stoptime">↳ '+escapeText(transfer)+'</div><div class="trip-stop-actions">'+
-     '<button type="button" data-trip-skip="'+escapeText(id)+'" data-trip-skip-day="'+d.id+'">Skip this stop</button>'+
-     '<a class="trip-directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div></article>';
+     '<div class="trip-stop-main" role="button" tabindex="0" data-trip-focus="'+escapeText(id)+'" aria-label="Show '+escapeText(p.name)+' on map"><strong>'+escapeText(p.name)+'</strong><small>'+escapeText(cats(p)[0]||p.location_type)+'</small></div><span class="trip-step-arrow" aria-hidden="true">↗</span></div>'+
+     '<details class="trip-step-info"><summary>Travel details & options</summary><div class="trip-step-expanded">'+
+     '<p><b>GETTING THERE</b> '+escapeText(transfer)+'</p>'+
+     '<p>'+escapeText(p.highlights||'')+'</p>'+
+     '<div class="trip-stop-actions"><button type="button" data-trip-skip="'+escapeText(id)+'" data-trip-skip-day="'+d.id+'">Skip this stop</button>'+
+     '<a class="trip-directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div></div></details></article>';
    }).join('')+
-   '<div class="trip-footer">💆 '+escapeText(d.wellness)+'</div>';
+   (d.wellness?'<details class="trip-wellness"><summary>Optional evening idea</summary><p>'+escapeText(d.wellness)+'</p></details>':'');
  }
  function alternativesHtml(nearby){
-  if(!showNear)return '<div class="trip-footer">Nearby alternatives are hidden. Turn them on to see potential detours.</div>';
-  return '<div class="trip-alt-title">Nearby possibilities · '+nearby.length+'</div>'+
+  if(!showNear)return '';
+  return '<details class="trip-alternatives"><summary><span>NEARBY OPTIONS</span><span class="trip-alts-count">'+nearby.length+'</span></summary><div class="trip-alternatives-inner">'+
     (nearby.length?nearby.map(x=>'<article class="trip-option"><span class="trip-alt-marker"></span>'+
      '<div class="trip-stop-main" role="button" tabindex="0" data-trip-focus="'+escapeText(x.p.id)+'">'+
      '<strong>'+escapeText(x.p.name)+'</strong>'+
-     '<small>'+escapeText(fmtDist(x.distance))+' straight line from '+escapeText(x.anchor.name)+(x.scheduled?' · originally Day '+x.scheduled:'')+'</small></div>'+
-     (day!=='all'?'<button type="button" data-trip-add="'+escapeText(x.p.id)+'">+ Add</button>':'')+
-     '</article>').join(''):'<div class="empty">No mapped alternatives within this radius. Try a larger radius.</div>')+
-     '<div class="trip-footer">Faint markers are nearby options, not recommendations to visit every one. Distance is straight-line only; valleys and mountain roads can make an apparently close detour much longer.</div>';
+     '<small>'+escapeText(fmtDist(x.distance))+' straight line from '+escapeText(x.anchor.name)+'</small></div>'+
+     (day!=='all'?'<button type="button" data-trip-add="'+escapeText(x.p.id)+'">+ ADD</button>':'')+
+     '</article>').join(''):'<div class="empty">No mapped alternatives at this distance. Increase the radius in Route options.</div>')+
+     '<p class="trip-hint">Nearby distance is straight-line, not driving distance.</p></div></details>';
  }
  function renderTripMode(preserveView=false){
   if(mode!=='itinerary')return false;
@@ -125,16 +127,18 @@
   }
   for(const a of nearby)putMarker(a.p,'aux',null,null,null);
   $('places-list').innerHTML=(state.places.length?active.map(listOneDay).join(''):'<div class="empty">Loading places and route…</div>')+alternativesHtml(nearby);
-  $('drawer-summary').textContent=day==='all'?'All four draft days':('Day '+day+' · '+(byDay(day)?.short||''));
+  $('drawer-summary').textContent=day==='all'?'All four days':('DAY '+day+' / '+(byDay(day)?.short||''));
+  const drawerHeading=document.querySelector('#drawer-grab .grab-copy strong');if(drawerHeading)drawerHeading.textContent='YOUR ROUTE';
   const thisDay=byDay(day);
-  $('trip-controls').innerHTML='<div class="trip-kicker">Chiang Mai / adaptive itinerary</div>'+
-   '<h2>'+(thisDay?escapeText(thisDay.title):'All four days')+'</h2>'+
-   '<p>'+(thisDay?escapeText(thisDay.summary):'Pick a day for a focused numbered route and close-by alternatives.')+'</p>'+
-   (thisDay?'<p class="trip-warning">'+escapeText(thisDay.warning)+'</p>':'')+
-   '<div class="trip-control-row"><label><input type="checkbox" id="trip-show-near" '+(showNear?'checked':'')+'> Nearby options</label>'+
+  $('trip-controls').innerHTML='<div class="trip-kicker">02 / YOUR ROUTE</div>'+
+   '<h2>'+(thisDay?escapeText(thisDay.title):'Four days / Chiang Mai')+'</h2>'+
+   '<p>'+(thisDay?escapeText(thisDay.summary):'Choose a day to see its planned route.')+'</p>'+
+   (thisDay&&thisDay.warning?'<p class="trip-warning">'+escapeText(thisDay.warning)+'</p>':'')+
+   '<details class="trip-settings"><summary>ROUTE OPTIONS <span aria-hidden="true">+</span></summary><div class="trip-settings-body">'+
+   '<div class="trip-control-row"><label><input type="checkbox" id="trip-show-near" '+(showNear?'checked':'')+'> Show nearby options</label>'+
    '<label>Within <select id="trip-radius"><option value="1" '+(radiusKm===1?'selected':'')+'>1 km</option><option value="3" '+(radiusKm===3?'selected':'')+'>3 km</option><option value="7" '+(radiusKm===7?'selected':'')+'>7 km</option><option value="20" '+(radiusKm===20?'selected':'')+'>20 km</option></select></label>'+
    '<button id="trip-reset" type="button">Reset draft</button></div>'+
-   '<p class="trip-hint">Bold numbered pins = planned. Small pale dots = flexible options. Dashed lines = order, not road directions. Changes save on this device.</p>';
+   '<p class="trip-hint">Numbered pins are your stops. Outlined dots are optional. Dashed lines show order, not roads. Edits save only on this device.</p></div></details>';
   $('results').textContent=active.reduce((n,d)=>n+dayIds(d).length,0)+' planned';
   document.querySelectorAll('#trip-day-picker button[data-day]').forEach(b=>{
    const active=b.dataset.day===day;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
@@ -163,6 +167,7 @@
   $('trip-controls').hidden=mode!=='itinerary';
   document.querySelectorAll('#mode-picker button[data-mode]').forEach(b=>{const selected=b.dataset.mode===mode;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
   if(mode!=='itinerary')$('map-cities').hidden=false;
+  const title=document.querySelector('#drawer-grab .grab-copy strong');if(title)title.textContent=mode==='itinerary'?'YOUR ROUTE':'DISCOVER ↗';
   closeDetails();setUrl();render();
  }
  function selectDay(id){if(id!=='all'&&!byDay(id))return;day=id;closeDetails();setUrl();render();}
@@ -188,7 +193,7 @@
   });
   $('map').addEventListener('click',e=>{const b=e.target.closest('[data-trip-add]');if(b){e.preventDefault();e.stopPropagation();addToDay(b.dataset.tripAdd);}});
   const legend=document.createElement('div');legend.className='trip-map-legend';legend.id='trip-legend';
-  legend.innerHTML='<span class="solid">● Numbered route</span> · <span class="muted">○ Nearby option</span><div>Dashed path shows order, not roads</div>';
+  legend.innerHTML='<span class="solid">NUMBERED / PLAN</span> · <span class="muted">OUTLINE / OPTIONAL</span>';
   $('map').parentElement.appendChild(legend);
   if(mode==='itinerary'){mode='explore';setMode('itinerary');}else{legend.hidden=true;}
   const originalSetMode=setMode;
