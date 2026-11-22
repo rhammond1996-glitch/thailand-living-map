@@ -231,7 +231,7 @@ function placeCard(p,index=0){
  return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'">'+
  '<div class="place-head"><button type="button" class="place-open" data-place-open="'+esc(p.id)+'" aria-label="View '+esc(p.name)+' details">'+
  '<span class="place-number">'+String(index+1).padStart(2,'0')+'</span>'+categoryStamp(primary)+
- '<span class="place-title"><strong class="place-name">'+esc(p.name)+'</strong><small>'+esc(p.city)+' / '+esc(type.label)+'</small></span>'+
+ '<span class="place-title"><strong class="place-name">'+esc(p.name)+'</strong><small>'+esc(p.city)+' / '+esc(type.label)+(window.VENUE_RESEARCH?.[p.id]?.confidence==='needs-review'?' · <span class="place-to-review">VERIFY STORE</span>':'')+'</small></span>'+
  '<span class="place-go" aria-hidden="true">↗</span></button>'+favoriteButton(p)+'</div></article>';
 }
 function render(preserveView=false){
