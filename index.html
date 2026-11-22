@@ -1,17 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-design="print">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f6bfd5">
+  <meta name="theme-color" content="#f9f4ea">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Our living Bangkok and Chiang Mai map — independent fashion, niche fragrances, art and places to explore.">
   <title>Thailand / Living Map</title>
   <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      const allowed=['print','soft','type'];
+      const urlChoice=new URLSearchParams(location.search).get('design');
+      let remembered='';
+      try{remembered=localStorage.getItem('thailand-living-map:design:v1')||''}catch(e){}
+      const choice=allowed.includes(urlChoice)?urlChoice:allowed.includes(remembered)?remembered:'print';
+      document.documentElement.dataset.design=choice;
+      if(allowed.includes(urlChoice)){try{localStorage.setItem('thailand-living-map:design:v1',urlChoice)}catch(e){}}
+    })();
+  </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="./styles.css?v=4">
   <link rel="stylesheet" href="./trip.css?v=1">
+  <link rel="stylesheet" href="./design-system.css?v=1">
 </head>
 <body>
   <div id="app">
