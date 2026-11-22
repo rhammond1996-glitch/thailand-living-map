@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Our living Bangkok and Chiang Mai map — independent fashion, niche fragrances, art and places to explore.">
   <title>Thailand / Living Map</title>
-  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="preconnect" href="https://tiles.openfreemap.org">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,10 +19,11 @@
     })();
   </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="./styles.css?v=4">
   <link rel="stylesheet" href="./trip.css?v=1">
   <link rel="stylesheet" href="./design-system.css?v=1">
-  <link rel="stylesheet" href="./print-club.css?v=2">
+  <link rel="stylesheet" href="./print-club.css?v=3">
 </head>
 <body>
   <div id="app">
@@ -79,8 +80,11 @@
     </div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js" defer></script>
+  <script src="./map-basemap.js?v=1" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
-  <script src="./app.js?v=8" defer></script>
+  <script src="./app.js?v=9" defer></script>
   <script src="./trip-itinerary.js?v=2" defer></script>
 </body>
 </html>
