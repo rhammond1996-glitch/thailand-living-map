@@ -48,9 +48,11 @@
     // Generic style layer names can carry an explicit class filter. Classify
     // as major only if that filter does not ALSO include smaller roads.
     const filterMajor=/motorway|trunk|primary|expressway/.test(filter);
-    const filterOther=/secondary|tertiary|residential|service|minor|path|footway|pedestrian|unclassified/.test(filter);
-    if(filterMajor&&!filterOther)return 'major';
-    if(/secondary|tertiary|collector/.test(filter)&&!filterOther)return 'secondary';
+    const filterSecondary=/secondary|tertiary|collector/.test(filter);
+    const filterMinor=/residential|service|minor|path|footway|pedestrian|unclassified|track|cycle/.test(filter);
+    if(filterMajor&&!filterSecondary&&!filterMinor)return 'major';
+    if(filterSecondary&&!filterMajor&&!filterMinor)return 'secondary';
+    if(filterMinor&&!filterMajor&&!filterSecondary)return 'minor';
     return 'local';
   }
   function applyInkStyle(gl){
