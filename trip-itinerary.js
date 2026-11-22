@@ -81,7 +81,7 @@
    marker=L.circleMarker(point(p),{radius:6,color:'#b3a5b2',weight:1.5,opacity:.78,fillColor:'#fff',fillOpacity:.72}).addTo(markers);
   }
   marker.bindPopup(popup(p,kind,index,number,d?.id));
-  marker.on('click',()=>{if(mobile())focus(p.id);});
+  marker.on('click',()=>{focus(p.id);marker.closePopup();});
   if(!markerById.has(p.id)||kind==='primary')markerById.set(p.id,marker);
  }
  function listOneDay(d){
