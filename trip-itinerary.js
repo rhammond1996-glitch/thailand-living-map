@@ -167,7 +167,7 @@
   $('trip-day-picker').hidden=mode!=='itinerary';
   $('trip-controls').hidden=mode!=='itinerary';
   document.querySelectorAll('#mode-picker button[data-mode]').forEach(b=>{const selected=b.dataset.mode===mode;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
-  if(mode!=='itinerary')$('map-cities').hidden=false;
+  if(mode!=='itinerary')$('map-cities').hidden=true;
   const title=document.querySelector('#drawer-grab .grab-copy strong');if(title)title.textContent=mode==='itinerary'?'YOUR ROUTE':'DISCOVER ↗';
   closeDetails();setUrl();render();
  }
