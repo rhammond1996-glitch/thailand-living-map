@@ -191,23 +191,52 @@
   return Object.values(json.query?.pages||{});
  }
  function photoSearchMatch(title,p,o){
-  const key=(o.wiki||searchName(p)).toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
-  const ignored=new Set(["wat","the","and","chiang","mai","bangkok","of","at","one","art","national","market","thailand","temple","museum"]);
-  const parts=key.split(/\s+/).filter(t=>t.length>=3&&!ignored.has(t));
-  const filename=String(title||"").toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
-  if(parts.length===0)return filename.includes(searchName(p).toLowerCase().split(" ")[0]);
-  return parts.every(t=>filename.includes(t));
+  const file=String(title||"").toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
+  // Screen out attractive but misleading nearby places (e.g. a waterfall
+  // photographed at the same reservoir as the bamboo-raft dining stop).
+  if((o.photoExclude||[]).some(x=>file.includes(String(x).toLowerCase())))return false;
+  const stop=new Set(["the","at","and","of","in","thai","thailand","chiang","mai","bangkok","city","wat","temple","gallery","museum","market","park","art","center","centre","night","festival","bamboo","dining","shop","store","village","nature","lake","road","roadside","official","photograph","photos","raft","architecture","district"]);
+  const aliases=[o.wiki,...(o.photoQueries||[]),searchName(p)].filter(Boolean);
+  return aliases.some(alias=>{
+   const terms=String(alias).toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ").split(/\s+/)
+    .filter(t=>t.length>2&&!stop.has(t));
+   if(!terms.length)return false;
+   // Require all distinctive place tokens for a strict match. A single
+   // "gallery" or "lake" is never enough to establish image identity.
+   return terms.every(t=>file.includes(t));
+  });
+ }
+ async function fetchWikipediaLead(o){
+  if(!o.wiki)return [];
+  try{
+   const q=new URLSearchParams({action:"query",format:"json",origin:"*",prop:"pageimages",
+    titles:o.wiki,pithumbsize:"1180"});
+   const response=await fetch("https://en.wikipedia.org/w/api.php?"+q.toString());
+   if(!response.ok)return [];
+   const j=await response.json();
+   const name=Object.values(j.query?.pages||{}).find(p=>p.pageimage)?.pageimage;
+   if(!name)return [];
+   // Metadata and actual image license come from Commons, never from a
+   // guessed Wikipedia thumbnail URL.
+   return commonsRequest({titles:"File:"+name});
+  }catch(error){console.debug("Wiki lead unavailable",error);return [];}
  }
  async function fetchPhotos(p,o){
   const collected=new Map();
   function addRows(rows,curated=false){
    for(const item of rows){
     const candidate=candidateFromPage(item,curated);
-    if(!candidate||(!curated&&!photoSearchMatch(candidate.title,p,o)))continue;
+    if(!candidate)continue;
+    if((o.photoExclude||[]).some(x=>candidate.title.toLowerCase().includes(String(x).toLowerCase())))continue;
+    if(!curated&&!photoSearchMatch(candidate.title,p,o))continue;
     const key=candidate.title.toLowerCase();
     if(!collected.has(key))collected.set(key,candidate);
    }
   }
+  // 1. The cover of a specific, named Wikipedia article is more reliable
+  // than a generic Commons search result.
+  if(o.wiki)addRows(await fetchWikipediaLead(o),true);
+  // 2. An exact-location Wikimedia Commons category, where available.
   if(o.commonsCategory){
    try{
     const pages=await commonsRequest({generator:"categorymembers",
@@ -215,25 +244,24 @@
     addRows(pages,true);
    }catch(error){console.debug("Commons venue category unavailable",error);}
   }
-  // A named venue is important: query the exact name first. Broad category
-  // searches, which can show unrelated parts of the city, are not acceptable.
-  const term=String(o.wiki||searchName(p)).trim();
-  const queryNames=[term+" "+p.city,term].filter((x,i,arr)=>x&&arr.indexOf(x)===i);
+  // 3. Carefully matched filenames for this *specific* venue. Using
+  // alternate transliterations catches places the English spelling misses.
+  const terms=[...(o.photoQueries||[]),o.wiki,searchName(p)].filter(Boolean);
+  const queryNames=[...new Set(terms.map(x=>String(x).trim()).filter(Boolean))].slice(0,4);
   for(const q of queryNames){
-   if(collected.size>=18)break;
+   if(collected.size>=25)break;
    try{
     const pages=await commonsRequest({generator:"search",gsrsearch:q,
-      gsrnamespace:"6",gsrlimit:"40"});
+     gsrnamespace:"6",gsrlimit:"35"});
     addRows(pages,false);
    }catch(error){console.debug("Commons search unavailable",error);}
   }
   const ranked=[...collected.values()].sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
-  // Avoid displaying an entire gallery from a single numbered camera burst.
   const limited=[],seriesCount=new Map();
   for(const photo of ranked){
    const series=photo.title.toLowerCase().replace(/\d{1,5}/g,"").replace(/[_()\-.]/g," ").replace(/\s+/g," ").trim();
    const n=seriesCount.get(series)||0;
-   if(n>=11)continue;
+   if(n>=6)continue;
    limited.push(photo);seriesCount.set(series,n+1);
    if(limited.length===14)break;
   }
