@@ -25,11 +25,11 @@
  };
  const factsFor=(p,o)=>{
   const x=[];
-  if(o.hours)x.push(["OPEN",o.hours]);
+  x.push(["OPEN",o.hours||"Check current venue hours"]);
   if(o.dates||isBab(p))x.push(["DATES",o.dates||"29 Oct 2026 – 28 Feb 2027"]);
   if(o.count)x.push(["ARTWORKS",o.count]);
   else if(o.items?.length)x.push([o.listing==="ARTISTS"?"FEATURES":o.listing==="STORES"?"SAVED STOPS":"TO EXPLORE",o.items.length+" bookmarked"]);
-  if(o.visit)x.push(["VISIT TIME",o.visit]);
+  x.push(["VISIT TIME",o.visit||"Flexible stop"]);
   if(o.transit)x.push(["GETTING THERE",o.transit]);
   return x;
  };
@@ -39,7 +39,12 @@
   const pieces=h.split(/\s*;\s*/).map(s=>s.trim()).filter(Boolean);
   // When source notes are one narrative sentence, don't pretend it is multiple vendors.
   if(pieces.length>1)return pieces.slice(0,9).map(v=>({name:v}));
-  return [];
+  if(!h)return [];
+  // A single narrative highlight is still useful: present it as our own field
+  // note, never as an invented store, exhibit, artist or event.
+  const type=typeFor(p);
+  const label=type==="STORES"?"Our shopping focus":type==="EXPLORE"?"What to experience":type==="THE SCENE"?"The atmosphere":type==="FINDS"?"What to look for":"Why we saved it";
+  return [{name:label,where:p.location_type||p.city,note:h}];
  };
  const introFor=(p,o)=>o.intro||String(p.highlights||p.location_type||"Discover this stop in our Thailand field guide.");
  function chipIcon(p){
