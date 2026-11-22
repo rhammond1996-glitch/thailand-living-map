@@ -35,7 +35,8 @@
  };
   const itemsFor=(p,o)=>{
   if(o.items?.length){
-   return o.items.filter(it=>it&&String(it.name||"").trim());
+   return o.items.filter(it=>it&&String(it.name||"").trim()&&
+    !/^(biennale (exhibition|presentation|installations|artwork)|independent designers)$/i.test(String(it.name).trim()));
   }
   const note=String(p.highlights||"").trim();
   if(!note)return [];
@@ -217,7 +218,7 @@
   for(const photo of ranked){
    const series=photo.title.toLowerCase().replace(/\d{1,5}/g,"").replace(/[_()\-.]/g," ").replace(/\s+/g," ").trim();
    const n=seriesCount.get(series)||0;
-   if(n>=4)continue;
+   if(n>=11)continue;
    limited.push(photo);seriesCount.set(series,n+1);
    if(limited.length===14)break;
   }
@@ -227,7 +228,7 @@
  function showPhoto(p,index){
   const photos=cache.get(p.id)?.photos||[];
   if(!photos.length)return;
-  let selected=(Number(index)||0+photos.length)%photos.length;
+  let selected=((Number(index)||0)+photos.length)%photos.length;
   if(lightbox)lightbox.remove();
   const el=document.createElement("div");
   el.className="visit-lightbox";
