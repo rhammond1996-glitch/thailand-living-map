@@ -53,7 +53,7 @@
    return '<div class="visit-photo"><img src="'+html(photo.url)+'" alt="'+html("Photo of "+displayName(p,o))+'" loading="eager" decoding="async">'+
     '<div class="visit-photo-foot"><span>FIELD NOTES / '+html(p.city.toUpperCase())+'</span><a href="'+html(photo.page)+'" target="_blank" rel="noopener noreferrer">IMAGE SOURCE ↗</a></div></div>';
   }
-  return '<div class="visit-poster" style="--visit-ink:'+html((window.STYLES?.[split(p)[0]]||{color:"#6748D8"}).color)+'">'+
+  return '<div class="visit-poster" style="--visit-ink:'+html((STYLES?.[split(p)[0]]||{color:"#6748D8"}).color)+'">'+
    '<div class="visit-poster-upper"><span>'+html(p.city.toUpperCase())+' / THAILAND</span><span>° 2027</span></div>'+
    '<div class="visit-poster-symbol" aria-hidden="true">✳</div>'+
    '<strong>'+html(displayName(p,o))+'</strong><small>OUR LIVING FIELD GUIDE</small>'+
@@ -96,7 +96,7 @@
  }
  function makeCard(p){
   const o=cards[p.id]||{};
-  const primary=split(p)[0]||"All", c=window.STYLES?.[primary]||{color:"#6748D8",label:primary};
+  const primary=split(p)[0]||"All", c=STYLES?.[primary]||{color:"#6748D8",label:primary};
   const sub=o.eyebrow||(isBab(p)?"BANGKOK ART BIENNALE / 2026–27":"THAILAND / "+(c.label||primary).toUpperCase());
   const facts=factsFor(p,o), tabName=o.listing||typeFor(p), poster=renderHero(p,o);
   const tabs=[["photos","PHOTOS"],["features",tabName],["about","ABOUT"]];
@@ -152,7 +152,7 @@
   return found.slice(0,5);
  }
  function syncPhotos(id){
-  const panel=cardEl(), p=window.state?.places?.find(x=>String(x.id)===String(id));
+  const panel=cardEl(), p=state.places?.find(x=>String(x.id)===String(id));
   if(!p||panel.hidden||panel.dataset.placeId!==String(id))return;
   const o=cards[id]||{};
   const hero=panel.querySelector(".visit-hero");
@@ -181,7 +181,7 @@
   const tab=e.target.closest("#place-detail [data-visit-tab]");
   if(!tab)return;
   const panel=cardEl(), id=panel.dataset.placeId;
-  const p=window.state?.places?.find(x=>String(x.id)===String(id));
+  const p=state.places?.find(x=>String(x.id)===String(id));
   if(!p)return;
   const chosen=tab.dataset.visitTab;
   panel.querySelectorAll(".visit-tab").forEach(b=>{const active=b===tab;b.classList.toggle("is-active",active);b.setAttribute("aria-selected",String(active));});
