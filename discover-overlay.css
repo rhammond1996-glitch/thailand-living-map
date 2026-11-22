@@ -753,7 +753,7 @@ body.itinerary-mode #places-panel .discover-head-actions .discover-location{
   width:34px;height:36px;min-width:34px;flex-basis:34px
  }
  #places-panel #city-toggle{
-  min-height:36px;height:36px;max-width:88px;
+  min-height:36px;height:36px;max-width:102px;
   padding:0 6px;font-size:10px;
  }
  #places-panel .discover-panel-head #favorites-only.favorites-filter{
@@ -781,7 +781,7 @@ body.itinerary-mode #places-panel .discover-head-actions .discover-location{
 @media(max-width:360px){
  #places-panel .discover-panel-head h2{font-size:17px}
  #places-panel .discover-head-actions{gap:4px}
- #places-panel #city-toggle{max-width:74px}
+ #places-panel #city-toggle{max-width:84px;font-size:9px}
  #places-panel .discover-panel-head #favorites-only.favorites-filter{width:33px;min-width:33px;flex-basis:33px}
  #places-panel .discover-panel-head #discover-close{width:33px;min-width:33px;flex-basis:33px}
  #places-panel .discover-search-row #category-toggle.filter-toggle{width:77px;max-width:77px;flex-basis:77px}
