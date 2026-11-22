@@ -14,6 +14,8 @@
     waterLine:'#2BC7E8',
     park:'#17392F',
     building:'#162742',
+    buildingOutline:'rgba(113,143,183,0.16)',
+    buildingLine:'#718FAC',
     minor:'#304764',
     lime:'#D6F64B',
     roadMajor:'#9FB7C9',
@@ -56,6 +58,8 @@
               gl.setPaintProperty(layerId,'fill-color',COLORS.park);
             }else if(/building/.test(name)){
               gl.setPaintProperty(layerId,'fill-color',COLORS.building);
+              // Subtle single-pixel geometry edge, not a bright street grid.
+              gl.setPaintProperty(layerId,'fill-outline-color',COLORS.buildingOutline);
             }else if(/land|earth|residential|industrial/.test(name)){
               gl.setPaintProperty(layerId,'fill-color',COLORS.land);
             }
@@ -66,7 +70,10 @@
             }else if(/boundary|admin|border|country|province|state/.test(name)){
               gl.setPaintProperty(layerId,'line-color',COLORS.boundary);
               gl.setPaintProperty(layerId,'line-opacity',0.3);
-            }else if(/building|landcover|park|forest|wood|grass|garden/.test(name)){
+            }else if(/building/.test(name)){
+              gl.setPaintProperty(layerId,'line-color',COLORS.buildingLine);
+              gl.setPaintProperty(layerId,'line-opacity',0.16);
+            }else if(/landcover|park|forest|wood|grass|garden/.test(name)){
               gl.setPaintProperty(layerId,'line-color',COLORS.minor);
               gl.setPaintProperty(layerId,'line-opacity',0.38);
             }else if(/transport|road|highway|motorway|street|bridge|tunnel|path|rail|trunk|primary|secondary|tertiary|footway|track/.test(name)){
