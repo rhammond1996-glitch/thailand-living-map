@@ -282,13 +282,54 @@ window.VENUE_RESEARCH = {
     "status": "Saved",
     "links": [
       [
+        "OFFICIAL WEBSITE",
+        "https://palitpalit.myshopify.com/"
+      ],
+      [
         "OFFICIAL STORE DIRECTORY",
         "https://palitpalit.myshopify.com/pages/offline-stores-thailand"
       ]
     ],
-    "photoQueries": [
-      "Palit Chiang Mai Nimman"
-    ]
+    "photoLabel": "PALIT / OFFICIAL COLLECTION",
+    "photoSelections": [
+      {
+        "title": "Palit Jasmine top — handwoven cotton",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/149.jpg?v=1789117143&width=533",
+        "page": "https://palitpalit.myshopify.com/products/palit-jasmine-top",
+        "artist": "PALIT"
+      },
+      {
+        "title": "Palit PL T-shirt",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/R0005592.png?v=1781777436&width=533",
+        "page": "https://palitpalit.myshopify.com/products/pl-t-shirt",
+        "artist": "PALIT"
+      },
+      {
+        "title": "Palit Still jacket — menswear",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/PALIT-Autumn25-413.jpg?v=1766908810&width=533",
+        "page": "https://palitpalit.myshopify.com/products/palit-still-jacket-men",
+        "artist": "PALIT"
+      },
+      {
+        "title": "Palit Loone vest — menswear",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/PALIT-Autumn25-1167.jpg?v=1765697670&width=533",
+        "page": "https://palitpalit.myshopify.com/products/palit-loone-vest-men-charcoal",
+        "artist": "PALIT"
+      },
+      {
+        "title": "Palit Lola top",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/cc0bfc92594b2a76b28a64feb2c042e0.jpg?v=1788259955&width=533",
+        "page": "https://palitpalit.myshopify.com/",
+        "artist": "PALIT"
+      },
+      {
+        "title": "Palit Daisy skirt",
+        "url": "https://palitpalit.myshopify.com/cdn/shop/files/f9465dad7d807043fd74cfa0dc3d317e.jpg?v=1788260319&width=533",
+        "page": "https://palitpalit.myshopify.com/",
+        "artist": "PALIT"
+      }
+    ],
+    "photoQueries": []
   },
   "cm-september": {
     "confidence": "location-check",
