@@ -1,4 +1,4 @@
-/* Research overlay for 76 current destinations, kept separate from the live Google Sheet. All direct links below were screened during the 2026-11-22 review. Missing official links do not imply a business is verified. */
+/* Source-screened venue reference overlay, updated 2026-11-22. */
 window.VENUE_RESEARCH = {
   "bkk-centralworld": {
     "confidence": "established",
@@ -53,10 +53,17 @@ window.VENUE_RESEARCH = {
     ]
   },
   "bkk-daniya": {
-    "confidence": "not-sourced",
+    "confidence": "business",
     "status": "Saved",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "OFFICIAL PERFUMERY",
+        "https://daniyaperfumes.com/"
+      ]
+    ],
+    "photoQueries": [
+      "Daniya Perfumes Bangkok"
+    ]
   },
   "bkk-tres": {
     "confidence": "business",
@@ -166,20 +173,22 @@ window.VENUE_RESEARCH = {
     ]
   },
   "bkk-siamcenter": {
-    "confidence": "not-sourced",
-    "status": "Saved",
-    "links": [],
-    "photoQueries": []
-  },
-  "bkk-songwat": {
     "confidence": "established",
     "status": "Saved",
     "links": [
       [
-        "NEIGHBORHOOD GUIDE",
-        "https://www.timeout.com/bangkok/things-to-do/siam-square-your-ultimate-neighbourhood-guide"
+        "OFFICIAL BRAND DIRECTORY",
+        "https://www.siamcenter.co.th/en/directory"
       ]
     ],
+    "photoQueries": [
+      "Siam Center Bangkok"
+    ]
+  },
+  "bkk-songwat": {
+    "confidence": "established",
+    "status": "Saved",
+    "links": [],
     "photoQueries": [
       "Song Wat Road Bangkok"
     ]
@@ -311,16 +320,27 @@ window.VENUE_RESEARCH = {
     ]
   },
   "cm-vintage": {
-    "confidence": "not-sourced",
+    "confidence": "needs-review",
     "status": "Saved",
     "links": [],
     "photoQueries": []
   },
   "cm-hola": {
-    "confidence": "needs-review",
+    "confidence": "location-check",
     "status": "Research",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "CHIANG MAI VINTAGE GUIDE",
+        "https://www.timeout.com/chiang-mai/shopping/chiang-mais-best-vintage-stores-and-markets"
+      ],
+      [
+        "STORE LOCATION GUIDE",
+        "https://www.corner.inc/place/pJdf5wNW6eHY"
+      ]
+    ],
+    "photoQueries": [
+      "Hola Hola Secondhand Chiang Mai"
+    ]
   },
   "cm-jing": {
     "confidence": "established",
@@ -395,28 +415,64 @@ window.VENUE_RESEARCH = {
     ]
   },
   "bkk-g-bangkok": {
-    "confidence": "not-sourced",
+    "confidence": "business",
     "status": "Saved",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "VENUE INSTAGRAM",
+        "https://www.instagram.com/god_bkk/"
+      ]
+    ],
+    "photoQueries": [
+      "G Bangkok GOD nightclub"
+    ]
   },
   "cm-6ixcret": {
-    "confidence": "not-sourced",
+    "confidence": "location-check",
     "status": "Saved",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "VENUE GUIDE",
+        "https://www.visitthailandtoday.com/nightlife/chiang-mai/6ixcret-show"
+      ]
+    ],
+    "photoQueries": [
+      "6ixcret Show Chiang Mai"
+    ]
   },
   "bkk-dual": {
-    "confidence": "not-sourced",
+    "confidence": "business",
     "status": "Saved",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "VENUE INSTAGRAM",
+        "https://www.instagram.com/dualbkk/"
+      ],
+      [
+        "UPCOMING EVENT LISTINGS",
+        "https://ra.co/events/2530732"
+      ]
+    ],
+    "photoQueries": [
+      "DUAL Bangkok nightclub"
+    ]
   },
   "bkk-warehouse-talatnoi": {
-    "confidence": "not-sourced",
+    "confidence": "established",
     "status": "Saved",
-    "links": [],
-    "photoQueries": []
+    "links": [
+      [
+        "OFFICIAL WEBSITE & EVENTS",
+        "https://www.thewarehousebkk.com/"
+      ],
+      [
+        "VENUE INSTAGRAM",
+        "https://www.instagram.com/thewarehousebkk/"
+      ]
+    ],
+    "photoQueries": [
+      "The Warehouse Talat Noi Bangkok"
+    ]
   },
   "bkk-subwerk": {
     "confidence": "business",
@@ -842,6 +898,10 @@ window.VENUE_RESEARCH = {
       [
         "THAILAND TOURISM",
         "https://www.thailandtravel.or.jp/bo-sang-umbrella-festival/"
+      ],
+      [
+        "FESTIVAL DATES · NOT CONFIRMED",
+        "https://thailandwhatson.com/events/bo-sang-umbrella-festival-2027/"
       ]
     ],
     "photoQueries": [
@@ -877,6 +937,9 @@ window.VENUE_RESEARCH = {
       "Huay Tung Tao lake bamboo huts",
       "Huay Tueng Thao Reservoir",
       "Huay Tung Tao Lake Chiang Mai"
+    ],
+    "photoExclude": [
+      "waterfall"
     ]
   },
   "cm-watphalat": {
