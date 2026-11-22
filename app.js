@@ -330,7 +330,8 @@ function initializeMap(){
 }
 /* Print atlas clustering. Each place keeps its exact geographical coordinate.
  * At broader zoom levels, nearby points become a transparent overprint badge
- * with a numeric count. Increasing zoom reveals individual destination glyphs.
+ * with a numeric count for groups of six or more. Groups of 2–5
+ * stay individually visible and may overlap; zooming separates them.
  * Same-building duplicates remain discoverable in a small list at street zoom.
  */
 function clusterRadius(zoom){
@@ -394,8 +395,10 @@ function renderExploreClusters(){
  const zoom=map.getZoom();
  const groups=collectMapClusters(exploreEntries,zoom,(latlng,z)=>map.project(latlng,z));
  for(const group of groups){
-  if(group.items.length===1){
-   markers.addLayer(group.items[0].marker);
+  if(group.items.length<6){
+   // Groups of 2–5 remain individual destination glyphs, even if overlapping.
+   // Only six or more nearby places are represented by a combined cluster.
+   for(const entry of group.items)markers.addLayer(entry.marker);
    continue;
   }
   const centroid=map.unproject(L.point(group.x,group.y),zoom);
