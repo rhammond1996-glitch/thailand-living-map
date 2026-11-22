@@ -103,10 +103,8 @@
  }
  function renderPlanTab(p,o){
   const rows=[];
-  if(goodNote(o.hours))rows.push(["OPENING HOURS",o.hours]);
-  if(goodNote(o.transit))rows.push(["HOW TO GET THERE",o.transit]);
-  if(goodNote(o.visit))rows.push(["TIME TO ALLOW",o.visit]);
-  if(goodNote(o.dates))rows.push(["EVENT DATES",o.dates]);
+  // Opening hours, route and timing already appear above. Keep this
+  // section exclusively for practical details that add something new.
   if(goodNote(p.price_note))rows.push(["COST / NOTES",p.price_note]);
   if(goodNote(o.practical))rows.push(["GOOD TO KNOW",o.practical]);
   if(needsCheck(p.verification)&&!/^(pin|location)/i.test(String(p.verification).trim()))rows.push(["BEFORE YOU GO",p.verification]);
@@ -225,6 +223,53 @@
   }
   return limited;
  }
+ let lightbox=null;
+ function showPhoto(p,index){
+  const photos=cache.get(p.id)?.photos||[];
+  if(!photos.length)return;
+  let selected=(Number(index)||0+photos.length)%photos.length;
+  if(lightbox)lightbox.remove();
+  const el=document.createElement("div");
+  el.className="visit-lightbox";
+  el.setAttribute("role","dialog");
+  el.setAttribute("aria-modal","true");
+  el.setAttribute("aria-label","Destination photo gallery");
+  const paint=()=>{
+   selected=(selected+photos.length)%photos.length;
+   const f=photos[selected];
+   el.innerHTML='<div class="visit-lightbox-bar"><span>'+html(displayName(p,cards[p.id]||{}))+
+     ' <small>'+String(selected+1)+' / '+photos.length+'</small></span>'+
+     '<button type="button" data-lightbox-close aria-label="Close gallery">×</button></div>'+
+     '<div class="visit-lightbox-stage"><button type="button" data-lightbox-prev aria-label="Previous photo">‹</button>'+
+     '<img src="'+html(f.url)+'" alt="'+html(displayName(p,cards[p.id]||{})+' photo '+(selected+1))+'">'+
+     '<button type="button" data-lightbox-next aria-label="Next photo">›</button></div>'+
+     '<div class="visit-lightbox-bottom"><span>'+String(selected+1).padStart(2,"0")+
+     ' / '+String(photos.length).padStart(2,"0")+'</span><span>SWIPE THROUGH THE PLACE</span></div>';
+  };
+  paint();
+  el.addEventListener("click",e=>{
+   if(e.target===el||e.target.closest("[data-lightbox-close]")){close();return;}
+   if(e.target.closest("[data-lightbox-prev]")){selected--;paint();}
+   if(e.target.closest("[data-lightbox-next]")){selected++;paint();}
+  });
+  let touchStart=null;
+  el.addEventListener("touchstart",e=>{touchStart=e.touches?.[0]?.clientX??null;},{passive:true});
+  el.addEventListener("touchend",e=>{
+   if(touchStart===null)return;
+   const dx=(e.changedTouches?.[0]?.clientX??touchStart)-touchStart;
+   touchStart=null;
+   if(Math.abs(dx)>50){selected+=dx<0?1:-1;paint();}
+  },{passive:true});
+  const onKey=e=>{
+   if(e.key==="Escape"){e.preventDefault();e.stopPropagation();close();}
+   else if(e.key==="ArrowRight"){e.preventDefault();selected++;paint();}
+   else if(e.key==="ArrowLeft"){e.preventDefault();selected--;paint();}
+  };
+  function close(){document.removeEventListener("keydown",onKey,true);el.remove();if(lightbox===el)lightbox=null;}
+  document.addEventListener("keydown",onKey,true);
+  document.body.appendChild(el);lightbox=el;
+  el.querySelector("[data-lightbox-close]")?.focus();
+ }
  function syncPhotos(id){
   const panel=cardEl(), p=state.places?.find(x=>String(x.id)===String(id));
   if(!p||panel.hidden||panel.dataset.placeId!==String(id))return;
@@ -252,6 +297,20 @@
   }else syncPhotos(p.id);
  };
  document.addEventListener("click",function(e){
+  const photo=e.target.closest("#place-detail [data-photo-index]");
+  if(photo){
+   const id=cardEl()?.dataset.placeId;
+   const p=state.places?.find(x=>String(x.id)===String(id));
+   if(p){e.preventDefault();showPhoto(p,photo.dataset.photoIndex);}
+   return;
+  }
+  const hero=e.target.closest("#place-detail [data-visit-tab-open]");
+  if(hero){
+   const tabs=cardEl()?.querySelectorAll("[data-visit-tab]")||[];
+   const chosen=[...tabs].find(b=>b.dataset.visitTab===hero.dataset.visitTabOpen);
+   if(chosen){chosen.click();chosen.scrollIntoView({behavior:"smooth",block:"nearest"});}
+   return;
+  }
   const tab=e.target.closest("#place-detail [data-visit-tab]");
   if(!tab)return;
   const panel=cardEl(), id=panel.dataset.placeId;
