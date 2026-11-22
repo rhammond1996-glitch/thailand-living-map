@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="./design-system.css?v=1">
   <link rel="stylesheet" href="./print-club.css?v=5">
   <link rel="stylesheet" href="./place-cards.css?v=1">
-  <link rel="stylesheet" href="./discover-overlay.css?v=3">
+  <link rel="stylesheet" href="./discover-overlay.css?v=4">
 </head>
 <body>
   <div id="app">
@@ -53,24 +53,30 @@
       <button class="discover-scrim" id="discover-scrim" type="button" hidden aria-label="Close Discover"></button>
       <aside class="places-panel discover-panel" id="places-panel" hidden role="dialog" aria-modal="true" aria-labelledby="discover-title" aria-label="Discover destinations">
         <div class="discover-panel-head">
-          <div class="discover-head-copy"><h2 id="discover-title">DISCOVER <span>↗</span></h2><p id="drawer-summary">Places around Thailand</p></div>
-          <button class="discover-close" id="discover-close" type="button" aria-label="Close Discover">×</button>
+          <div class="discover-head-copy">
+            <h2 id="discover-title">DISCOVER</h2>
+            <p id="drawer-summary" class="visually-hidden" aria-live="polite">Places around Thailand</p>
+          </div>
+          <div class="discover-head-actions">
+            <div class="discover-location" id="discover-location">
+              <button id="city-toggle" class="discover-city-toggle" type="button" aria-controls="map-cities" aria-haspopup="true" aria-expanded="false" aria-label="Choose city: All Thailand"><span id="city-label">ALL</span><span aria-hidden="true">⌄</span></button>
+              <nav class="city-picker" id="map-cities" hidden aria-label="Choose city">
+                <button type="button" class="active" data-city="All" aria-pressed="true">All Thailand</button>
+                <button type="button" data-city="Bangkok" aria-pressed="false">Bangkok</button>
+                <button type="button" data-city="Chiang Mai" aria-pressed="false">Chiang Mai</button>
+              </nav>
+            </div>
+            <button type="button" id="favorites-only" class="favorites-filter" aria-pressed="false" aria-label="Show saved places (0)" title="Show saved places"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg><span id="favorites-count">0</span></button>
+            <button class="discover-close" id="discover-close" type="button" aria-label="Close Discover">×</button>
+          </div>
         </div>
         <div class="panel-content">
-          <div class="discover-location" id="discover-location">
-            <nav class="city-picker" id="map-cities" aria-label="Choose city">
-              <button type="button" class="active" data-city="All" aria-pressed="true">All</button>
-              <button type="button" data-city="Bangkok" aria-pressed="false">Bangkok</button>
-              <button type="button" data-city="Chiang Mai" aria-pressed="false">Chiang Mai</button>
-            </nav>
-          </div>
           <section id="trip-controls" class="trip-controls" hidden aria-label="Itinerary options"></section>
           <div class="browse-tools">
             <span id="results" hidden aria-hidden="true" style="display:none"></span>
-            <label class="search-label" for="place-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg></span><input id="place-search" type="search" placeholder="Find a place…" autocomplete="off"></label>
-            <div class="browse-actions">
-              <button type="button" id="category-toggle" aria-controls="filter-panel" aria-expanded="false" class="filter-toggle"><span>FILTER</span><span id="filter-value">All interests</span><span aria-hidden="true">⌄</span></button>
-              <button type="button" id="favorites-only" class="favorites-filter" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/></svg><span>SAVED</span><span id="favorites-count">0</span></button>
+            <div class="discover-search-row">
+              <label class="search-label" for="place-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg></span><input id="place-search" type="search" placeholder="Find a place…" autocomplete="off"></label>
+              <button type="button" id="category-toggle" aria-controls="filter-panel" aria-expanded="false" class="filter-toggle" aria-label="Filter by interest"><span id="filter-value">FILTER</span><span aria-hidden="true">⌄</span></button>
             </div>
             <div id="filter-panel" class="filter-panel" hidden>
               <div class="filter-heading-row"><strong>INTERESTS</strong><button type="button" id="clear-category">Clear</button></div>
