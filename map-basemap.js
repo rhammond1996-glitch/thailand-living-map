@@ -11,7 +11,7 @@
   const NAME_LABELS=/label|name|place|poi|city|town|village|country|state|transport|road|street|waterway|airport|park/i;
   const ENGLISH_NAME=['coalesce',
     ['get','name_en'],['get','name:en'],['get','name:latin'],
-    ['get','name:international'],['get','name_int'],['get','name'],['get','ref'],''];
+    ['get','name:international'],['get','name_int'],['get','name_latin'],['get','name'],['get','ref'],''];
   function stylePrintCartography(gl){
     try{
       const layers=gl.getStyle()?.layers||[];
@@ -61,6 +61,12 @@
     let layer,loaded=false,abandoned=false;
     try{
       layer=L.maplibreGL({style:STYLE,attributionControl:false}).addTo(leafletMap);
+      // Required tile/data attribution is visible with the Leaflet controls.
+      leafletMap.attributionControl?.addAttribution(
+        '<a href="https://openfreemap.org/">OpenFreeMap</a> · '+
+        '<a href="https://www.openmaptiles.org/">OpenMapTiles</a> · '+
+        '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      );
       const gl=layer.getMaplibreMap();
       if(!gl){leafletMap.removeLayer(layer);return installFallback(leafletMap);}
       const onLoad=()=>{
