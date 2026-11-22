@@ -69,6 +69,29 @@ const CATEGORY_SYMBOLS={
   // Four balanced petals / recovery emblem
   'Wellness & beauty':'<ellipse cx="16" cy="9" rx="5" ry="8"/><ellipse cx="23" cy="16" rx="8" ry="5"/><ellipse cx="16" cy="23" rx="5" ry="8"/><ellipse cx="9" cy="16" rx="8" ry="5"/><circle cx="16" cy="16" r="3"/>'
 };
+/* CMY plate glyphs: recognizable map categories, with slightly misregistered
+ * translucent ink overlaps rather than flat black silhouettes.
+ * Drawn on the existing category tiles; no decorative artwork on the map.
+ */
+const CMY_GLYPHS={
+ 'All':'<rect x="2" y="3" width="12" height="12" fill="#28D5F1"/><rect x="18" y="3" width="12" height="12" fill="#FFDA33"/><rect x="2" y="18" width="12" height="12" fill="#F52D9B"/><rect x="18" y="18" width="12" height="12" fill="#2040DD"/>',
+ 'Fragrances':'<rect x="7" y="10" width="18" height="19" rx="1.5" fill="#19DFFA"/><rect x="11" y="5" width="10" height="6" fill="#FFF8F0"/><rect x="13" y="2" width="6" height="4" fill="#152EDD"/><path d="M7 20c7-12 14-5 18 0v9H7z" fill="#F92B9B" opacity=".84"/><path d="M13 15a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z" fill="#E3FF42"/>',
+ 'Independent fashion':'<path d="m16 3 4 3v2l-4 2-4-2V6z" fill="#1D42F4"/><path d="M16 10 3 23h26L16 10Z" fill="#F52F9A"/><path d="M3 23h26v5H3z" fill="#19D9ED"/><path d="M10 23 16 15l6 8Z" fill="#E7FD44" opacity=".85"/>',
+ 'Designer replicas':'<rect x="4" y="10" width="24" height="20" rx="1.5" fill="#FFDB36"/><path d="M10 13V8a6 6 0 0 1 12 0v5" fill="none" stroke="#F42D9A" stroke-width="4" stroke-linecap="round"/><path d="M4 19H28V30H4Z" fill="#F52D9A" opacity=".7"/><circle cx="20" cy="23" r="6" fill="#1EDBF4" opacity=".72"/>',
+ 'Vintage':'<path d="m16 1 3.2 8.2 8.3-4.7-4.7 8.3 8.2 3.2-8.2 3.2 4.7 8.3-8.3-4.7-3.2 8.2-3.2-8.2-8.3 4.7 4.7-8.3-8.2-3.2 8.2-3.2-4.7-8.3 8.3 4.7Z" fill="#FFF7EB"/><circle cx="16" cy="16" r="6" fill="#F72E99"/><circle cx="16" cy="16" r="2.5" fill="#19DDF2"/>',
+ 'Jewelry & artisan':'<path d="M7 6h18l7 9-16 16L0 15Z" fill="#13DFF6"/><path d="m0 15 8-9 8 9Z" fill="#F42E9D"/><path d="m16 15 9-9 7 9Z" fill="#E2FE3D"/><path d="m0 15 16 16 0-16Z" fill="#FC32A2" opacity=".83"/><path d="m16 15 16 0-16 16Z" fill="#1B44E5" opacity=".75"/>',
+ 'Creative districts':'<rect x="2" y="2" width="14" height="14" fill="#F32C9C"/><rect x="18" y="2" width="12" height="12" fill="#E8FF41"/><rect x="3" y="18" width="13" height="12" fill="#1344E8"/><rect x="19" y="17" width="11" height="13" fill="#FFF8F1"/><path d="M10 10h12v12H10z" fill="#18DEF3" opacity=".75"/>',
+ 'Gay Nightlife':'<path d="M16 29 3.5 17.5C-3 9.5 4 2 11 5c2.5 1 4 3 5 4.6C19 4 24 2 28 6c6 6 2 13-12 23Z" fill="#F327A0"/><path d="m16 29-2-19C20 1 28 4 30 10c2 8-6 14-14 19Z" fill="#24D9F3" opacity=".8"/><path d="M3 14h25l-12 15Z" fill="#DFFF3C" opacity=".56"/>',
+ 'Underground & Raves':'<path d="M17 1 5 17h9l-3 14 17-20h-11Z" fill="#E3FF39"/><path d="M9 20h17l-15 11Z" fill="#F32998" opacity=".9"/><rect x="3" y="3" width="5" height="5" fill="#1BDFF0"/><rect x="25" y="23" width="5" height="5" fill="#16D9F3"/>',
+ 'Architecture & heritage':'<path d="M3 9 16 2l13 7Z" fill="#F72999"/><rect x="3" y="10" width="26" height="4" fill="#E7FC49"/><rect x="6" y="15" width="5" height="12" fill="#1AD6F5"/><rect x="14" y="15" width="5" height="12" fill="#FFF9EF"/><rect x="22" y="15" width="5" height="12" fill="#1AD6F5"/><rect x="2" y="28" width="28" height="3" fill="#E3FC40"/>',
+ 'Temples & culture':'<path d="m16 0 4 7h-8Z" fill="#E4FF3F"/><path d="M9 9h14l5 5H4z" fill="#F42C9B"/><path d="M5 16h22l4 6H1Z" fill="#FFAC39"/><path d="M9 23h14v7H9Z" fill="#FFF7EA"/><path d="M13 23h6v7h-6Z" fill="#28D7F5"/>',
+ 'Art & design':'<path d="m16 1 15 15-15 15L1 16Z" fill="#28DFF8"/><path d="m16 1 15 15-15 0Z" fill="#F02F9A" opacity=".86"/><path d="m1 16 15 15 0-15Z" fill="#E2FE42" opacity=".9"/><path d="M16 9 23 16 16 23 9 16Z" fill="#1A35D6" opacity=".78"/>',
+ 'Bangkok Art Biennale':'<rect x="2" y="2" width="28" height="28" fill="#FFEE60"/><rect x="5" y="5" width="22" height="22" fill="#F42D9C"/><path d="m16 4 2.8 8.8L28 16l-9.2 3.2L16 28l-2.8-8.8L4 16l9.2-3.2Z" fill="#1AD9EE"/><circle cx="16" cy="16" r="4" fill="#FFF7EF"/>',
+ 'Nature & adventure':'<path d="M0 29 13 6 24 29Z" fill="#26DFF5"/><path d="m11 29 11-17 10 17Z" fill="#1439E8"/><circle cx="25" cy="6" r="6" fill="#E8FF43"/><path d="m0 29 13-23 0 23Z" fill="#E3FF3A" opacity=".76"/>',
+ 'Wildlife':'<ellipse cx="7" cy="9" rx="3.5" ry="5" fill="#E2FE43"/><ellipse cx="16" cy="6" rx="3.5" ry="5" fill="#FFF8ED"/><ellipse cx="25" cy="9" rx="3.5" ry="5" fill="#1AD8EF"/><path d="M16 14c-5 0-7 5-11 9-3 6 3 8 8 5 2-1 4-1 6 0 5 3 11 1 8-5-4-4-6-9-11-9Z" fill="#F32D9A"/>',
+ 'Markets & shopping':'<rect x="3" y="12" width="26" height="18" fill="#FFF7ED"/><rect x="3" y="4" width="26" height="8" fill="#E3FF3C"/><path d="M3 4h7v8H3zm13 0h6v8h-6Z" fill="#F32D9A"/><path d="M10 13v16h12V13Z" fill="#1BD8F5" opacity=".8"/><rect x="12" y="20" width="8" height="10" fill="#1743E4"/>',
+ 'Wellness & beauty':'<path d="M16 16 8 1C4 8 5 15 16 16Z" fill="#F72D9A"/><path d="M16 16 24 1c4 8 3 15-8 15Z" fill="#1BDCF2"/><path d="M16 16 2 13c1 10 6 12 14 3Z" fill="#E2FD42" opacity=".86"/><path d="m16 16 14-3c-1 10-6 12-14 3Z" fill="#FF6C36" opacity=".83"/><path d="m16 16-10 7c5 9 10 8 10-7Z" fill="#19DDF4"/><path d="m16 16 10 7c-5 9-10 8-10-7Z" fill="#F42F99"/>'
+};
 const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[
  key,{label,color,symbol:CATEGORY_SYMBOLS[key]||CATEGORY_SYMBOLS.All}
 ]));
@@ -81,7 +104,7 @@ function categoryInk(hex){
  return luminance>.18?'#151515':'#FFFFFF';
 }
 function symbolSVG(category,size=21){
- const path=CATEGORY_SYMBOLS[category]||CATEGORY_SYMBOLS.All;
+ const path=(document.documentElement.dataset.design==='print'&&CMY_GLYPHS[category])||CATEGORY_SYMBOLS[category]||CATEGORY_SYMBOLS.All;
  return '<svg class="category-icon" width="'+size+'" height="'+size+'" viewBox="0 0 32 32" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+path+'</svg>';
 }
 function categoryStamp(category){
