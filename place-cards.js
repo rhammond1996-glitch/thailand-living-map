@@ -134,7 +134,7 @@
      const j=await r.json();
      for(const page of Object.values(j.query?.pages||{})){
       const photo=page.thumbnail?.source;
-      if(photo&&/^https:\/\//.test(photo))found.push({url:photo,page:"https://en.wikipedia.org/wiki/"+encodeURIComponent(page.title.replace(/ /g,"_"))});
+      if(photo&&/^https:\/\//.test(photo))found.push({url:photo,page:page.pageimage?"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(page.pageimage.replace(/ /g,"_")):"https://en.wikipedia.org/wiki/"+encodeURIComponent(page.title.replace(/ /g,"_"))});
      }
     }
    }
