@@ -1,0 +1,367 @@
+/*
+ * DISCOVER / FLOATING FIELD GUIDE — 2026-11-22
+ * The map occupies the whole workspace. Search, favorites, categories, city
+ * selection and itinerary route details live in a user-opened floating dialog.
+ * Separate from the marker dossier and shared across Print / Soft / Type.
+ */
+html[data-design] .workspace{
+  display:block;
+  position:relative;
+  overflow:hidden;
+}
+html[data-design] .workspace .map-wrap{
+  position:absolute;
+  inset:0;
+  grid-column:auto;
+  grid-row:auto;
+  width:100%;
+  height:100%;
+  min-height:0;
+  min-width:0;
+}
+#places-panel.places-panel[hidden],
+#discover-scrim[hidden],
+#map-area-indicator[hidden]{display:none!important}
+
+/* A tiny, optional map-context chip replaces the three-wide location switch. */
+html[data-design] .map-toolbar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+  left:16px;
+  right:16px;
+  top:16px;
+}
+#map-area-indicator{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:43px;
+  margin-right:auto;
+  padding:10px 13px;
+  color:var(--design-text,#171719);
+  background:var(--design-panel,#fffcf4);
+  border:2px solid var(--design-border,#171719);
+  border-radius:var(--design-radius,6px);
+  box-shadow:3px 3px 0 #17171935;
+  font:900 11px/1 var(--body-font,"DM Sans",sans-serif);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+#map-area-indicator span{font-size:13px;color:var(--design-accent,#ef532f)}
+html[data-design] .map-toolbar #locate{margin-left:auto;flex-shrink:0}
+html[data-design] .map-toolbar .day-picker:not([hidden]){
+  flex:1;
+  min-width:0;
+  max-width:min(550px,calc(100% - 54px));
+  margin-right:auto;
+}
+body.itinerary-mode #map-area-indicator{display:none!important}
+html[data-design] .map-wrap .leaflet-bottom.leaflet-right,
+html[data-design] .map-wrap .leaflet-bottom.leaflet-left{bottom:15px}
+
+/* New discover / route entry point in the masthead. */
+.masthead #discover-toggle{
+  height:42px;
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 14px;
+  border:2px solid var(--design-border,#171719);
+  border-radius:var(--design-radius,5px);
+  background:var(--design-accent,#ef532f);
+  color:#fff;
+  box-shadow:3px 3px 0 #171719;
+  font:900 11px/1 var(--body-font,"DM Sans",Arial,sans-serif);
+  letter-spacing:.045em;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.masthead #discover-toggle[aria-expanded="true"]{
+  background:var(--design-contrast,#192ecb);
+  color:#fff;
+}
+.masthead #discover-toggle svg{width:17px;height:17px;flex:none}
+html[data-design="soft"] .masthead #discover-toggle{
+  background:#6b56ba;border-color:#6b56ba;box-shadow:0 5px 14px #30216724;
+}
+html[data-design="type"] .masthead #discover-toggle{
+  background:#a7fe27;color:#171719;border-color:#171719;box-shadow:3px 3px 0 #171719;
+}
+html[data-design="type"] .masthead #discover-toggle[aria-expanded="true"]{background:#fff;color:#171719}
+
+/* Backdrop closes the dialog without changing the current map viewport. */
+#discover-scrim:not([hidden]){
+  display:block;
+  position:absolute;
+  inset:0;
+  z-index:835;
+  width:100%;
+  height:100%;
+  cursor:default;
+  border:0;
+  padding:0;
+  background:#10151870;
+  animation:discover-dim .18s ease-out;
+}
+@keyframes discover-dim{
+  from{opacity:0}to{opacity:1}
+}
+
+/* Panel: a fully dismissible floating card, never a bottom-docked drawer. */
+html[data-design] #places-panel.places-panel:not([hidden]){
+  display:flex;
+  flex-direction:column;
+  position:absolute;
+  z-index:860;
+  top:18px;
+  bottom:18px;
+  left:18px;
+  right:auto;
+  width:min(438px,calc(100% - 36px));
+  height:auto;
+  max-height:none;
+  padding:0;
+  overflow:hidden;
+  border:2px solid var(--design-border,#171719);
+  border-radius:var(--design-radius,11px);
+  background:var(--design-panel,#fffcf4);
+  box-shadow:0 14px 45px #111a1840;
+  transition:none;
+}
+html[data-design="print"] #places-panel.places-panel:not([hidden]){
+  border:2px solid #171719;
+  border-radius:10px;
+  background:#fffcf4;
+  box-shadow:6px 6px 0 #171719;
+}
+html[data-design="soft"] #places-panel.places-panel:not([hidden]){
+  border-color:#8777ab;
+  background:#fcf9ff;
+  box-shadow:0 14px 45px #6e5f8f40;
+}
+html[data-design="type"] #places-panel.places-panel:not([hidden]){
+  border-radius:0;
+  border:2px solid #171719;
+  box-shadow:6px 6px 0 #171719;
+}
+#places-panel .discover-panel-head{
+  flex-shrink:0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  background:var(--design-focus,#dfff40);
+  color:var(--design-text,#171719);
+  border-bottom:2px solid var(--design-border,#171719);
+  padding:18px 17px 14px;
+}
+#places-panel .discover-head-copy{flex:1;min-width:0}
+#places-panel .discover-edition{
+  display:block;
+  font:900 9px/1.25 var(--body-font,"DM Sans",Arial,sans-serif);
+  letter-spacing:.1em;
+  margin-bottom:7px;
+}
+#places-panel .discover-panel-head h2{
+  font:900 27px/1 var(--display-font,"Space Grotesk",sans-serif);
+  letter-spacing:-.07em;
+  margin:0;
+  color:inherit;
+  text-transform:uppercase;
+}
+#places-panel .discover-panel-head h2 span{color:var(--design-accent,#ef532f)}
+#places-panel .discover-panel-head p{
+  margin:8px 0 0;
+  font-size:11px;
+  font-weight:750;
+  color:var(--design-muted,#534c48);
+  line-height:1.3;
+}
+#places-panel #discover-close{
+  display:grid;
+  place-items:center;
+  flex:none;
+  width:41px;
+  height:41px;
+  border:2px solid var(--design-border,#171719);
+  border-radius:calc(var(--design-radius,6px) - 2px);
+  background:var(--design-panel,#fffcf4);
+  color:var(--design-text,#171719);
+  font:400 29px/1 var(--body-font,"DM Sans",sans-serif);
+  cursor:pointer;
+}
+#places-panel .panel-content{
+  display:flex!important;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+  height:auto;
+  overflow:hidden;
+  padding:0!important;
+  background:var(--design-panel,#fffcf4);
+  overscroll-behavior:contain;
+}
+/* City selection lives inside Discover, immediately before search and filters. */
+#places-panel .discover-location{
+  flex-shrink:0;
+  padding:13px 15px 12px;
+  border-bottom:1px solid color-mix(in srgb,var(--design-border,#171719),transparent 68%);
+}
+#places-panel .discover-location-heading{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:9px;
+  font:900 9px/1.2 var(--body-font,"DM Sans",Arial,sans-serif);
+  letter-spacing:.08em;
+  color:var(--design-muted,#57534e);
+}
+#places-panel .discover-location-heading span:last-child{opacity:.65}
+#places-panel #map-cities.city-picker{
+  display:flex;
+  width:100%;
+  max-width:100%;
+  justify-content:stretch;
+  gap:3px;
+  padding:3px;
+  border:1.5px solid var(--design-border,#171719);
+  border-radius:calc(var(--design-radius,7px) - 2px);
+  box-shadow:none;
+  background:var(--design-chip,#ececdb);
+}
+#places-panel #map-cities button{
+  flex:1 1 33%;
+  min-width:0;
+  min-height:38px;
+  padding:8px 3px;
+  font:900 11px/1.12 var(--body-font,"DM Sans",Arial,sans-serif);
+  letter-spacing:-.01em;
+  color:var(--design-text,#171719);
+  border:0;
+  border-radius:calc(var(--design-radius,5px) - 3px);
+  box-shadow:none;
+  background:transparent;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+#places-panel #map-cities button.active{
+  background:var(--design-contrast,#192ecb);
+  color:#fff;
+}
+html[data-design="type"] #places-panel #map-cities button.active{
+  background:#171719;
+  color:#a7fe27;
+}
+#places-panel .browse-tools{
+  padding:13px 15px 12px;
+  margin:0;
+  flex-shrink:0;
+  border-bottom:1px solid color-mix(in srgb,var(--design-border,#171719),transparent 70%);
+  background:var(--design-panel,#fffcf4);
+}
+#places-panel .browse-tools .browse-kicker{margin:0 0 9px}
+#places-panel .browse-tools .search-label{
+  margin:0!important;
+  min-height:45px;
+  width:100%;
+  border-radius:calc(var(--design-radius,8px) - 2px);
+}
+#places-panel .browse-tools .search-label input{
+  font-size:16px;
+  min-height:42px;
+}
+#places-panel .browse-tools .browse-actions{margin-top:10px}
+#places-panel #filter-panel{max-height:min(32dvh,225px);overflow-y:auto;overscroll-behavior:contain}
+#places-panel .places-list{
+  min-height:0;
+  flex:1 1 auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:12px 13px 18px;
+}
+#places-panel .place{margin-bottom:9px}
+#places-panel .trip-controls{
+  min-height:0;
+  max-height:min(44dvh,360px);
+  overflow:auto;
+  flex:0 0 auto;
+  overscroll-behavior:contain;
+}
+body.itinerary-mode #places-panel .discover-location{display:none!important}
+body.itinerary-mode #places-panel .browse-tools{display:none!important}
+body.itinerary-mode #places-panel .panel-content{padding:0!important}
+body.itinerary-mode #places-panel .places-list{padding-top:10px}
+/* We no longer use the old drag handle or snap-height states. */
+#places-panel .drawer-grab{display:none!important}
+
+/* Mobile: a proper floating card with four visible map edges behind it. */
+@media(max-width:720px){
+  html[data-design] .map-toolbar,
+  html[data-design="print"] .map-toolbar{
+    top:10px;
+    left:10px;
+    right:10px;
+    gap:7px;
+  }
+  #map-area-indicator{min-height:39px;padding:8px 11px;font-size:10px;box-shadow:2px 2px 0 #17171945}
+  html[data-design] .map-toolbar #locate{height:40px;width:40px}
+  html[data-design] .map-wrap .leaflet-bottom.leaflet-right,
+  html[data-design] .map-wrap .leaflet-bottom.leaflet-left{
+    bottom:15px;
+  }
+  .masthead #discover-toggle{
+    height:37px;
+    padding:0 9px;
+    gap:5px;
+    font-size:10px;
+    letter-spacing:0;
+    box-shadow:2px 2px 0 #171719;
+  }
+  .masthead #discover-toggle svg{width:15px;height:15px}
+  html[data-design="print"] .masthead{padding-inline:9px;gap:5px}
+  html[data-design="print"] .brand h1{font-size:clamp(12px,3.6vw,18px)}
+  html[data-design] .mode-picker button{padding:8px 6px;font-size:10px}
+  #discover-scrim:not([hidden]){background:#17171980}
+  html[data-design] #places-panel.places-panel:not([hidden]){
+    top:10px;
+    left:10px;
+    right:10px;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    width:auto;
+    height:auto;
+    max-height:none;
+    padding:0;
+    border-radius:10px;
+  }
+  html[data-design="print"] #places-panel.places-panel:not([hidden]){
+    border-radius:10px;
+    box-shadow:4px 4px 0 #171719;
+  }
+  #places-panel .discover-panel-head{padding:14px 13px 12px}
+  #places-panel .discover-panel-head h2{font-size:26px}
+  #places-panel #discover-close{width:37px;height:37px;font-size:26px}
+  #places-panel .discover-location{padding:10px 12px}
+  #places-panel #map-cities button{min-height:37px;font-size:10px;padding:7px 2px}
+  #places-panel .browse-tools{padding:11px 12px 10px}
+  #places-panel .places-list{padding:10px 12px 16px}
+  #places-panel .trip-controls{max-height:min(41dvh,320px)}
+}
+@media(max-width:375px){
+  .masthead #discover-toggle{padding:0 6px;gap:4px;font-size:9px}
+  .masthead #discover-toggle svg{width:14px;height:14px}
+  html[data-design="print"] .brand h1{font-size:clamp(12px,3.7vw,14px)}
+  html[data-design] .mode-picker button{font-size:9px;padding:8px 5px}
+  #places-panel .discover-panel-head h2{font-size:23px}
+  #places-panel .discover-location-heading{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  #discover-scrim:not([hidden]){animation:none}
+}
