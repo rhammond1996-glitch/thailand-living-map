@@ -788,148 +788,117 @@ body.itinerary-mode #places-panel .discover-head-actions .discover-location{
 }
 
 
-/* PRINT CLUB / Always-visible city segmented control — v7
-   A three-way cobalt-and-white switch replaces the dropdown.
-   Inline on wider screens; a second row INSIDE the same lime header
-   on narrower iPhones, preserving readable names and tap sizes.
+
+/* PRINT CLUB / Discover heading + city tabs — v9
+   Single-row layout at every device size; equal-width city options.
+   Replaces obsolete two-row city selector and dropdown styling.
 */
 #places-panel .discover-panel-head{
- overflow:visible;
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:7px;
+  min-height:61px;
+  padding:9px 11px;
+  overflow:visible;
 }
 #places-panel .discover-panel-head .discover-head-copy{
- flex:0 0 auto;
+  flex:0 0 auto;
+  display:block;
+  min-width:0;
+  max-width:30%;
+}
+#places-panel .discover-panel-head h2{
+  font-size:clamp(16px,2.8vw,22px);
+  line-height:1;
+  white-space:nowrap;
+  letter-spacing:-.07em;
 }
 #places-panel .discover-panel-head .discover-head-actions{
- flex:1 1 auto;
- min-width:0;
- gap:5px;
+  flex:1 1 auto;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
 }
 #places-panel .discover-panel-head .discover-location{
- flex:1 1 auto;
- min-width:0;
- width:auto;
- position:static;
- padding:0;
- margin:0;
- border:0;
- display:block;
+  display:block;
+  position:static;
+  flex:1 1 auto;
+  min-width:0;
+  width:auto;
+  margin:0;
+  padding:0;
+  border:0;
 }
 #places-panel .discover-panel-head #map-cities.city-picker{
- position:static;
- display:grid;
- grid-template-columns:minmax(0,.65fr) minmax(0,1.25fr) minmax(0,1.45fr);
- flex-direction:row;
- align-items:stretch;
- justify-content:stretch;
- width:100%;
- max-width:none;
- min-width:0;
- height:39px;
- max-height:39px;
- margin:0;
- padding:2px;
- gap:2px;
- border:2px solid #192ecb;
- border-radius:4px;
- background:#fff;
- box-shadow:2px 2px 0 #171719;
- overflow:hidden;
+  position:static;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+  width:100%;
+  min-width:0;
+  min-height:40px;
+  height:40px;
+  max-width:none;
+  max-height:none;
+  padding:3px;
+  gap:2px;
+  margin:0;
+  border:2px solid #192ecb;
+  border-radius:5px;
+  background:#fff;
+  box-shadow:2px 2px 0 #171719;
+  overflow:hidden;
 }
 #places-panel .discover-panel-head #map-cities.city-picker button{
- display:flex;
- flex:0 1 auto;
- align-items:center;
- justify-content:center;
- width:100%;
- min-width:0;
- min-height:31px;
- height:31px;
- padding:5px 3px;
- margin:0;
- border:0;
- border-radius:2px;
- box-shadow:none;
- color:#192ecb;
- background:#fff;
- font:900 10px/1 "DM Sans",Arial,sans-serif;
- letter-spacing:-.035em;
- text-align:center;
- text-transform:uppercase;
- white-space:nowrap;
- cursor:pointer;
- touch-action:manipulation;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:initial;
+  width:100%;
+  min-width:0;
+  height:30px;
+  min-height:30px;
+  margin:0;
+  padding:2px 1px;
+  border:0;
+  border-radius:2px;
+  box-shadow:none;
+  color:#192ecb;
+  background:#fff;
+  font:900 10px/1.05 "DM Sans",Arial,sans-serif;
+  letter-spacing:-.03em;
+  text-align:center;
+  text-transform:uppercase;
+  white-space:normal;
+  overflow-wrap:normal;
+  word-break:normal;
+  cursor:pointer;
+  touch-action:manipulation;
 }
 #places-panel .discover-panel-head #map-cities.city-picker button.active{
- background:#192ecb;
- color:#fff;
-}
-#places-panel .discover-panel-head #map-cities.city-picker button:focus-visible{
- outline:2px solid #171719;
- outline-offset:-2px;
+  color:#fff;
+  background:#192ecb;
 }
 #places-panel .discover-panel-head #map-cities.city-picker button:not(.active):active{
- background:#e6eeff;
+  background:#e6ebff;
 }
-@media(max-width:480px){
- #places-panel .discover-panel-head{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 35px 35px;
-  grid-template-areas:"heading saved close" "cities cities cities";
-  column-gap:7px;
-  row-gap:8px;
-  padding:9px 10px 10px;
-  min-height:94px;
-  align-items:center;
- }
- #places-panel .discover-panel-head .discover-head-copy{
-  grid-area:heading;
-  min-width:0;
- }
- #places-panel .discover-panel-head .discover-head-actions{
-  display:contents;
- }
- #places-panel .discover-panel-head .discover-location{
-  grid-area:cities;
-  width:100%;
-  min-width:0;
- }
- #places-panel .discover-panel-head #favorites-only.favorites-filter{
-  grid-area:saved;
-  width:35px;
-  min-width:35px;
-  height:36px;
- }
- #places-panel .discover-panel-head #discover-close{
-  grid-area:close;
-  width:35px;
-  min-width:35px;
-  height:36px;
- }
- #places-panel .discover-panel-head #map-cities.city-picker{
-  width:100%;
-  height:37px;
-  max-height:37px;
+#places-panel .discover-panel-head #map-cities.city-picker button:focus-visible{
+  outline:2px solid #171719;
+  outline-offset:-2px;
+}
+#places-panel .discover-panel-head #favorites-only.favorites-filter,
+#places-panel .discover-panel-head #discover-close{
+  flex:0 0 36px;
+  width:36px;
+  min-width:36px;
+  height:39px;
+  min-height:39px;
   margin:0;
- }
- #places-panel .discover-panel-head #map-cities.city-picker button{
-  min-height:29px;
-  height:29px;
-  font-size:11px;
-  letter-spacing:0;
- }
- body.itinerary-mode #places-panel .discover-panel-head{
-  display:flex;
-  align-items:center;
-  min-height:54px;
-  padding:9px 10px;
- }
- body.itinerary-mode #places-panel .discover-head-actions{
-  display:flex;
-  flex:0 0 auto;
- }
 }
-
-/* v8 / centered Saved star, independent of count badge */
 #places-panel .discover-panel-head #favorites-only.favorites-filter{
   position:relative;
   display:block;
@@ -943,19 +912,88 @@ body.itinerary-mode #places-panel .discover-head-actions .discover-location{
   position:absolute;
   left:50%;
   top:50%;
+  display:block;
   width:23px;
   height:23px;
   margin:0;
   padding:0;
   transform:translate(-50%,-50%);
-  display:block;
   pointer-events:none;
 }
 #places-panel .discover-panel-head #favorites-count{
   position:absolute;
+  z-index:2;
   top:-7px;
   right:-7px;
-  z-index:2;
   margin:0;
   pointer-events:none;
+}
+body.itinerary-mode #places-panel .discover-panel-head{
+  min-height:54px;
+}
+body.itinerary-mode #places-panel .discover-head-actions{
+  display:flex;
+  flex:0 0 auto;
+}
+@media(max-width:720px){
+  #places-panel .discover-panel-head{
+    display:flex;
+    flex-wrap:nowrap;
+    min-height:58px;
+    padding:8px 10px;
+    gap:5px;
+  }
+  #places-panel .discover-panel-head .discover-head-copy{
+    flex:0 0 auto;
+    max-width:29%;
+  }
+  #places-panel .discover-panel-head h2{
+    font-size:clamp(15px,4vw,18px);
+  }
+  #places-panel .discover-panel-head .discover-head-actions{
+    display:flex;
+    gap:5px;
+    flex:1 1 auto;
+    min-width:0;
+  }
+  #places-panel .discover-panel-head #map-cities.city-picker{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    min-height:39px;
+    height:39px;
+    padding:3px;
+  }
+  #places-panel .discover-panel-head #map-cities.city-picker button{
+    font-size:9px;
+    min-height:29px;
+    height:29px;
+    line-height:1.05;
+    letter-spacing:-.05em;
+    padding:2px 0;
+  }
+  #places-panel .discover-panel-head #favorites-only.favorites-filter,
+  #places-panel .discover-panel-head #discover-close{
+    flex-basis:34px;
+    width:34px;
+    min-width:34px;
+    height:38px;
+    min-height:38px;
+  }
+}
+@media(max-width:380px){
+  #places-panel .discover-panel-head{
+    padding:8px 8px;
+    gap:4px;
+  }
+  #places-panel .discover-panel-head h2{font-size:15px}
+  #places-panel .discover-panel-head .discover-head-actions{gap:4px}
+  #places-panel .discover-panel-head #map-cities.city-picker button{
+    font-size:8px;
+  }
+  #places-panel .discover-panel-head #favorites-only.favorites-filter,
+  #places-panel .discover-panel-head #discover-close{
+    flex-basis:32px;
+    width:32px;
+    min-width:32px;
+  }
 }
