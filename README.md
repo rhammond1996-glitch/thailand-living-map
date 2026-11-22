@@ -25,7 +25,16 @@ The browser uses the Google Sheets Visualization feed (`gviz/tq`) for the select
 
 Add a test destination to the Sheet with a unique `id`, `name`, `city`, `categories`, `location_type`, `address`, `highlights`, `priority`, and `status`. The map checks for updates each minute while open. Latitude/longitude can be added later; unpinned entries still appear in the places list. Delete the test row afterward.
 
-### Future updates
+### Adaptive Chiang Mai itinerary (November 2026)
+
+- **Explore** keeps the complete Bangkok and Chiang Mai category-filtered map, existing favorites and the Google Sheets feed.
+- **Itinerary** adds four selectable Chiang Mai day routes (January 13–16 draft), numbered primary pins and dashed *schematic* connections. Small pale dots indicate mapped alternative places within a user-selected straight-line radius (1, 3, 7 or 20 km), including locations already earmarked for a different day.
+- Add a nearby alternative to today's route, skip an existing stop or reset the draft. Route changes are stored in browser `localStorage` on the current device; they do **not** write to the shared Sheet or sync across phones. Sharing `?view=itinerary&day=2` opens the original public route/day; not a copy of personal edits.
+- New attraction pins live in [`trip-data.js`](./trip-data.js) and are merged into Explore as additional categories. Duplicate IDs from the Google Sheet take precedence; the original Sheet remains authoritative for its rows. Unchecked map coordinates are marked as approximate, and travel labels are planning estimates, not live routes.
+- The Bo Sang festival dates are expected January 15–17, pending confirmation. **January 16 Day 4 conflicts with the planned international departure**; all four days are an intentionally overfull idea board until flights and the final Chiang Mai dates are fixed.
+- Interface lives in `trip-itinerary.js` and `trip.css`. Existing `app.js`, original data, and categories remain in place.
+
+## Future updates
 
 For **destination changes**, ChatGPT can edit the linked Google Sheet through the connected Google Drive integration when asked. Data changes do **not** require a GitHub code commit or redeployment.
 

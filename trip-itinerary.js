@@ -1,0 +1,200 @@
+
+'use strict';
+/* Adaptive day routing without changing the shared Google Sheet.
+   Draft order changes persist on this device only. */
+(function(){
+ const days=window.TRIP_DAYS||[];
+ const DRAFT_KEY='thailand-living-map:itinerary-draft:v1';
+ const params=new URLSearchParams(location.search);
+ let mode=params.get('view')==='itinerary'?'itinerary':'explore';
+ let day=days.some(d=>d.id===params.get('day'))?params.get('day'):'1';
+ let showNear=true, radiusKm=3, drafts={};
+ try{const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}');if(saved&&typeof saved==='object')drafts=saved;}catch{}
+ let explorer={city:'All',category:'All',query:'',favoritesOnly:false};
+ const lookup=id=>state.places.find(p=>String(p.id)===String(id));
+ const byDay=id=>days.find(d=>d.id===id);
+ const escapeText=s=>esc(String(s||''));
+ const valid=p=>p&&coords(p);
+ const point=p=>[Number(p.lat),Number(p.lng)];
+ const dayIds=d=>{
+  const original=d.stops||[];
+  const candidate=Array.isArray(drafts[d.id])?drafts[d.id]:original;
+  return [...new Set(candidate.filter(id=>typeof id==='string' && (original.includes(id)||!!lookup(id))))];
+ };
+ const activeDays=()=>day==='all'?days:[byDay(day)].filter(Boolean);
+ const distanceKm=(a,b)=>{
+  const r=Math.PI/180,dlat=(Number(b.lat)-Number(a.lat))*r,dlng=(Number(b.lng)-Number(a.lng))*r;
+  const x=Math.sin(dlat/2)**2+Math.cos(Number(a.lat)*r)*Math.cos(Number(b.lat)*r)*Math.sin(dlng/2)**2;
+  return 12742*Math.asin(Math.min(1,Math.sqrt(x)));
+ };
+ const fmtDist=v=>v<1?Math.round(v*1000)+' m':v.toFixed(1)+' km';
+ const persist=()=>{
+  try{localStorage.setItem(DRAFT_KEY,JSON.stringify(drafts));}catch(e){console.warn('Itinerary changes not saved',e);}
+ };
+ function setUrl(){
+  try{const url=new URL(location.href);if(mode==='itinerary'){url.searchParams.set('view','itinerary');url.searchParams.set('day',day);}else{url.searchParams.delete('view');url.searchParams.delete('day');}history.replaceState(null,'',url);}catch(e){}
+ }
+ function findNearby(){
+  if(!showNear||!state.places.length)return [];
+  const chosen=activeDays().flatMap(d=>dayIds(d)).map(lookup).filter(valid);
+  const selected=new Set(chosen.map(p=>String(p.id)));
+  if(!chosen.length)return [];
+  return state.places.filter(p=>p.city==='Chiang Mai'&&valid(p)&&!selected.has(String(p.id))).map(p=>{
+   let distance=Infinity,anchor=null;
+   for(const main of chosen){const next=distanceKm(p,main);if(next<distance){distance=next;anchor=main;}}
+   const scheduled=days.find(d=>dayIds(d).includes(p.id));
+   return {p,distance,anchor,scheduled:scheduled?.id||''};
+  }).filter(x=>x.distance<=radiusKm).sort((a,b)=>a.distance-b.distance||a.p.name.localeCompare(b.p.name)).slice(0,day==='all'?32:24);
+ }
+ function addToDay(id){
+  const d=byDay(day==='all'?'1':day),p=lookup(id);
+  if(!d||!p)return;
+  const ids=dayIds(d);
+  if(ids.includes(id))return;
+  // Insert near the nearest already-planned stop instead of appending at random.
+  let at=ids.length-1,closest=Infinity;
+  ids.forEach((sid,i)=>{const s=lookup(sid);if(!valid(s)||!valid(p))return;const dist=distanceKm(s,p);if(dist<closest){closest=dist;at=i;}});
+  ids.splice(Math.max(0,at+1),0,id);
+  drafts[d.id]=ids;persist();closeDetails();render();
+ }
+ function skipFromDay(id,did){
+  const d=byDay(did||day);if(!d)return;
+  drafts[d.id]=dayIds(d).filter(x=>x!==id);persist();closeDetails();render();
+ }
+ function resetDraft(){
+  for(const d of activeDays())delete drafts[d.id];
+  persist();closeDetails();render();
+ }
+ function popup(p,kind,index,number,fromDay){
+  const tag=kind==='primary'?'Planned stop '+number:'Nearby alternative';
+  return '<div class="popup trip-popup"><strong>'+escapeText(p.name)+'</strong><small>'+escapeText(tag)+'</small><p>'+escapeText(p.highlights)+'</p><div class="trip-popup-actions">'+
+   (kind==='aux'&&day!=='all'?'<button type="button" data-trip-add="'+escapeText(p.id)+'">Add to today</button>':'')+
+   '<a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Maps ↗</a></div></div>';
+ }
+ function putMarker(p,kind,d,index,number){
+  if(!valid(p))return;
+  let marker;
+  if(kind==='primary'){
+   const icon=L.divIcon({html:'<div class="trip-pin" style="--trip-color:'+d.color+'">'+number+'</div>',className:'map-marker',iconSize:[39,39],iconAnchor:[19,19]});
+   marker=L.marker(point(p),{icon,zIndexOffset:1100,title:p.name}).addTo(markers);
+  }else{
+   marker=L.circleMarker(point(p),{radius:6,color:'#b3a5b2',weight:1.5,opacity:.78,fillColor:'#fff',fillOpacity:.72}).addTo(markers);
+  }
+  marker.bindPopup(popup(p,kind,index,number,d?.id));
+  marker.on('click',()=>{if(mobile())focus(p.id);});
+  if(!markerById.has(p.id)||kind==='primary')markerById.set(p.id,marker);
+ }
+ function listOneDay(d){
+  const ids=dayIds(d);
+  return '<div class="trip-header" style="color:'+d.color+'">Day '+d.id+' · '+escapeText(d.date)+' · '+escapeText(d.short)+'</div>'+
+   (!ids.length?'<div class="empty">All stops skipped for this day. Use nearby suggestions or Reset.</div>':'')+
+   ids.map((id,i)=>{
+    const p=lookup(id);if(!p)return '';
+    const originalIndex=d.stops.indexOf(id),transfer=originalIndex>=0?d.transfers[originalIndex]:'Inserted near the closest planned stop · travel time not estimated';
+    return '<article class="trip-stop" style="--trip-color:'+d.color+'"><div class="trip-stop-top"><div class="trip-index">'+(i+1)+'</div>'+
+     '<div class="trip-stop-main" role="button" tabindex="0" data-trip-focus="'+escapeText(id)+'"><strong>'+escapeText(p.name)+'</strong><small>'+escapeText(cats(p)[0]||p.location_type)+'</small></div></div>'+
+     '<div class="trip-stoptime">↳ '+escapeText(transfer)+'</div><div class="trip-stop-actions">'+
+     '<button type="button" data-trip-skip="'+escapeText(id)+'" data-trip-skip-day="'+d.id+'">Skip this stop</button>'+
+     '<a class="trip-directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div></article>';
+   }).join('')+
+   '<div class="trip-footer">💆 '+escapeText(d.wellness)+'</div>';
+ }
+ function alternativesHtml(nearby){
+  if(!showNear)return '<div class="trip-footer">Nearby alternatives are hidden. Turn them on to see potential detours.</div>';
+  return '<div class="trip-alt-title">Nearby possibilities · '+nearby.length+'</div>'+
+    (nearby.length?nearby.map(x=>'<article class="trip-option"><span class="trip-alt-marker"></span>'+
+     '<div class="trip-stop-main" role="button" tabindex="0" data-trip-focus="'+escapeText(x.p.id)+'">'+
+     '<strong>'+escapeText(x.p.name)+'</strong>'+
+     '<small>'+escapeText(fmtDist(x.distance))+' straight line from '+escapeText(x.anchor.name)+(x.scheduled?' · originally Day '+x.scheduled:'')+'</small></div>'+
+     (day!=='all'?'<button type="button" data-trip-add="'+escapeText(x.p.id)+'">+ Add</button>':'')+
+     '</article>').join(''):'<div class="empty">No mapped alternatives within this radius. Try a larger radius.</div>')+
+     '<div class="trip-footer">Faint markers are nearby options, not recommendations to visit every one. Distance is straight-line only; valleys and mountain roads can make an apparently close detour much longer.</div>';
+ }
+ function renderTripMode(preserveView=false){
+  if(mode!=='itinerary')return false;
+  if(!map)return true;
+  const active=activeDays();
+  const nearby=findNearby();
+  markers.clearLayers();markerById.clear();
+  const all=[];
+  for(const d of active){
+   const ordered=dayIds(d).map(lookup).filter(valid);
+   // Straight, dashed joins show sequence, never imply a navigable driving route.
+   if(ordered.length>1)L.polyline(ordered.map(point),{color:d.color,opacity:.55,weight:3,dashArray:'7,8',interactive:false}).addTo(markers);
+   ordered.forEach((p,i)=>{putMarker(p,'primary',d,i,i+1);all.push(point(p));});
+  }
+  for(const a of nearby)putMarker(a.p,'aux',null,null,null);
+  $('places-list').innerHTML=(state.places.length?active.map(listOneDay).join(''):'<div class="empty">Loading places and route…</div>')+alternativesHtml(nearby);
+  $('drawer-summary').textContent=day==='all'?'All four draft days':('Day '+day+' · '+(byDay(day)?.short||''));
+  const thisDay=byDay(day);
+  $('trip-controls').innerHTML='<div class="trip-kicker">Chiang Mai / adaptive itinerary</div>'+
+   '<h2>'+(thisDay?escapeText(thisDay.title):'All four days')+'</h2>'+
+   '<p>'+(thisDay?escapeText(thisDay.summary):'Pick a day for a focused numbered route and close-by alternatives.')+'</p>'+
+   (thisDay?'<p class="trip-warning">'+escapeText(thisDay.warning)+'</p>':'')+
+   '<div class="trip-control-row"><label><input type="checkbox" id="trip-show-near" '+(showNear?'checked':'')+'> Nearby options</label>'+
+   '<label>Within <select id="trip-radius"><option value="1" '+(radiusKm===1?'selected':'')+'>1 km</option><option value="3" '+(radiusKm===3?'selected':'')+'>3 km</option><option value="7" '+(radiusKm===7?'selected':'')+'>7 km</option><option value="20" '+(radiusKm===20?'selected':'')+'>20 km</option></select></label>'+
+   '<button id="trip-reset" type="button">Reset draft</button></div>'+
+   '<p class="trip-hint">Bold numbered pins = planned. Small pale dots = flexible options. Dashed lines = order, not road directions. Changes save on this device.</p>';
+  $('results').textContent=active.reduce((n,d)=>n+dayIds(d).length,0)+' planned';
+  document.querySelectorAll('#trip-day-picker button[data-day]').forEach(b=>{
+   const active=b.dataset.day===day;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+  });
+  if(!preserveView&&all.length){
+   if(all.length===1)map.setView(all[0],13,{animate:false});
+   else map.fitBounds(all,{paddingTopLeft:[38,85],paddingBottomRight:mobile()?[38,220]:[58,58],maxZoom:14,animate:false});
+   setTimeout(()=>map.invalidateSize({pan:false}),100);
+  }
+  return true;
+ }
+ window.renderTripMode=renderTripMode;
+ function setMode(next){
+  if(!['explore','itinerary'].includes(next)||next===mode)return;
+  if(next==='itinerary'){
+   explorer={city:state.city,category:state.category,query:state.query,favoritesOnly:state.favoritesOnly};
+   mode='itinerary';
+  }else{
+   mode='explore';
+   state.city=explorer.city;state.category=explorer.category;state.query=explorer.query;state.favoritesOnly=explorer.favoritesOnly;
+   $('place-search').value=explorer.query;
+   document.querySelectorAll('button[data-city]').forEach(b=>b.classList.toggle('active',b.dataset.city===state.city));
+  }
+  document.body.classList.toggle('itinerary-mode',mode==='itinerary');
+  $('trip-day-picker').hidden=mode!=='itinerary';
+  $('trip-controls').hidden=mode!=='itinerary';
+  document.querySelectorAll('#mode-picker button[data-mode]').forEach(b=>{const selected=b.dataset.mode===mode;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
+  if(mode!=='itinerary')$('map-cities').hidden=false;
+  closeDetails();setUrl();render();
+ }
+ function selectDay(id){if(id!=='all'&&!byDay(id))return;day=id;closeDetails();setUrl();render();}
+ function tripClick(e){
+  const add=e.target.closest('[data-trip-add]');if(add){e.preventDefault();e.stopPropagation();addToDay(add.dataset.tripAdd);return;}
+  const skip=e.target.closest('[data-trip-skip]');if(skip){e.preventDefault();e.stopPropagation();skipFromDay(skip.dataset.tripSkip,skip.dataset.tripSkipDay);return;}
+  const focusButton=e.target.closest('[data-trip-focus]');if(focusButton){focus(focusButton.dataset.tripFocus);return;}
+ }
+ function initTrip(){
+  const nav=$('trip-day-picker');
+  nav.innerHTML=days.map(d=>'<button type="button" data-day="'+d.id+'" aria-pressed="false">Day '+d.id+'</button>').join('')+
+   '<button type="button" data-day="all" aria-pressed="false">All days</button>';
+  $('mode-picker').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)setMode(b.dataset.mode);});
+  nav.addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(b)selectDay(b.dataset.day);});
+  $('trip-controls').addEventListener('change',e=>{
+   if(e.target.id==='trip-show-near'){showNear=e.target.checked;render(true);}
+   else if(e.target.id==='trip-radius'){radiusKm=Number(e.target.value)||3;render(true);}
+  });
+  $('trip-controls').addEventListener('click',e=>{if(e.target.closest('#trip-reset'))resetDraft();});
+  $('places-list').addEventListener('click',tripClick);
+  $('places-list').addEventListener('keydown',e=>{
+   if(e.key==='Enter'||e.key===' '){const b=e.target.closest('[data-trip-focus]');if(b){e.preventDefault();focus(b.dataset.tripFocus);}}
+  });
+  $('map').addEventListener('click',e=>{const b=e.target.closest('[data-trip-add]');if(b){e.preventDefault();e.stopPropagation();addToDay(b.dataset.tripAdd);}});
+  const legend=document.createElement('div');legend.className='trip-map-legend';legend.id='trip-legend';
+  legend.innerHTML='<span class="solid">● Numbered route</span> · <span class="muted">○ Nearby option</span><div>Dashed path shows order, not roads</div>';
+  $('map').parentElement.appendChild(legend);
+  if(mode==='itinerary'){mode='explore';setMode('itinerary');}else{legend.hidden=true;}
+  const originalSetMode=setMode;
+  // Keep legend visibility in step with mode changes via a lightweight observer.
+  const obs=new MutationObserver(()=>{legend.hidden=!document.body.classList.contains('itinerary-mode');});
+  obs.observe(document.body,{attributes:true,attributeFilter:['class']});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initTrip);else initTrip();
+})();

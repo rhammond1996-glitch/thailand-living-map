@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./trip.css?v=1">
 </head>
 <body>
   <div id="app">
@@ -19,6 +20,7 @@
         <div class="eyebrow">Thailand trip · 2027</div>
         <h1>Thailand <i>/</i> <em>Map</em></h1>
       </div>
+      <nav class="mode-picker" id="mode-picker" aria-label="Map mode"><button type="button" class="active" data-mode="explore" aria-pressed="true">Explore</button><button type="button" data-mode="itinerary" aria-pressed="false">Itinerary</button></nav>
       <div class="head-actions">
         <span class="sync" id="sync-status" title="Map data source"><span class="status-dot"></span><span id="sync-label">Loading…</span></span>
         <button class="share-button" id="share" type="button">Share <span aria-hidden="true">↗</span></button>
@@ -28,6 +30,7 @@
       <main class="map-wrap" aria-label="Interactive trip map">
         <div id="map" aria-label="Map of saved Thailand destinations"></div>
         <div class="map-toolbar">
+          <nav class="day-picker" id="trip-day-picker" hidden aria-label="Select itinerary day"></nav>
           <nav class="city-picker" id="map-cities" aria-label="Select city">
             <button type="button" class="active" data-city="All">All</button>
             <button type="button" data-city="Bangkok">Bangkok</button>
@@ -44,6 +47,7 @@
           <span class="grab-arrow" id="grab-arrow" aria-hidden="true">⌃</span>
         </button>
         <div class="panel-content">
+          <section id="trip-controls" class="trip-controls" hidden aria-label="Itinerary options"></section>
           <label class="search-label" for="place-search"><span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg></span><input id="place-search" type="search" placeholder="Search places…" autocomplete="off"></label>
           <div id="categories" class="category-chips" aria-label="Filter by category"></div>
           <div class="panel-actions">
@@ -58,6 +62,8 @@
     </div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
-  <script src="./app.js?v=5" defer></script>
+  <script src="./trip-data.js?v=1" defer></script>
+  <script src="./app.js?v=6" defer></script>
+  <script src="./trip-itinerary.js?v=1" defer></script>
 </body>
 </html>

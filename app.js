@@ -16,7 +16,14 @@ const CATEGORIES=[
  ['Jewelry & artisan','Artisan','#b08851'],
  ['Creative districts','Design','#8180b8'],
  ['Gay Nightlife','Nightlife','#9a5bba'],
- ['Underground & Raves','Raves','#5369c5']
+ ['Underground & Raves','Raves','#5369c5'],
+ ['Architecture & heritage','Architecture','#b77961'],
+ ['Temples & culture','Temples','#9b8052'],
+ ['Art & design','Art','#9565a9'],
+ ['Nature & adventure','Nature','#408875'],
+ ['Wildlife','Wildlife','#6e9b68'],
+ ['Markets & shopping','Markets','#ca7551'],
+ ['Wellness & beauty','Wellness','#bd7396']
 ];
 const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[key,{label,color}]));
 const ICON_PATHS={
@@ -29,6 +36,14 @@ const ICON_PATHS={
  'Creative districts':'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M13 17h8m-4-4v8"/>',
  'Gay Nightlife':'<path d="M20.5 13A9 9 0 0 1 11 3.5 9 9 0 1 0 20.5 13Z"/>',
  'Underground & Raves':'<path d="M3 11v2M7 7v10M11 3v18M15 7v10M19 10v4M22 12v1"/>'
+,
+ 'Architecture & heritage':'<path d="M3 21h18M5 21V9l7-6 7 6v12M9 21v-7h6v7M3 10h18"/>',
+ 'Temples & culture':'<path d="M3 21h18M5 21v-9h14v9M2 12l10-9 10 9M9 21v-5h6v5"/>',
+ 'Art & design':'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="2"/><path d="m4 18 5-5 4 3 3-4 4 6"/>',
+ 'Nature & adventure':'<path d="M2 20h20M3 17l6-10 3 5 3-8 6 13M12 19v-8"/>',
+ 'Wildlife':'<path d="M12 21c-5 0-8-3-8-8V7h4v5h8V7h4v6c0 5-3 8-8 8ZM8 7V4m8 3V4"/>',
+ 'Markets & shopping':'<path d="M3 10h18l-2-6H5l-2 6ZM5 10v11h14V10M9 21v-8h6v8"/>',
+ 'Wellness & beauty':'<path d="M12 21c-5-4-8-7-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 4-3 7-8 11ZM12 8v6m-3-3h6"/>'
 };
 function iconSVG(category,size=18){
  return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICON_PATHS[category]||ICON_PATHS.All)+'</svg>';
@@ -95,7 +110,7 @@ function refreshStatus(message,type='live'){
 }
 function updatePlaces(data,source){
  if(!data?.places||!Array.isArray(data.places))throw new Error('Invalid destination feed');
- const places=clean(data.places);
+ const places=clean([...data.places,...(window.TRIP_PLACES||[])]);
  if(!places.length)throw new Error('Destination feed is empty');
  const signature=JSON.stringify(places);
  state.source=source;
@@ -152,6 +167,7 @@ function placeCard(p){
  (!coords(p)?'<div class="place-meta">Location to confirm</div>':'')+'</article>';
 }
 function render(preserveView=false){
+ if(window.renderTripMode&&window.renderTripMode(preserveView))return;
  chips();const list=filtered();
  $('results').textContent=list.length+' places';
  $('favorites-count').textContent=favorites.size;
