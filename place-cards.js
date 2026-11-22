@@ -122,7 +122,9 @@
   // section exclusively for practical details that add something new.
   if(goodNote(p.price_note))rows.push(["COST / NOTES",p.price_note]);
   if(goodNote(o.practical))rows.push(["GOOD TO KNOW",o.practical]);
-  if(needsCheck(p.verification)&&!/^(pin|location)/i.test(String(p.verification).trim()))rows.push(["BEFORE YOU GO",p.verification]);
+  if(o.confidence==="location-check")rows.push(["EXACT STOREFRONT","The business has a source, but confirm this particular branch before setting off."]);
+  if(o.confidence==="dates-check")rows.push(["EVENT DATES","The January 2027 programme has not yet been confirmed by organizers."]);
+  if(o.confidence==="needs-review")rows.push(["ON OUR RESEARCH LIST","The saved shop location is not sufficiently verified. Check the linked source before visiting."]);
   return '<div class="visit-section-kicker">MAKE IT HAPPEN</div>'+
    '<div class="visit-plan-actions"><a class="visit-primary-link" href="'+html(directions(p))+'" target="_blank" rel="noopener noreferrer">GET DIRECTIONS ↗</a>'+
    '<a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">MAPS &amp; REVIEWS ↗</a></div>'+
@@ -257,7 +259,12 @@
     addRows(pages,false);
    }catch(error){console.debug("Commons search unavailable",error);}
   }
-  const ranked=[...collected.values()].sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
+  const heroRank=photo=>{
+   const text=photo.title.toLowerCase(),preferred=o.photoHeroPrefer||[];
+   const rank=preferred.findIndex(x=>text.includes(String(x).toLowerCase()));
+   return rank<0?0:30-rank*5;
+  };
+  const ranked=[...collected.values()].sort((a,b)=>(b.score+heroRank(b))-(a.score+heroRank(a))||a.title.localeCompare(b.title));
   const limited=[],seriesCount=new Map();
   for(const photo of ranked){
    const series=photo.title.toLowerCase().replace(/\d{1,5}/g,"").replace(/[_()\-.]/g," ").replace(/\s+/g," ").trim();
