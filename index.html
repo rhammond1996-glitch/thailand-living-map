@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="./design-system.css?v=1">
   <link rel="stylesheet" href="./print-club.css?v=5">
   <link rel="stylesheet" href="./place-cards.css?v=1">
+  <link rel="stylesheet" href="./discover-overlay.css?v=1">
 </head>
 <body>
   <div id="app">
@@ -36,7 +37,7 @@
       <nav class="mode-picker" id="mode-picker" aria-label="Map mode"><button type="button" class="active" data-mode="explore" aria-pressed="true">Explore</button><button type="button" data-mode="itinerary" aria-pressed="false">Itinerary</button></nav>
       <div class="head-actions">
         <span class="sync" id="sync-status" title="Map data source"><span class="status-dot"></span><span id="sync-label">Loading…</span></span>
-        <button class="share-button" id="share" type="button">Share <span aria-hidden="true">↗</span></button>
+        <button class="discover-button" id="discover-toggle" type="button" aria-controls="places-panel" aria-expanded="false" aria-label="Open Discover destinations"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 5 5"/></svg><span class="discover-button-label">DISCOVER</span></button>
       </div>
     </header>
     <div class="workspace">
@@ -44,22 +45,26 @@
         <div id="map" aria-label="Map of saved Thailand destinations"></div>
         <div class="map-toolbar">
           <nav class="day-picker" id="trip-day-picker" hidden aria-label="Select itinerary day"></nav>
-          <nav class="city-picker" id="map-cities" aria-label="Select city">
-            <button type="button" class="active" data-city="All">All</button>
-            <button type="button" data-city="Bangkok">Bangkok</button>
-            <button type="button" data-city="Chiang Mai">Chiang Mai</button>
-          </nav>
+          <button id="map-area-indicator" class="map-area-indicator" type="button" aria-label="Choose the city in Discover">ALL THAILAND <span aria-hidden="true">⌄</span></button>
           <button id="locate" type="button" class="locate" aria-label="Show my current location" title="Show my current location">⌖</button>
         </div>
         <div id="map-error" class="map-error" hidden>Map tiles unavailable. You can still use the places list and Google Maps links.</div>
       </main>
-      <aside class="places-panel" id="places-panel" data-level="peek" aria-label="Explore places">
-        <button class="drawer-grab" id="drawer-grab" type="button" aria-expanded="true" aria-label="Expand or minimize saved places">
-          <span class="grab-line" aria-hidden="true"></span>
-          <span class="grab-copy"><strong>DISCOVER <span class="drawer-arrow">↗</span></strong><small id="drawer-summary">Places around Thailand</small></span>
-          <span class="grab-arrow" id="grab-arrow" aria-hidden="true">⌃</span>
-        </button>
+      <button class="discover-scrim" id="discover-scrim" type="button" hidden aria-label="Close Discover"></button>
+      <aside class="places-panel discover-panel" id="places-panel" hidden role="dialog" aria-modal="true" aria-labelledby="discover-title" aria-label="Discover destinations">
+        <div class="discover-panel-head">
+          <div class="discover-head-copy"><span class="discover-edition">THAILAND / THE LIVING FIELD GUIDE</span><h2 id="discover-title">DISCOVER <span>↗</span></h2><p id="drawer-summary">Places around Thailand</p></div>
+          <button class="discover-close" id="discover-close" type="button" aria-label="Close Discover">×</button>
+        </div>
         <div class="panel-content">
+          <div class="discover-location" id="discover-location">
+            <div class="discover-location-heading"><span>01 / MAP AREA</span><span>SELECT A CITY</span></div>
+            <nav class="city-picker" id="map-cities" aria-label="Choose city">
+              <button type="button" class="active" data-city="All" aria-pressed="true">All</button>
+              <button type="button" data-city="Bangkok" aria-pressed="false">Bangkok</button>
+              <button type="button" data-city="Chiang Mai" aria-pressed="false">Chiang Mai</button>
+            </nav>
+          </div>
           <section id="trip-controls" class="trip-controls" hidden aria-label="Itinerary options"></section>
           <div class="browse-tools">
             <div class="browse-kicker"><span>01 / DISCOVER</span><span id="results" class="results-count">Loading…</span></div>
@@ -86,8 +91,8 @@
   <script src="./map-basemap.js?v=3" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
   <script src="./place-profiles.js?v=1" defer></script>
-  <script src="./app.js?v=13" defer></script>
-  <script src="./trip-itinerary.js?v=3" defer></script>
+  <script src="./app.js?v=14" defer></script>
+  <script src="./trip-itinerary.js?v=4" defer></script>
   <script src="./place-cards.js?v=3" defer></script>
 </body>
 </html>
