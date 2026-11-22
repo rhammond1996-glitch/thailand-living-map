@@ -231,7 +231,8 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Chatuchak Weekend Market Bangkok"
-    ]
+    ],
+    "commonsCategory": "Chatuchak Market"
   },
   "cm-onenimman": {
     "confidence": "established",
@@ -739,7 +740,8 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Elephant Nature Park Chiang Mai"
-    ]
+    ],
+    "commonsCategory": "Elephant Nature Park"
   },
   "cm-watumong": {
     "confidence": "established",
@@ -798,7 +800,8 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Wat Chiang Man Chiang Mai"
     ],
-    "wiki": "Wat Chiang Man"
+    "wiki": "Wat Chiang Man",
+    "commonsCategory": "Wat Chiang Man, Chiang Mai"
   },
   "cm-lannacenter": {
     "confidence": "established",
@@ -815,7 +818,8 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Wat Chedi Luang Chiang Mai"
     ],
-    "wiki": "Wat Chedi Luang"
+    "wiki": "Wat Chedi Luang",
+    "commonsCategory": "Wat Chedi Luang"
   },
   "cm-phantao": {
     "confidence": "established",
@@ -833,7 +837,8 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Wat Phra Singh Chiang Mai"
     ],
-    "wiki": "Wat Phra Singh"
+    "wiki": "Wat Phra Singh",
+    "commonsCategory": "Wat Phra Sing, Chiang Mai"
   },
   "cm-kalm": {
     "confidence": "established",
@@ -922,7 +927,8 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Bua Tong Sticky Waterfall Chiang Mai"
-    ]
+    ],
+    "commonsCategory": "Bua Thong Waterfalls"
   },
   "cm-huaytungtao": {
     "confidence": "established",
@@ -939,7 +945,18 @@ window.VENUE_RESEARCH = {
       "Huay Tung Tao Lake Chiang Mai"
     ],
     "photoExclude": [
-      "waterfall"
+      "Waterfall",
+      "Dierfiguur",
+      "Dieren",
+      "Naamlintjes",
+      "Schapen"
+    ],
+    "commonsCategory": "Huai Tueng Thao",
+    "photoInclude": [
+      "Hutjes",
+      "Chiang Mai lake",
+      "Chiang Mai dam",
+      "Don Kaeo - Huai Tueng Thao"
     ]
   },
   "cm-watphalat": {
@@ -949,7 +966,8 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Wat Pha Lat Chiang Mai"
     ],
-    "wiki": "Wat Pha Lat"
+    "wiki": "Wat Pha Lat",
+    "commonsCategory": "Wat Pha Lat, Chiang Mai"
   },
   "cm-doisuthep": {
     "confidence": "established",
