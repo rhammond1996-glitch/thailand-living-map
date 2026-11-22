@@ -129,6 +129,6 @@ window.MAP_PROFILES = {
    practical:"The monk-chat program has its own schedule. Visit the temple independently even if a session is unavailable."
  }
  , "cm-inthanon":{commonsCategory:"Doi Inthanon National Park",wiki:"Doi Inthanon"},
-   "cm-twinpagodas":{commonsCategory:"Royal chedis of Doi Inthanon",wiki:"Doi Inthanon"}
+   "cm-twinpagodas":{commonsCategory:"Royal chedis of Doi Inthanon"}
 
 };
