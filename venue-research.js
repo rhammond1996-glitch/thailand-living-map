@@ -741,7 +741,10 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Elephant Nature Park Chiang Mai"
     ],
-    "commonsCategory": "Elephant Nature Park"
+    "commonsCategory": "Elephant Nature Park",
+    "photoHeroPrefer": [
+      "Elephant Nature Park"
+    ]
   },
   "cm-watumong": {
     "confidence": "established",
@@ -928,7 +931,11 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "Bua Tong Sticky Waterfall Chiang Mai"
     ],
-    "commonsCategory": "Bua Thong Waterfalls"
+    "commonsCategory": "Bua Thong Waterfalls",
+    "photoHeroPrefer": [
+      "Buatong",
+      "Bua Tong"
+    ]
   },
   "cm-huaytungtao": {
     "confidence": "established",
@@ -958,6 +965,10 @@ window.VENUE_RESEARCH = {
       "Chiang Mai lake",
       "Chiang Mai dam",
       "Don Kaeo - Huai Tueng Thao"
+    ],
+    "photoHeroPrefer": [
+      "Hutjes",
+      "lake"
     ]
   },
   "cm-watphalat": {
