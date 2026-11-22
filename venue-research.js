@@ -949,7 +949,8 @@ window.VENUE_RESEARCH = {
       "Dierfiguur",
       "Dieren",
       "Naamlintjes",
-      "Schapen"
+      "Schapen",
+      "P1300374a"
     ],
     "commonsCategory": "Huai Tueng Thao",
     "photoInclude": [
