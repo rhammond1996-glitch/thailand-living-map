@@ -7,46 +7,47 @@ const CONFIG={
   gid:'426752005', refreshMs:60000
 };
 const FIELDS=['id','name','city','categories','location_type','address','highlights','price_note','priority','status','lat','lng','verification'];
+// Every category has one fixed, saturated, high-contrast ink color.
+// The same token drives filter badges, lists, and map stamps.
 const CATEGORIES=[
- ['All','All places','#925b77'],
- ['Fragrances','Fragrance','#b16b9a'],
- ['Independent fashion','Fashion','#347fa3'],
- ['Designer replicas','Replicas','#bd8551'],
- ['Vintage','Vintage','#73956b'],
- ['Jewelry & artisan','Artisan','#b08851'],
- ['Creative districts','Design','#8180b8'],
- ['Gay Nightlife','Nightlife','#9a5bba'],
- ['Underground & Raves','Raves','#5369c5'],
- ['Architecture & heritage','Architecture','#b77961'],
- ['Temples & culture','Temples','#9b8052'],
- ['Art & design','Art','#9565a9'],
- ['Nature & adventure','Nature','#408875'],
- ['Wildlife','Wildlife','#6e9b68'],
- ['Markets & shopping','Markets','#ca7551'],
- ['Wellness & beauty','Wellness','#bd7396']
+ ['All','All places','#151515'],
+ ['Fragrances','Fragrance','#F5008E'],
+ ['Independent fashion','Fashion','#1546FF'],
+ ['Designer replicas','Replicas','#FF4D00'],
+ ['Vintage','Vintage','#009E49'],
+ ['Jewelry & artisan','Artisan','#922EFF'],
+ ['Creative districts','Design','#00ABD6'],
+ ['Gay Nightlife','Nightlife','#FF224A'],
+ ['Underground & Raves','Raves','#202020'],
+ ['Architecture & heritage','Architecture','#FFCB00'],
+ ['Temples & culture','Temples','#F08B00'],
+ ['Art & design','Art','#6748D8'],
+ ['Nature & adventure','Nature','#008B77'],
+ ['Wildlife','Wildlife','#8DD900'],
+ ['Markets & shopping','Markets','#E62BB9'],
+ ['Wellness & beauty','Wellness','#07B2A1']
 ];
-const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[key,{label,color}]));
-const ICON_PATHS={
- 'All':'<path d="M3 8h18M3 16h18M8 3v18M16 3v18"/>',
- 'Fragrances':'<rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3M9 3h6M19 5h2"/>',
- 'Independent fashion':'<path d="m8 4 4 2 4-2 5 5-3 3-2-2v11H8V10l-2 2-3-3 5-5z"/>',
- 'Designer replicas':'<path d="M5 9h14l-1 12H6L5 9z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
- 'Vintage':'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
- 'Jewelry & artisan':'<path d="M6 4h12l4 6-10 11L2 10l4-6zM2 10h20M9 4l-2 6 5 11 5-11-2-6"/>',
- 'Creative districts':'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><path d="M13 17h8m-4-4v8"/>',
- 'Gay Nightlife':'<path d="M20.5 13A9 9 0 0 1 11 3.5 9 9 0 1 0 20.5 13Z"/>',
- 'Underground & Raves':'<path d="M3 11v2M7 7v10M11 3v18M15 7v10M19 10v4M22 12v1"/>'
-,
- 'Architecture & heritage':'<path d="M3 21h18M5 21V9l7-6 7 6v12M9 21v-7h6v7M3 10h18"/>',
- 'Temples & culture':'<path d="M3 21h18M5 21v-9h14v9M2 12l10-9 10 9M9 21v-5h6v5"/>',
- 'Art & design':'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="2"/><path d="m4 18 5-5 4 3 3-4 4 6"/>',
- 'Nature & adventure':'<path d="M2 20h20M3 17l6-10 3 5 3-8 6 13M12 19v-8"/>',
- 'Wildlife':'<path d="M12 21c-5 0-8-3-8-8V7h4v5h8V7h4v6c0 5-3 8-8 8ZM8 7V4m8 3V4"/>',
- 'Markets & shopping':'<path d="M3 10h18l-2-6H5l-2 6ZM5 10v11h14V10M9 21v-8h6v8"/>',
- 'Wellness & beauty':'<path d="M12 21c-5-4-8-7-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 4-3 7-8 11ZM12 8v6m-3-3h6"/>'
+const CATEGORY_CODES={
+ 'All':'ALL','Fragrances':'FR','Independent fashion':'FA',
+ 'Designer replicas':'RP','Vintage':'VT','Jewelry & artisan':'JE',
+ 'Creative districts':'DS','Gay Nightlife':'GN','Underground & Raves':'RV',
+ 'Architecture & heritage':'AC','Temples & culture':'TM',
+ 'Art & design':'AT','Nature & adventure':'NT','Wildlife':'WL',
+ 'Markets & shopping':'MK','Wellness & beauty':'WB'
 };
-function iconSVG(category,size=18){
- return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICON_PATHS[category]||ICON_PATHS.All)+'</svg>';
+const STYLES=Object.fromEntries(CATEGORIES.map(([key,label,color])=>[
+ key,{label,color,code:CATEGORY_CODES[key]||'POI'}
+]));
+// High-contrast foreground, computed against a solid (never gradient) category ink.
+function categoryInk(hex){
+ const channels=hex.replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)/255);
+ const linear=channels.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+ const luminance=.2126*linear[0]+.7152*linear[1]+.0722*linear[2];
+ return luminance>.18?'#151515':'#FFFFFF';
+}
+function categoryStamp(category){
+ const item=STYLES[category]||STYLES.All;
+ return '<span class="category-swatch" style="--category:'+item.color+';--category-ink:'+categoryInk(item.color)+'">'+item.code+'</span>';
 }
 const STAR_PATH='<path d="m12 2.7 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z"/>';
 function starSVG(active,size=19){
@@ -155,7 +156,7 @@ async function syncPlaces(){
  try{await loadLive();}catch(err){feedFailed=true;if(!state.places.length)await loadSnapshot();else refreshStatus('Saved snapshot','snapshot');console.info('Live Sheet unavailable; using snapshot:',err.message);}
 }
 function chips(){
- $('categories').innerHTML=CATEGORIES.map(([key,label])=>'<button type="button" data-category="'+esc(key)+'" aria-pressed="'+(state.category===key)+'" class="'+(state.category===key?'active':'')+'">'+iconSVG(key,16)+' '+esc(label)+'</button>').join('');
+ $('categories').innerHTML=CATEGORIES.map(([key,label])=>'<button type="button" data-category="'+esc(key)+'" aria-pressed="'+(state.category===key)+'" class="'+(state.category===key?'active':'')+'">'+categoryStamp(key)+'<span>'+esc(label)+'</span></button>').join('');
 }
 function setFilterOpen(open){
  $('filter-panel').hidden=!open;
@@ -167,7 +168,7 @@ function placeCard(p,index=0){
  const type=STYLES[primary]||STYLES.All;
  return '<article class="place '+(state.selected===p.id?'selected':'')+'" data-id="'+esc(p.id)+'">'+
  '<div class="place-head"><button type="button" class="place-open" data-place-open="'+esc(p.id)+'" aria-label="View '+esc(p.name)+' details">'+
- '<span class="place-number">'+String(index+1).padStart(2,'0')+'</span><span class="place-color" style="--category:'+type.color+'"></span>'+
+ '<span class="place-number">'+String(index+1).padStart(2,'0')+'</span>'+categoryStamp(primary)+
  '<span class="place-title"><strong class="place-name">'+esc(p.name)+'</strong><small>'+esc(p.city)+' / '+esc(type.label)+'</small></span>'+
  '<span class="place-go" aria-hidden="true">↗</span></button>'+favoriteButton(p)+'</div></article>';
 }
@@ -241,8 +242,12 @@ function initializeMap(){
  map=L.map('map',{zoomControl:false,scrollWheelZoom:!L.Browser.touch,doubleClickZoom:!L.Browser.touch,touchZoom:true,tapHold:false}).setView([16.3,99.5],6);
  if(L.Browser.touch)enableMobileDoubleTap(map);
  L.control.zoom({position:'bottomright'}).addTo(map);
- const tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
- tiles.on('tileerror',()=>{$('map-error').hidden=false;});tiles.addTo(map);
+ // Vector labels prefer English, and the print-style basemap is drawn beneath
+ // all existing Leaflet markers, favorites, and itinerary paths.
+ if(typeof window.installPrintBasemap==='function')window.installPrintBasemap(map);
+ else{
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+ }
  markers=L.layerGroup().addTo(map);
  window.addEventListener('resize',()=>map.invalidateSize({pan:false}));
 }
@@ -255,8 +260,8 @@ function renderPins(list,preserveView=false){
   const primary=cats(p)[0]||'All';
   const t=STYLES[primary]||STYLES.All;
   const saved=favorites.has(String(p.id));
-  const markup='<div class="pin print-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'"><span class="pin-graphic">'+iconSVG(primary,17)+'</span>'+(saved?'<span class="pin-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
-  const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[34,34],iconAnchor:[17,17]});
+  const markup='<div class="print-stamp-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+';--pin-ink:'+categoryInk(t.color)+'" aria-label="'+esc(t.label)+'"><span class="stamp-code">'+t.code+'</span><span class="stamp-punch" aria-hidden="true"></span>'+(saved?'<span class="stamp-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
+  const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[38,38],iconAnchor:[19,19]});
   const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
   const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).bindPopup(popup).addTo(markers);
   marker.on('click',()=>focus(p.id));
