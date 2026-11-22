@@ -146,7 +146,7 @@ function toggleFavorite(id){
 }
 
 const state={places:[],city:'All',category:'All',query:'',favoritesOnly:false,selected:null,source:'',signature:''};
-let map,markers,markerById=new Map(),geoLayer=null,loading=false,feedFailed=false;
+let map,markers,markerById=new Map(),exploreEntries=[],geoLayer=null,loading=false,feedFailed=false;
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
 const cats=p=>String(p.categories||'').split('|').map(s=>s.trim()).filter(Boolean);
@@ -315,30 +315,149 @@ function initializeMap(){
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
  }
  markers=L.layerGroup().addTo(map);
+ // Recompose only Explore pins when zoom changes; itinerary route pins and
+ // polylines remain fully independent and are never clustered.
+ map.on('zoomend',()=>{if(!document.body.classList.contains('itinerary-mode'))renderExploreClusters();});
+ $('map').addEventListener('click',event=>{
+  const place=event.target.closest('[data-cluster-focus]');
+  if(!place)return;
+  event.preventDefault();
+  event.stopPropagation();
+  map.closePopup();
+  focus(place.dataset.clusterFocus);
+ });
  window.addEventListener('resize',()=>map.invalidateSize({pan:false}));
+}
+/* Print atlas clustering. Each place keeps its exact geographical coordinate.
+ * At broader zoom levels, nearby points become a transparent overprint badge
+ * with a numeric count. Increasing zoom reveals individual destination glyphs.
+ * Same-building duplicates remain discoverable in a small list at street zoom.
+ */
+function clusterRadius(zoom){
+ return zoom<=8?66:zoom<=11?59:zoom<=14?51:zoom<=16?43:35;
+}
+function collectMapClusters(entries,zoom,project){
+ const radius=clusterRadius(zoom);
+ const squared=radius*radius;
+ const groups=[];
+ // Input rows keep a stable order so zooming/panning does not shuffle markers.
+ for(const item of entries){
+  const xy=project(item.latlng,zoom);
+  let nearest=null,nearestDistance=squared;
+  for(const group of groups){
+   const dx=xy.x-group.x,dy=xy.y-group.y;
+   const distance=dx*dx+dy*dy;
+   if(distance<nearestDistance){nearest=group;nearestDistance=distance;}
+  }
+  if(nearest){
+   const n=nearest.items.length;
+   nearest.x=(nearest.x*n+xy.x)/(n+1);
+   nearest.y=(nearest.y*n+xy.y)/(n+1);
+   nearest.items.push(item);
+  }else{
+   groups.push({x:xy.x,y:xy.y,items:[item]});
+  }
+ }
+ return groups;
+}
+function clusterCard(cluster){
+ const count=cluster.items.length;
+ const countLabel=count>99?'99+':String(count);
+ const saved=cluster.items.filter(x=>favorites.has(String(x.p.id))).length;
+ return '<div class="ink-cluster" aria-hidden="true">'+
+  '<span class="ink-cluster-plate plate-magenta"></span>'+
+  '<span class="ink-cluster-plate plate-cyan"></span>'+
+  '<span class="ink-cluster-plate plate-lime"></span>'+
+  '<span class="ink-cluster-center">'+countLabel+'</span>'+
+  '<span class="ink-cluster-plus">+</span>'+
+  (saved?'<span class="ink-cluster-saved">'+starSVG(true,11)+'</span>':'')+
+  '</div>';
+}
+function clusterPlaceList(cluster){
+ const names=cluster.items.slice(0,40).map(entry=>{
+  const p=entry.p;
+  const type=STYLES[cats(p)[0]||'All']||STYLES.All;
+  return '<button type="button" class="cluster-place-choice" data-cluster-focus="'+esc(p.id)+'">'+
+   '<span class="cluster-choice-ink" style="background:'+type.color+'"></span>'+
+   '<span>'+esc(p.name)+'</span><span aria-hidden="true">↗</span></button>';
+ }).join('');
+ const remaining=cluster.items.length-40;
+ return '<div class="cluster-popup-list"><strong>'+cluster.items.length+' PLACES HERE</strong>'+
+   '<p>Multiple destinations share this area. Choose one to explore.</p>'+
+   '<div class="cluster-choice-list">'+names+'</div>'+
+   (remaining>0?'<small>More places are available in Discover.</small>':'')+'</div>';
+}
+function renderExploreClusters(){
+ if(!map||!markers||document.body.classList.contains('itinerary-mode'))return;
+ markers.clearLayers();
+ if(!exploreEntries.length)return;
+ const zoom=map.getZoom();
+ const groups=collectMapClusters(exploreEntries,zoom,(latlng,z)=>map.project(latlng,z));
+ for(const group of groups){
+  if(group.items.length===1){
+   markers.addLayer(group.items[0].marker);
+   continue;
+  }
+  const centroid=map.unproject(L.point(group.x,group.y),zoom);
+  const n=group.items.length;
+  const icon=L.divIcon({
+   html:clusterCard(group),
+   className:'map-marker ink-cluster-marker',
+   iconSize:[50,50],
+   iconAnchor:[25,25]
+  });
+  const clusterMarker=L.marker(centroid,{
+   icon,
+   keyboard:true,
+   title:n+' places nearby. '+(zoom<17?'Zoom in to see them.':'Select a place.'),
+   alt:n+' places. '+(zoom<17?'Tap to zoom in.':'Tap to choose a destination.'),
+   zIndexOffset:100
+  }).addTo(markers);
+  clusterMarker.on('click',()=>{
+   if(map.getZoom()<17){
+    // Two levels at a time gives an obvious reveal without losing context.
+    map.flyTo(centroid,Math.min(17,map.getZoom()+2),{animate:true,duration:0.45});
+   }else{
+    L.popup({maxWidth:290,minWidth:210,autoPan:true,closeButton:true})
+     .setLatLng(centroid)
+     .setContent(clusterPlaceList(group))
+     .openOn(map);
+   }
+  });
+ }
 }
 function renderPins(list,preserveView=false){
  if(!map)return;
- markers.clearLayers();markerById.clear();
+ markers.clearLayers();
+ markerById.clear();
+ exploreEntries=[];
  const positions=[];
  for(const p of list){
   if(!coords(p))continue;
   const primary=cats(p)[0]||'All';
   const t=STYLES[primary]||STYLES.All;
   const saved=favorites.has(String(p.id));
-  const markup='<div class="print-stamp-pin graphic-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+';--pin-ink:'+categoryInk(t.color)+'" aria-label="'+esc(t.label)+'"><span class="stamp-symbol">'+symbolSVG(primary,24)+'</span>'+(saved?'<span class="stamp-favorite">'+starSVG(true,11)+'</span>':'')+'</div>';
-  const icon=L.divIcon({html:markup,className:'map-marker',iconSize:[38,38],iconAnchor:[19,19]});
-  const popup='<div class="popup"><div class="popup-title"><strong>'+esc(p.name)+'</strong>'+favoriteButton(p,'popup')+'</div><p>'+esc(p.highlights||p.location_type)+'</p><a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>';
-  const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name)}).addTo(markers);
+  const markup='<span class="ink-free-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'" aria-hidden="true">'+
+   '<span class="ink-free-icon">'+symbolSVG(primary,34)+'</span>'+
+   (saved?'<span class="ink-free-favorite">'+starSVG(true,11)+'</span>':'')+
+   '</span>';
+  const icon=L.divIcon({html:markup,className:'map-marker map-glyph-marker',iconSize:[42,42],iconAnchor:[21,21]});
+  const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name),alt:String(p.name)});
   marker.on('click',()=>focus(p.id));
   markerById.set(p.id,marker);
-  positions.push(marker.getLatLng());
+  const latlng=marker.getLatLng();
+  exploreEntries.push({p,marker,latlng});
+  positions.push(latlng);
  }
- if(preserveView)return;
- if(positions.length===1)map.setView(positions[0],14);
- else if(positions.length>1)map.fitBounds(positions,{paddingTopLeft:[35,70],paddingBottomRight:mobile()?[35,45]:[45,45],maxZoom:state.city==='All'?8:14,animate:false});
- else map.setView(state.city==='Bangkok'?[13.75,100.53]:state.city==='Chiang Mai'?[18.79,98.99]:[16.3,99.5],state.city==='All'?6:12);
- setTimeout(()=>map.invalidateSize({pan:false}),100);
+ // Re-render clusters whenever the map changes scale. No view animation
+ // means filtered results preserve the precise city/selection the user chose.
+ if(!preserveView){
+  if(positions.length===1)map.setView(positions[0],14);
+  else if(positions.length>1)map.fitBounds(positions,{paddingTopLeft:[35,70],paddingBottomRight:mobile()?[35,45]:[45,45],maxZoom:state.city==='All'?8:14,animate:false});
+  else map.setView(state.city==='Bangkok'?[13.75,100.53]:state.city==='Chiang Mai'?[18.79,98.99]:[16.3,99.5],state.city==='All'?6:12);
+  setTimeout(()=>map.invalidateSize({pan:false}),100);
+ }
+ renderExploreClusters();
 }
 /* Discover is a floating, keyboard-accessible dialog, never a persistent sheet. */
 function discoverIsOpen(){return !$('places-panel').hidden;}
