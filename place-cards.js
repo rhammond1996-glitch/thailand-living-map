@@ -62,7 +62,7 @@
   if(photos.length){
    const photo=photos[0];
    return '<div class="visit-photo"><button type="button" class="visit-photo-open" data-visit-tab-open="photos" aria-label="Explore photographs of '+html(displayName(p,o))+'">'+
-    '<img src="'+html(photo.url)+'" alt="'+html(displayName(p,o))+'" loading="eager" decoding="async">'+
+    '<img src="'+html(photo.url)+'" alt="'+html(photo.title||displayName(p,o))+'" loading="eager" decoding="async">'+
     '<span class="visit-photo-invite">VIEW PHOTOS <span aria-hidden="true">↗</span></span></button></div>';
   }
   return '<div class="visit-poster" style="--visit-ink:'+html((STYLES?.[split(p)[0]]||{color:"#6748D8"}).color)+'">'+
@@ -88,7 +88,7 @@
   if(!photos.length)return "";
   return '<details class="visit-photo-credits"><summary>Photo sources &amp; licenses</summary><ol>'+
    photos.map((f,i)=>'<li><a href="'+html(f.page)+'" target="_blank" rel="noopener noreferrer">Photo '+(i+1)+'</a>'+
-    ' · '+html(f.artist||"Wikimedia Commons")+
+    ' · '+html(f.artist||"Photo source")+
     (f.license?' · '+(f.licenseUrl?'<a href="'+html(f.licenseUrl)+'" target="_blank" rel="noopener noreferrer">'+html(f.license)+'</a>':html(f.license)):"")+
     '</li>').join("")+'</ol></details>';
  }
@@ -110,10 +110,10 @@
   if(!photos.length)return '<div class="visit-gallery-empty"><p>See what this place actually looks like.</p>'+
    renderVenueLinks(o,2)+
    '<a class="visit-google-photos" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">VISITOR PHOTOS &amp; REVIEWS ↗</a></div>';
-  return '<div class="visit-gallery-heading"><span>THE PLACE, IN PICTURES</span><span>'+photos.length+' PHOTOS</span></div>'+
+  return '<div class="visit-gallery-heading"><span>'+html(o.photoLabel||"THE PLACE, IN PICTURES")+'</span><span>'+photos.length+' PHOTOS</span></div>'+
    '<div class="visit-gallery">'+photos.map((f,i)=>
     '<figure><button type="button" data-photo-index="'+i+'" aria-label="View photograph '+(i+1)+' enlarged">'+
-    '<img src="'+html(f.url)+'" loading="'+(i<4?"eager":"lazy")+'" decoding="async" alt="'+html(displayName(p,o)+' — photo '+(i+1))+'"></button></figure>'
+    '<img src="'+html(f.url)+'" loading="'+(i<4?"eager":"lazy")+'" decoding="async" alt="'+html(f.title||displayName(p,o)+' — photo '+(i+1))+'"></button></figure>'
    ).join("")+'</div>'+renderCredits(photos);
  }
  function renderPlanTab(p,o){
@@ -194,6 +194,7 @@
  }
  function photoSearchMatch(title,p,o){
   const file=String(title||"").toLowerCase().replace(/[^\p{L}\p{N} ]/gu," ");
+  const fileWords=new Set(file.split(/\s+/).filter(Boolean));
   // Screen out attractive but misleading nearby places (e.g. a waterfall
   // photographed at the same reservoir as the bamboo-raft dining stop).
   if((o.photoExclude||[]).some(x=>file.includes(String(x).toLowerCase())))return false;
@@ -205,7 +206,7 @@
    if(!terms.length)return false;
    // Require all distinctive place tokens for a strict match. A single
    // "gallery" or "lake" is never enough to establish image identity.
-   return terms.every(t=>file.includes(t));
+   return terms.length>1||terms[0]?.length>=9?terms.every(t=>fileWords.has(t)):false;
   });
  }
  async function fetchWikipediaLead(o){
@@ -223,7 +224,22 @@
    return commonsRequest({titles:"File:"+name});
   }catch(error){console.debug("Wiki lead unavailable",error);return [];}
  }
+ function exactSourcePhotos(o){
+  // A link to a venue is not a photo source. Display only hand-reviewed URLs.
+  if(!Array.isArray(o.photoSelections))return [];
+  return o.photoSelections.filter(f=>f&&/^https:\/\//.test(f.url||"")&&/^https:\/\//.test(f.page||""))
+   .slice(0,14).map((f,i)=>({
+    title:String(f.title||"Verified photo "+(i+1)),url:f.url,page:f.page,
+    artist:String(f.artist||"Official source"),license:String(f.license||""),
+    licenseUrl:String(f.licenseUrl||""),curated:true
+   }));
+ }
+ const RETAIL_PHOTO_CATEGORIES=new Set(["Fragrances","Independent fashion","Designer replicas","Vintage","Jewelry & artisan","Markets & shopping","Wellness & beauty"]);
  async function fetchPhotos(p,o){
+  const selected=exactSourcePhotos(o);
+  if(selected.length)return selected;
+  // Do not substitute similarly named objects or people for a retail venue.
+  if(split(p).some(c=>RETAIL_PHOTO_CATEGORIES.has(c))&&!o.commonsCategory&&!o.wiki)return [];
   const collected=new Map();
   function addRows(rows,curated=false){
    for(const item of rows){
