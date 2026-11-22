@@ -418,10 +418,21 @@ function renderExploreClusters(){
     // Two levels at a time gives an obvious reveal without losing context.
     map.flyTo(centroid,Math.min(17,map.getZoom()+2),{animate:true,duration:0.45});
    }else{
-    L.popup({maxWidth:290,minWidth:210,autoPan:true,closeButton:true})
+    const popup=L.popup({maxWidth:290,minWidth:210,autoPan:true,closeButton:true})
      .setLatLng(centroid)
      .setContent(clusterPlaceList(group))
      .openOn(map);
+    // Leaflet stops popup click events before they reach the map container.
+    // Bind the destination choices on the popup itself so they always work.
+    const element=popup.getElement();
+    if(element)element.addEventListener('click',event=>{
+     const place=event.target.closest('[data-cluster-focus]');
+     if(!place)return;
+     event.preventDefault();
+     event.stopPropagation();
+     map.closePopup(popup);
+     focus(place.dataset.clusterFocus);
+    });
    }
   });
  }
