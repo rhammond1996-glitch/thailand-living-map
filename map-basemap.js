@@ -18,9 +18,12 @@
     buildingLine:'#718FAC',
     minor:'#304764',
     lime:'#D6F64B',
-    roadMajor:'#9FB7C9',
-    roadSecondary:'#5F738D',
-    roadMinor:'#3B4C63',
+    // Pre-toned opaque road inks: no semi-transparent street segments.
+    roadMajor:'#34465F',
+    roadSecondary:'#42546E',
+    roadMinor:'#24334B',
+    roadCasing:'#13223B',
+    roadRail:'#32445B',
     boundary:'#7D4B80',
     white:'#F3F5FF',
     roadLabel:'#B4BED4',
@@ -81,21 +84,23 @@
               const rail=/railway|rail|transit|tram|subway/.test(id);
               const minor=/highway_minor|highway_path|footway|pedestrian|service|track|cycle/.test(id);
               if(casing){
-                // Casings should be tonal even when framing an arterial.
-                gl.setPaintProperty(layerId,'line-color','#162641');
-                gl.setPaintProperty(layerId,'line-opacity',0.63);
+                // Opaque tonal casing frames streets without overlap darkening.
+                gl.setPaintProperty(layerId,'line-color',COLORS.roadCasing);
               }else if(rail){
-                gl.setPaintProperty(layerId,'line-color',COLORS.roadSecondary);
-                gl.setPaintProperty(layerId,'line-opacity',0.35);
+                gl.setPaintProperty(layerId,'line-color',COLORS.roadRail);
               }else if(minor){
                 gl.setPaintProperty(layerId,'line-color',COLORS.roadMinor);
-                gl.setPaintProperty(layerId,'line-opacity',0.34);
               }else{
-                // Class-match expression is evaluated per physical road.
-                // For mixed highway_major layers this is crucial.
+                // Feature-class colors remain per road, but are now fully
+                // opaque, including intersections and overlapping geometry.
                 gl.setPaintProperty(layerId,'line-color',ROAD_COLORS);
-                gl.setPaintProperty(layerId,'line-opacity',0.82);
               }
+              gl.setPaintProperty(layerId,'line-opacity',1);
+              // Some upstream style layers inherit dashed/patterned street
+              // strokes, which can read as dark blocks at junctions.
+              gl.setPaintProperty(layerId,'line-dasharray',null);
+              gl.setPaintProperty(layerId,'line-pattern',null);
+              gl.setPaintProperty(layerId,'line-blur',0);
             }else{
               // Any extra vector outlines also recede instead of competing
               // with primary roads and destination markers.
