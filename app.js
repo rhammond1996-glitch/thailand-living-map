@@ -22,6 +22,7 @@ const CATEGORIES=[
  ['Architecture & heritage','Architecture','#FFCB00'],
  ['Temples & culture','Temples','#F08B00'],
  ['Art & design','Art','#6748D8'],
+ ['Bangkok Art Biennale','Biennale','#B542D6'],
  ['Nature & adventure','Nature','#008B77'],
  ['Wildlife','Wildlife','#8DD900'],
  ['Markets & shopping','Markets','#E62BB9'],
@@ -57,6 +58,8 @@ const CATEGORY_SYMBOLS={
   'Temples & culture':'<path d="M16 1 22 8H10L16 1ZM7 10h18l5 7H2l5-7ZM5 19h22l3 5H2l3-5ZM7 26h18v5H7v-5Z"/>',
   // Offset cross-spark with diamond accents
   'Art & design':'<path d="M13 1h6l-1 11 11-1v6l-11-1 1 11h-6l1-11-11 1v-6l11 1-1-11Z"/><circle cx="26" cy="26" r="4"/><circle cx="5" cy="27" r="2"/>',
+  // Framed starburst: a temporary exhibition set within its host city
+  'Bangkok Art Biennale':'<path fill-rule="evenodd" d="M3 3h26v26H3V3Zm5 5v16h16V8H8Z"/><path d="m16 9 2.1 4.9L23 16l-4.9 2.1L16 23l-2.1-4.9L9 16l4.9-2.1L16 9Z"/>',
   // Leaf, sharply pointed and asymmetrical
   'Nature & adventure':'<path fill-rule="evenodd" d="M29 3C14 3 4 9 4 19c0 5.5 3.5 9 8.5 9C23 28 29 16 29 3ZM7 29l2 2C16 22 21 16 28 9c-11 6-17 13-21 20Z"/>',
   // Graphic paw cluster
