@@ -236,3 +236,72 @@
  #place-detail .visit-gallery img,
  #place-detail .visit-photo-open img{transition:none}
 }
+
+
+/* Curated visual resources: purpose-first buttons, not a bibliography. */
+#place-detail .visit-venue-links{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ gap:7px;
+ margin:12px 0 3px;
+}
+#place-detail .visit-venue-links a{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ min-height:34px;
+ flex:0 1 auto;
+ max-width:100%;
+ padding:8px 11px;
+ border:1.5px solid #101b39;
+ border-radius:3px;
+ background:#fdfcf7;
+ color:#1739e4;
+ font:900 10px/1.2 "DM Sans",Arial,sans-serif;
+ letter-spacing:.018em;
+ text-align:center;
+ text-decoration:none;
+ white-space:normal;
+}
+#place-detail .visit-venue-links a:first-child{
+ background:#1939e9;
+ color:#fff;
+}
+#place-detail .visit-venue-links a:active{transform:translateY(1px)}
+#place-detail .visit-review-notice{
+ margin:8px 0 2px;
+ padding:9px 10px;
+ border-left:3px solid #f32996;
+ background:#f4eff2;
+ color:#29344b;
+ font:700 11px/1.4 "DM Sans",Arial,sans-serif;
+}
+#place-detail .visit-gallery-empty{
+ display:block;
+ text-align:left;
+}
+#place-detail .visit-gallery-empty p{
+ margin-bottom:12px;
+ color:#1c2840;
+ font-size:13px;
+}
+#place-detail .visit-gallery-empty .visit-venue-links{
+ margin:0 0 10px;
+}
+#place-detail .visit-gallery-empty .visit-google-photos{
+ display:inline-flex;
+ align-items:center;
+ min-height:36px;
+ padding:9px 11px;
+ text-decoration:none;
+ font:900 11px/1.2 "DM Sans",Arial,sans-serif;
+ border:1.5px solid #0d1935;
+ color:#0d1935;
+ background:#dfff40;
+ border-radius:3px;
+}
+@media(max-width:720px){
+ #place-detail .visit-venue-links{gap:6px}
+ #place-detail .visit-venue-links a{font-size:9px;padding:7px 8px;min-height:35px}
+}
