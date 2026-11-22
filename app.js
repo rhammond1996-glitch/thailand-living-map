@@ -218,7 +218,10 @@ function render(preserveView=false){
  if(area)area.innerHTML=esc(state.city==='All'?'ALL THAILAND':state.city.toUpperCase())+' <span aria-hidden="true">⌄</span>';
  $('results').textContent=list.length+' places';
  $('favorites-count').textContent=favorites.size;
- $('filter-value').textContent=state.category==='All'?'All interests':(STYLES[state.category]?.label||state.category);
+ $('filter-value').textContent=state.category==='All'?'FILTER':(STYLES[state.category]?.label||'FILTER');
+ $('category-toggle').setAttribute('aria-label',state.category==='All'?'Filter by interest':'Filter by interest, selected: '+(STYLES[state.category]?.label||state.category));
+ $('favorites-only').setAttribute('aria-label',(state.favoritesOnly?'Show all places':'Show saved places')+' ('+favorites.size+')');
+ $('favorites-only').title=state.favoritesOnly?'Show all places':'Show saved places';
  $('category-toggle').classList.toggle('has-filter',state.category!=='All');
  $('favorites-only').classList.toggle('active',state.favoritesOnly);
  $('favorites-only').setAttribute('aria-pressed',String(state.favoritesOnly));
@@ -317,6 +320,20 @@ function renderPins(list,preserveView=false){
 }
 /* Discover is a floating, keyboard-accessible dialog, never a persistent sheet. */
 function discoverIsOpen(){return !$('places-panel').hidden;}
+function setCityMenuOpen(open){
+ const nav=$('map-cities'),btn=$('city-toggle');
+ if(!nav||!btn)return;
+ nav.hidden=!open;
+ btn.setAttribute('aria-expanded',String(open));
+ btn.classList.toggle('is-open',open);
+}
+function syncCityMenuLabel(){
+ const button=$('city-toggle'),label=$('city-label');
+ if(!button||!label)return;
+ const text=state.city==='All'?'ALL':state.city==='Bangkok'?'BKK':'CHIANG MAI';
+ label.textContent=text;
+ button.setAttribute('aria-label','Choose city: '+(state.city==='All'?'All Thailand':state.city));
+}
 function setDiscoverOpen(open,restoreFocus=false){
  const panel=$('places-panel'),scrim=$('discover-scrim'),toggle=$('discover-toggle');
  if(open===discoverIsOpen())return;
@@ -330,6 +347,7 @@ function setDiscoverOpen(open,restoreFocus=false){
   // Focus the close control, not the search input: no surprise iOS keyboard.
   $('discover-close').focus({preventScroll:true});
  }else{
+  setCityMenuOpen(false);
   panel.hidden=true;
   scrim.hidden=true;
   document.body.classList.remove('discover-open');
@@ -349,6 +367,7 @@ function updateDiscoverLabel(){
  if(title)title.innerHTML=(route?'YOUR ROUTE':'DISCOVER')+' <span aria-hidden="true">↗</span>';
  const loc=$('discover-location');
  if(loc)loc.hidden=route;
+ if(route)setCityMenuOpen(false);
  const indicator=$('map-area-indicator');
  if(indicator)indicator.hidden=route;
 }
@@ -374,11 +393,15 @@ function chooseCity(city){
  if(!['All','Bangkok','Chiang Mai'].includes(city))return;
  state.city=city;closeDetails();
  document.querySelectorAll('button[data-city]').forEach(b=>{const on=b.dataset.city===city;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+ syncCityMenuLabel();
+ setCityMenuOpen(false);
  render();
 }
 function init(){
  initializeMap();
- $('map-cities').addEventListener('click',e=>{const b=e.target.closest('button[data-city]');if(b)chooseCity(b.dataset.city);});
+ $('city-toggle').addEventListener('click',()=>setCityMenuOpen($('map-cities').hidden));
+ $('map-cities').addEventListener('click',e=>{const b=e.target.closest('button[data-city]');if(b){chooseCity(b.dataset.city);$('city-toggle').focus({preventScroll:true});}});
+ document.addEventListener('click',e=>{if(!e.target.closest('#discover-location')&&!$('map-cities').hidden)setCityMenuOpen(false);});
  $('categories').addEventListener('click',e=>{const b=e.target.closest('button[data-category]');if(b){state.category=b.dataset.category;closeDetails();render();setFilterOpen(false);}});
  $('category-toggle').addEventListener('click',()=>setFilterOpen($('filter-panel').hidden));
  $('clear-category').addEventListener('click',()=>{state.category='All';closeDetails();render();setFilterOpen(false);});
@@ -391,10 +414,11 @@ function init(){
  $('discover-toggle').addEventListener('click',()=>setDiscoverOpen(!discoverIsOpen(),true));
  $('discover-close').addEventListener('click',()=>setDiscoverOpen(false,true));
  $('discover-scrim').addEventListener('click',()=>setDiscoverOpen(false,true));
- $('map-area-indicator').addEventListener('click',()=>setDiscoverOpen(true));
+ $('map-area-indicator').addEventListener('click',()=>{setDiscoverOpen(true);setCityMenuOpen(true);$('city-toggle').focus({preventScroll:true});});
  // A dialog can be closed without sacrificing map position or filters.
  document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
+   if(discoverIsOpen()&&!$('map-cities').hidden){e.preventDefault();setCityMenuOpen(false);$('city-toggle').focus({preventScroll:true});return;}
    if(discoverIsOpen()){e.preventDefault();setDiscoverOpen(false,true);}
    else if(state.selected!==null){e.preventDefault();closeDetails();}
    return;
@@ -417,6 +441,7 @@ function init(){
    setDiscoverOpen(false);closeDetails();
   },()=>{btn.disabled=false;btn.textContent='⌖';alert('Location not available or permission was declined.');},{enableHighAccuracy:false,timeout:12000,maximumAge:30000});
  });
+ syncCityMenuLabel();
  updateDiscoverLabel();
  loadSnapshot().then(syncPlaces);
  setInterval(()=>{if(!document.hidden)syncPlaces();},CONFIG.refreshMs);
