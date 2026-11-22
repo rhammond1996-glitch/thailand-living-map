@@ -60,3 +60,6 @@ body.itinerary-mode #trip-controls{display:block!important}
   .trip-controls h2{font-size:21px}
 }
 @media(max-width:360px){.brand h1{font-size:16px}.mode-picker button{padding:7px;font-size:10px}.share-button{padding:0 7px}}
+
+/* Keep dormant mode controls truly hidden regardless of authored layout rules. */
+#trip-day-picker[hidden],#trip-controls[hidden]{display:none!important}

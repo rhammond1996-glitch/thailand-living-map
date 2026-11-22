@@ -7,7 +7,7 @@
  const DRAFT_KEY='thailand-living-map:itinerary-draft:v1';
  const params=new URLSearchParams(location.search);
  let mode=params.get('view')==='itinerary'?'itinerary':'explore';
- let day=days.some(d=>d.id===params.get('day'))?params.get('day'):'1';
+ let day=params.get('day')==='all'?'all':days.some(d=>d.id===params.get('day'))?params.get('day'):'1';
  let showNear=true, radiusKm=3, drafts={};
  try{const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}');if(saved&&typeof saved==='object')drafts=saved;}catch{}
  let explorer={city:'All',category:'All',query:'',favoritesOnly:false};
