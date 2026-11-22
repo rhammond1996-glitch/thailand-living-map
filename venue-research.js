@@ -701,6 +701,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "HORN Bangkok club"
+    ],
+    "photoLabel": "HORN / EVENT DOCUMENTATION",
+    "photoSelections": [
+      {
+        "title": "HORN DJs at a club event",
+        "url": "https://media.timeout.com/images/106426913/1920/1080/image.jpg",
+        "page": "https://www.timeout.com/bangkok/things-to-do/dance-through-eight-djs-of-gloriously-leftfield-club-sounds",
+        "artist": "Time Out Bangkok",
+        "kind": "Event lineup photograph, not full venue interior"
+      }
     ]
   },
   "bkk-g-bangkok": {
@@ -714,6 +724,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "G Bangkok GOD nightclub"
+    ],
+    "photoLabel": "G BANGKOK / ACTUAL DANCE FLOOR",
+    "photoSelections": [
+      {
+        "title": "G Bangkok (G.O.D.) crowd and lighting",
+        "url": "https://fridaybangkok.com/api/image-proxy?url=https%3A%2F%2Fd1xbecb6qvn9r4.cloudfront.net%2F%2FG_Bangkok_GOD_ba98bb21ca.webp",
+        "page": "https://fridaybangkok.com/v/g-bangkok",
+        "artist": "Friday Bangkok",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-6ixcret": {
@@ -727,6 +747,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "6ixcret Show Chiang Mai"
+    ],
+    "photoLabel": "6IXCRET / CABARET PERFORMANCE",
+    "photoSelections": [
+      {
+        "title": "6ixcret Show performers on stage",
+        "url": "https://mindtrip.ai/attractions/dd44/8290/7379/774b/8922/6bb0/8dbd/007b",
+        "page": "https://mindtrip.ai/attraction/chiang-mai/6ixcret-show/at-3mNLY4Al",
+        "artist": "Mindtrip venue imagery",
+        "kind": "Show photograph"
+      }
     ]
   },
   "bkk-dual": {
@@ -744,6 +774,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "DUAL Bangkok nightclub"
+    ],
+    "photoLabel": "DUAL / UNDERGROUND CLUB",
+    "photoSelections": [
+      {
+        "title": "DUAL Bangkok dimly lit dance floor",
+        "url": "https://media.timeout.com/images/106404365/image.jpg",
+        "page": "https://www.timeout.com/bangkok/things-to-do/slip-into-dual-bangkoks-newest-underground-club-where-southeast-asian-selectors-take-over",
+        "artist": "Time Out Bangkok",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-warehouse-talatnoi": {
@@ -761,6 +801,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "The Warehouse Talat Noi Bangkok"
+    ],
+    "photoLabel": "THE WAREHOUSE / TALAT NOI",
+    "photoSelections": [
+      {
+        "title": "The Warehouse Talat Noi event space",
+        "url": "https://images.ra.co/e996ae575222438a315e9af3d0b2716aa9950ead.jpg",
+        "page": "https://ra.co/events/2084010",
+        "artist": "Resident Advisor",
+        "kind": "Past event photograph"
+      }
     ]
   },
   "bkk-subwerk": {
@@ -774,6 +824,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Subwerk Bangkok club"
+    ],
+    "photoLabel": "SUBWERK / DANCE FLOOR",
+    "photoSelections": [
+      {
+        "title": "SUBWERK Bangkok red-lit dance floor",
+        "url": "https://app.edm-addicts.com/storage/16748/subwerk-cover.png",
+        "page": "https://edm-addicts.com/club/subwerk",
+        "artist": "EDM Addicts",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-redcnx": {
@@ -787,6 +847,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "RED CNX Chiang Mai nightlife"
+    ],
+    "photoLabel": "RED CNX / CLUB NIGHT",
+    "photoSelections": [
+      {
+        "title": "Footwork Jungle music night at RED CNX",
+        "url": "https://media.timeout.com/images/106365216/750/422/image.jpg",
+        "page": "https://www.timeout.com/chiang-mai/things-to-do/figure-out-your-moves-on-the-dancefloor-at-footwork-jungle",
+        "artist": "Time Out Chiang Mai",
+        "kind": "Event photograph from RED CNX club night"
+      }
     ]
   },
   "bkk-bab-wat-pho": {
@@ -867,6 +937,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Art Centre, Silpakorn University Bangkok"
+    ],
+    "photoLabel": "SILPAKORN / WANG THAPRA",
+    "photoSelections": [
+      {
+        "title": "Silpakorn University Wang Thapra Art Centre",
+        "url": "https://media.readthecloud.co/wp-content/uploads/2021/05/29171044/wang-thapra-art-centre-56.webp",
+        "page": "https://readthecloud.co/wang-thapra-art-centre-silpakorn-university/",
+        "artist": "The Cloud",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-bab-museum-siam": {
@@ -914,6 +994,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Alliance Française Bangkok Bangkok"
+    ],
+    "photoLabel": "ALLIANCE FRANÇAISE / ARCHITECTURE",
+    "photoSelections": [
+      {
+        "title": "Alliance Française Bangkok patterned facade",
+        "url": "https://www.eliteplusmagazine.com/assets/ckeditor_fileupload/uploads/AF%20building_1444044287.jpg",
+        "page": "https://www.eliteplusmagazine.com/Article/932/Alliance_Fran%C3%A7aise_Bangkok__A_Cultural_Oasis_Amidst_The_Hustle___Bustle_Of_Bangkok",
+        "artist": "Elite Plus Magazine",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-bab-one-bangkok": {
@@ -942,6 +1032,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Siam Paragon Bangkok"
+    ],
+    "photoLabel": "SIAM PARAGON / BANGKOK",
+    "photoSelections": [
+      {
+        "title": "Siam Paragon glass entrance",
+        "url": "https://static.getoccupi.com/uploads/mall_photo/photo/9141/Siam_Paragon_New.jpg",
+        "page": "https://getoccupi.com/malls/siam-paragon",
+        "artist": "Occupi mall photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-art-jim-thompson": {
@@ -1167,6 +1267,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Lanna Architecture Center Chiang Mai"
+    ],
+    "photoLabel": "LANNA ARCHITECTURE / OFFICIAL SITE",
+    "photoSelections": [
+      {
+        "title": "Khum Chao Burirat — Lanna Architecture Center",
+        "url": "https://www.lanna-arch.net/files/lannaarch_db_218_20210514312249.jpg",
+        "page": "https://www.lanna-arch.net/article.php?read=history",
+        "artist": "Lanna Architecture Center official site",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-chediluang": {
@@ -1245,6 +1355,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "TCDC Chiang Mai"
+    ],
+    "photoLabel": "TCDC CHIANG MAI / OFFICIAL VENUE",
+    "photoSelections": [
+      {
+        "title": "TCDC Chiang Mai design centre exterior",
+        "url": "https://www.tcdc.or.th/v1/image/about/tcdc_cm/TCDC_%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.jpg",
+        "page": "https://www.tcdc.or.th/en/tcdc-chiangmai/about",
+        "artist": "TCDC official website",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-maiiam": {
