@@ -123,6 +123,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "TRES Siam Square"
+    ],
+    "photoLabel": "TRES / SIAM SQUARE STOREFRONT",
+    "photoSelections": [
+      {
+        "title": "TRES. boutique Siam Square Soi 5 shopfront",
+        "url": "https://pbs.twimg.com/media/FOYLIJMVsAEpwVR.jpg",
+        "page": "https://x.com/marauisxx/status/1505903375489003521",
+        "artist": "Visitor photograph on X",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-promthong": {
@@ -190,6 +200,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "LOFT EYES Siam Square"
+    ],
+    "photoLabel": "LOFT EYES / BOUTIQUE INTERIOR",
+    "photoSelections": [
+      {
+        "title": "Loft Eyes Siam Square multibrand interior",
+        "url": "https://www.lemon8-app.com/seo/image?index=0&item_id=7541288872161280528&sign=2e1bedb7d57ee0ba6fb31b230b67810c",
+        "page": "https://www.lemon8-app.com/%40restlessaromatic/7463401206338404882?region=th",
+        "artist": "Lemon8 visitor photograph",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-carnival": {
@@ -234,6 +254,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Matter Makers Siam Square One"
+    ],
+    "photoLabel": "MATTER MAKERS / RETAIL FLAGSHIP",
+    "photoSelections": [
+      {
+        "title": "Matter Makers Siam Square One flagship storefront",
+        "url": "https://d3fphkxyf5o5bm.cloudfront.net/image-resize/format%3Dwebp%2Cw%3D720/QwRY54Li1HMwD7oNfqb7Naj2DYQhJsM2yC1Xap8y89",
+        "page": "https://mindtrip.ai/attraction/bangkok-thailand/matter-makers/at-Y1B8LKVb",
+        "artist": "Mindtrip venue photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-gongdid": {
@@ -579,6 +609,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Hola Hola Secondhand Chiang Mai"
+    ],
+    "photoLabel": "HOLA HOLA / SECONDHAND STOREFRONT",
+    "photoSelections": [
+      {
+        "title": "Hola Hola secondhand clothing shop exterior",
+        "url": "https://www.cmhy.city/uploads/photos/33-Personal/123-Used-Clothing-Store/37884--West/place37884_IMG_20240420_1835060.jpg",
+        "page": "https://www.cmhy.city/place/37884-Hola-Hola-Secondhand-Clothing",
+        "artist": "CMHY local business directory",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-jing": {
@@ -1078,6 +1118,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Bangkok Citycity Gallery"
+    ],
+    "photoLabel": "BANGKOK CITYCITY / GALLERY",
+    "photoSelections": [
+      {
+        "title": "Bangkok CITYCITY Gallery minimal white exterior",
+        "url": "https://www.wazzadu.com/thumbs/article/resize/760/image_a69f1870-9ab2-11e7-92e8-f986e568f3ec.jpg",
+        "page": "https://www.wazzadu.com/article/1531",
+        "artist": "Wazzadu architectural photograph",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "bkk-art-100-tonson": {
@@ -1249,6 +1299,16 @@ window.VENUE_RESEARCH = {
     "links": [],
     "photoQueries": [
       "Chiang Mai Night Bazaar"
+    ],
+    "photoLabel": "CHIANG MAI / NIGHT BAZAAR",
+    "photoSelections": [
+      {
+        "title": "Chiang Mai Night Bazaar market stalls after dark",
+        "url": "https://www.bring-you.info/imgs/2019/02/night-bazzar-19-900x600.jpg",
+        "page": "https://www.bring-you.info/zh-tw/chiang-mai-night-bazaar",
+        "artist": "BringYou travel photography",
+        "kind": "Venue photograph"
+      }
     ]
   },
   "cm-watchiangman": {
@@ -1409,6 +1469,16 @@ window.VENUE_RESEARCH = {
     ],
     "photoQueries": [
       "Bo Sang Umbrella Festival Chiang Mai"
+    ],
+    "photoLabel": "BO SANG / PAST FESTIVAL",
+    "photoSelections": [
+      {
+        "title": "Bo Sang Umbrella Festival parade beneath colorful umbrellas",
+        "url": "https://cdn.forevervacation.com/uploads/media/images/uploaded_images/1605199875.jpg",
+        "page": "https://forevervacation.com/the-vacationer/things-to-do-in-chiang-mai-travel-guide",
+        "artist": "ForeverVacation travel photography",
+        "kind": "Photograph from a prior festival; not 2027 programme"
+      }
     ]
   },
   "cm-coconut": {
