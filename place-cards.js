@@ -3,7 +3,9 @@
    No private keys, scraping of the biennale's photos, or fabricated venue hours. */
 (function(){
  "use strict";
- const cards=window.MAP_PROFILES||{};
+ const profiles=window.MAP_PROFILES||{},sources=window.VENUE_RESEARCH||{};
+ const cards=Object.fromEntries([...new Set([...Object.keys(sources),...Object.keys(profiles)])].map(id=>[id,
+  {...sources[id],...profiles[id],links:[...(sources[id]?.links||[]),...(profiles[id]?.links||[])]}]));
  const cache=new Map();
  const cardEl=()=>document.getElementById("place-detail");
  const html=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -90,12 +92,24 @@
     (f.license?' · '+(f.licenseUrl?'<a href="'+html(f.licenseUrl)+'" target="_blank" rel="noopener noreferrer">'+html(f.license)+'</a>':html(f.license)):"")+
     '</li>').join("")+'</ol></details>';
  }
+ function usableLinks(o,limit=5){
+  const links=(o.links||[]).filter(item=>Array.isArray(item)&&item.length>=2&&/^https:\/\//.test(item[1]));
+  if(o.quickLink&&/^https:\/\//.test(o.quickLink))links.push(["OFFICIAL GUIDE",o.quickLink]);
+  const seen=new Set();
+  return links.filter(x=>{if(seen.has(x[1]))return false;seen.add(x[1]);return true}).slice(0,limit);
+ }
+ function renderVenueLinks(o,limit=3){
+  const links=usableLinks(o,limit);
+  return links.length?'<div class="visit-venue-links">'+links.map(([label,url])=>
+    '<a href="'+html(url)+'" target="_blank" rel="noopener noreferrer">'+html(label)+' ↗</a>').join("")+'</div>':"";
+ }
  function renderPhotoTab(p,o){
   const entry=cache.get(p.id);
   if(!entry||entry.loading)return '<div class="visit-gallery-loading"><span class="visit-gallery-orbit" aria-hidden="true"></span>Finding photographs of this place…</div>';
   const photos=entry.photos||[];
-  if(!photos.length)return '<div class="visit-gallery-empty"><p>We haven’t found a reliable gallery of this exact place yet.</p>'+
-   '<a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">SEE VISITOR PHOTOS ON GOOGLE MAPS ↗</a></div>';
+  if(!photos.length)return '<div class="visit-gallery-empty"><p>See what this place actually looks like.</p>'+
+   renderVenueLinks(o,2)+
+   '<a class="visit-google-photos" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">VISITOR PHOTOS &amp; REVIEWS ↗</a></div>';
   return '<div class="visit-gallery-heading"><span>THE PLACE, IN PICTURES</span><span>'+photos.length+' PHOTOS</span></div>'+
    '<div class="visit-gallery">'+photos.map((f,i)=>
     '<figure><button type="button" data-photo-index="'+i+'" aria-label="View photograph '+(i+1)+' enlarged">'+
@@ -114,7 +128,7 @@
    '<a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">MAPS &amp; REVIEWS ↗</a></div>'+
    rows.map(([k,v])=>'<div class="visit-address"><span>'+html(k)+'</span><p>'+html(v)+'</p></div>').join("")+
    (p.address?'<div class="visit-address"><span>ADDRESS</span><p>'+html(p.address)+'</p></div>':"")+
-   (o.quickLink?'<a class="visit-reference-link" href="'+html(o.quickLink)+'" target="_blank" rel="noopener noreferrer">OFFICIAL WEBSITE / EVENT GUIDE ↗</a>':"");
+   (goodNote(o.practical)?'':"");
  }
  function renderTab(p,o,tab){
   if(tab==="photos")return renderPhotoTab(p,o);
@@ -134,14 +148,15 @@
    '<div class="visit-actions">'+favoriteButton(p,"detail")+'<button class="close-detail" type="button" aria-label="Close destination card">×</button></div></div>'+
    '<div class="visit-hero" aria-label="Location photograph">'+renderHero(p,o)+'</div>'+
    (lead?'<p class="visit-lead">'+html(lead)+'</p>':"")+
+   (o.confidence==="needs-review"?'<p class="visit-review-notice">This shop is still on our research list; its storefront has not been confirmed.</p>':"")+
+   renderVenueLinks(o,3)+
    (facts.length?'<div class="visit-facts">'+facts.map(([label,value])=>'<div class="visit-fact"><span>'+html(label)+'</span><strong>'+html(value)+'</strong></div>').join("")+'</div>':"")+
    '<div class="visit-place-guide"><span class="visit-guide-dot"></span><span>'+html(p.city.toUpperCase())+' / '+html(p.location_type||c.label)+'</span>'+
    '<a href="'+html(directions(p))+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
    '<div class="visit-tabs" role="tablist" aria-label="Destination information">'+tabs.map(([id,label])=>
     '<button role="tab" type="button" class="visit-tab '+(id==="photos"?"is-active":"")+'" data-visit-tab="'+id+'" aria-selected="'+(id==="photos")+'">'+html(label)+'</button>').join("")+'</div>'+
    '<div class="visit-tab-panel" role="tabpanel" aria-live="polite">'+renderPhotoTab(p,o)+'</div>'+
-   '<div class="visit-footer"><a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">GOOGLE MAPS ↗</a>'+
-   (o.quickLink?'<a href="'+html(o.quickLink)+'" target="_blank" rel="noopener noreferrer">OFFICIAL GUIDE ↗</a>':"")+'</div></div>';
+   '<div class="visit-footer"><a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">OPEN IN GOOGLE MAPS ↗</a></div></div>';
  }
   function metadataText(value){
   return String(value||"").replace(/<[^>]*>/g," ").replace(/&(?:nbsp|#160);/gi," ")
