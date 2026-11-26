@@ -60,10 +60,22 @@
  function renderHero(p,o){
   const photos=cache.get(p.id)?.photos||[];
   if(photos.length){
-   const photo=photos[0];
-   return '<div class="visit-photo"><button type="button" class="visit-photo-open" data-visit-tab-open="photos" aria-label="Explore photographs of '+html(displayName(p,o))+'">'+
-    '<img src="'+html(photo.url)+'" alt="'+html(photo.title||displayName(p,o))+'" loading="eager" decoding="async">'+
-    '<span class="visit-photo-invite">VIEW PHOTOS <span aria-hidden="true">↗</span></span></button></div>';
+   const n=photos.length;
+   const slides=photos.map((photo,i)=>
+    '<div class="visit-hero-slide" role="group" aria-roledescription="slide" aria-label="'+(i+1)+' of '+n+'">'+
+    '<button type="button" class="visit-hero-image-button" data-photo-index="'+i+'" aria-label="Enlarge photo '+(i+1)+': '+html(photo.title||displayName(p,o))+'">'+
+    '<img src="'+html(photo.url)+'" alt="'+html(photo.title||displayName(p,o))+'" loading="'+(i===0?'eager':'lazy')+'" decoding="async"></button></div>'
+   ).join('');
+   return '<div class="visit-photo visit-photo-carousel" role="region" aria-roledescription="carousel" aria-label="Photos of '+html(displayName(p,o))+'">'+
+    '<div class="visit-photo-track" data-photo-track tabindex="0" aria-label="Swipe left or right to browse photographs">'+slides+'</div>'+
+    '<div class="visit-photo-toolbar"><span class="visit-photo-collection">'+html(o.photoLabel||'DESTINATION PHOTOS')+'</span>'+
+    '<div class="visit-photo-controls">'+
+    (n>1?'<button type="button" data-photo-step="-1" aria-label="Previous photograph">‹</button>':'')+
+    '<span class="visit-photo-counter" data-photo-counter aria-live="polite">1 / '+n+'</span>'+
+    (n>1?'<button type="button" data-photo-step="1" aria-label="Next photograph">›</button>':'')+
+    '</div></div>'+
+    (n>1?'<div class="visit-photo-progress" aria-hidden="true"><span data-photo-progress style="width:'+(100/n)+'%"></span></div>':'')+
+    '</div>';
   }
   return '<div class="visit-poster" style="--visit-ink:'+html((STYLES?.[split(p)[0]]||{color:"#6748D8"}).color)+'">'+
    '<div class="visit-poster-upper"><span>'+html(p.city.toUpperCase())+' / THAILAND</span><span>° 2027</span></div>'+
@@ -134,7 +146,6 @@
    (goodNote(o.practical)?'':"");
  }
  function renderTab(p,o,tab){
-  if(tab==="photos")return renderPhotoTab(p,o);
   if(tab==="features")return renderMainTab(p,o);
   return renderPlanTab(p,o);
  }
@@ -144,12 +155,14 @@
   const sub=o.eyebrow||(isBab(p)?"BANGKOK ART BIENNALE / 2026–27":"THAILAND / "+(c.label||primary).toUpperCase());
   const facts=factsFor(p,o),lead=introFor(p,o);
   const showHighlights=itemsFor(p,o).length>0||goodNote(o.more);
-  const tabs=[["photos","PHOTOS"],...(showHighlights?[["features","HIGHLIGHTS"]]:[]),["plan","PLAN"]];
+  const tabs=[...(showHighlights?[["features","HIGHLIGHTS"]]:[]),["plan","PLAN"]];
+  const defaultTab=showHighlights?"features":"plan";
   return '<div class="visit-shell" style="--visit-accent:'+html(c.color)+'" data-place-id="'+html(p.id)+'">'+
    '<div class="visit-heading"><div class="visit-identity"><span class="visit-kicker">'+html(sub)+'</span>'+
    '<h2>'+html(displayName(p,o))+'</h2>'+(o.thai?'<div class="visit-thai" lang="th">'+html(o.thai)+'</div>':"")+'</div>'+
    '<div class="visit-actions">'+favoriteButton(p,"detail")+'<button class="close-detail" type="button" aria-label="Close destination card">×</button></div></div>'+
    '<div class="visit-hero" aria-label="Destination or collection photography">'+renderHero(p,o)+'</div>'+
+   '<div class="visit-hero-credit">'+renderCredits(cache.get(p.id)?.photos||[])+'</div>'+
    (lead?'<p class="visit-lead">'+html(lead)+'</p>':"")+
    (o.confidence==="needs-review"?'<p class="visit-review-notice">This shop is still on our research list; its storefront has not been confirmed.</p>':"")+
    renderVenueLinks(o,3)+
@@ -157,8 +170,8 @@
    '<div class="visit-place-guide"><span class="visit-guide-dot"></span><span>'+html(p.city.toUpperCase())+' / '+html(p.location_type||c.label)+'</span>'+
    '<a href="'+html(directions(p))+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
    '<div class="visit-tabs" role="tablist" aria-label="Destination information">'+tabs.map(([id,label])=>
-    '<button role="tab" type="button" class="visit-tab '+(id==="photos"?"is-active":"")+'" data-visit-tab="'+id+'" aria-selected="'+(id==="photos")+'">'+html(label)+'</button>').join("")+'</div>'+
-   '<div class="visit-tab-panel" role="tabpanel" aria-live="polite">'+renderPhotoTab(p,o)+'</div>'+
+    '<button role="tab" type="button" class="visit-tab '+(id===defaultTab?"is-active":"")+'" data-visit-tab="'+id+'" aria-selected="'+(id===defaultTab)+'">'+html(label)+'</button>').join("")+'</div>'+
+   '<div class="visit-tab-panel" role="tabpanel" aria-live="polite">'+renderTab(p,o,defaultTab)+'</div>'+
    '<div class="visit-footer"><a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">OPEN IN GOOGLE MAPS ↗</a></div></div>';
  }
   function metadataText(value){
@@ -339,21 +352,51 @@
   document.body.appendChild(el);lightbox=el;
   el.querySelector("[data-lightbox-close]")?.focus();
  }
+ function changeHeroPhoto(track,delta){
+  const photos=cache.get(cardEl()?.dataset.placeId)?.photos||[];
+  if(!track||photos.length<2)return;
+  const width=track.clientWidth||1;
+  const index=Math.min(photos.length-1,Math.max(0,Math.round(track.scrollLeft/width)));
+  const next=Math.max(0,Math.min(photos.length-1,index+delta));
+  const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  track.scrollTo({left:next*width,behavior:reduce?'auto':'smooth'});
+ }
+ function wireHeroCarousel(panel){
+  const track=panel?.querySelector('[data-photo-track]');if(!track)return;
+  const hero=track.closest('.visit-photo-carousel'),count=hero?.querySelector('[data-photo-counter]');
+  const progress=hero?.querySelector('[data-photo-progress]'),total=track.children.length;
+  const refresh=()=>{
+   const index=Math.min(total-1,Math.max(0,Math.round(track.scrollLeft/Math.max(1,track.clientWidth))));
+   if(count)count.textContent=(index+1)+' / '+total;
+   if(progress)progress.style.transform='translateX('+(index*100)+'%)';
+   hero?.querySelectorAll('[data-photo-step]').forEach(btn=>{
+    const step=Number(btn.dataset.photoStep);
+    btn.disabled=step<0?index===0:index===total-1;
+   });
+  };
+  track.addEventListener('scroll',refresh,{passive:true});
+  track.addEventListener('keydown',e=>{
+   if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    e.preventDefault();changeHeroPhoto(track,e.key==='ArrowRight'?1:-1);
+   }
+  });
+  refresh();
+ }
  function syncPhotos(id){
   const panel=cardEl(), p=state.places?.find(x=>String(x.id)===String(id));
   if(!p||panel.hidden||panel.dataset.placeId!==String(id))return;
   const o=cards[id]||{};
   const hero=panel.querySelector(".visit-hero");
   if(hero)hero.innerHTML=renderHero(p,o);
-  if(panel.querySelector(".visit-tab.is-active")?.dataset.visitTab==="photos"){
-   const body=panel.querySelector(".visit-tab-panel");
-   if(body)body.innerHTML=renderPhotoTab(p,o);
-  }
+  const credits=panel.querySelector('.visit-hero-credit');
+  if(credits)credits.innerHTML=renderCredits(cache.get(p.id)?.photos||[]);
+  wireHeroCarousel(panel);
  }
  window.openPlaceProfile=function(p){
   const panel=cardEl();if(!panel||!p)return;
   panel.dataset.placeId=String(p.id);
   panel.innerHTML=makeCard(p);
+  wireHeroCarousel(panel);
   panel.hidden=false;
   panel.scrollTop=0;
   const entry=cache.get(p.id);
@@ -378,18 +421,17 @@
   if(entry.photos.length!==before)syncPhotos(id);
  },true);
  document.addEventListener("click",function(e){
+  const arrow=e.target.closest("#place-detail [data-photo-step]");
+  if(arrow){
+   e.preventDefault();
+   changeHeroPhoto(arrow.closest('.visit-photo-carousel')?.querySelector('[data-photo-track]'),Number(arrow.dataset.photoStep));
+   return;
+  }
   const photo=e.target.closest("#place-detail [data-photo-index]");
   if(photo){
    const id=cardEl()?.dataset.placeId;
    const p=state.places?.find(x=>String(x.id)===String(id));
    if(p){e.preventDefault();showPhoto(p,photo.dataset.photoIndex);}
-   return;
-  }
-  const hero=e.target.closest("#place-detail [data-visit-tab-open]");
-  if(hero){
-   const tabs=cardEl()?.querySelectorAll("[data-visit-tab]")||[];
-   const chosen=[...tabs].find(b=>b.dataset.visitTab===hero.dataset.visitTabOpen);
-   if(chosen){chosen.click();chosen.scrollIntoView({behavior:"smooth",block:"nearest"});}
    return;
   }
   const tab=e.target.closest("#place-detail [data-visit-tab]");
