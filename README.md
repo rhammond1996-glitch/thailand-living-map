@@ -84,6 +84,18 @@ Do not import `places.json` or the original CSV back over your existing Sheet: t
 - The `Biennale` filter and its graphic starburst stamp are part of Explore. Existing Chiang Mai day routes and nearby-alternative behavior are untouched; Bangkok itinerary days have not yet been scheduled.
 - Official 2026 venue list: https://www.bkkartbiennale.com/venues (the lower route section of this page still contains 2024 itinerary information).
 
+### Pin, mobile banner and dual-city itinerary refresh (November 26, 2026)
+
+The mobile masthead is **one row and 64px high**. On narrow screens the redundant wordmark is hidden, leaving Explore/Itinerary, Day/Night and Discover visible. Desktop retains the brand. `ui-refinement.css` is the final loaded visual stylesheet and should stay after `dual-mode.css`.
+
+- **Map pins:** Both map modes now use a symmetric, unrotated 44×52 SVG teardrop with a (22, 49) geographic anchor and a fixed central 22px icon. Five vibrant display groups replace confusing abstract glyphs: shopping (pink), nightlife (purple), arts/architecture/temples (blue), food (orange), nature/wellness (green). Detailed filter categories remain available.
+- **Clustering:** Still only six or more nearby destinations; individual icons may overlap for two to five.
+- **Itinerary styling:** Numbered primary route pins now use the same symmetric silhouette as Explore. Nearby alternatives remain subdued, updating between Day/Night. Route controls, city switches, cards, labels, accents and route colors share the new appearance system.
+- **New Bangkok itinerary:** Four flexible first-pass days, nominally Jan 7–10, 2027, with all stops drawn from the live/backup Bangkok places and three locally bundled draft additions. Day 1 Siam / fragrances / shopping / PAÑPURI WELLNESS; Day 2 Chula experimental perfumes / art / Banthat Thong food / HORN; Day 3 modern art / architecture / wellness / underground club; Day 4 Chatuchak / historic temples / Song Wat / Yaowarat food / optional gay dancing. Dates and stops remain editable in the local itinerary draft. These are thematic sequences, **not verified opening-hours or transport itineraries**.
+- **Chiang Mai preserved:** The existing four days, numbered 1–4, retain their saved stops, dates, warnings and any in-browser draft edits. The itinerary city switcher scopes route pins and nearby options to Bangkok or Chiang Mai independently. Choose Day 1–4 or All within the selected city.
+- **New Bangkok route points:** `bkk-banthatthong` and `bkk-yaowarat` are district-scale food pins, not individual restaurants; `bkk-panpuriwellness` is a Gaysorn Tower building-level spa pin with official floor information. These are appended to `window.TRIP_PLACES`; the Google Sheet remains the master for previously saved stops. `place-editorial.js` supplies matching summaries and highlights.
+- **Testing:** JavaScript syntax passed for the edited files; all eight itinerary days' place IDs resolve; city selector switches correctly in a simulated interaction test. Live GitHub Pages rendering and mobile-browser QA may still need a hard refresh and a visual check.
+
 ### Harmonized Day / Night visual system (November 26, 2026)
 
 The public map now uses a paired **Day** and **Night** design derived from the Soft System and Dark Modern concept studies. Both share the same navigation, typography, photo-led cards, glass surfaces, map pin shapes and category logic, with only colors/contrast changing. The explicitly labeled **Day / Night** switch is in the top header, alongside Explore, Itinerary and Discover. On a first visit it uses the device's system appearance; after a manual choice the site remembers that selection on that browser through `localStorage`, without applying it to other friends' devices.
