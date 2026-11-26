@@ -312,7 +312,7 @@
   // otherwise a compatible web map. No forced native scheme or app install.
   const query=[searchName(p),p.address].filter(Boolean).join(', ');
   const appleURL='https://maps.apple.com/?q='+encodeURIComponent(query)+
-   (Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lng))&&p.lat!==''&&p.lng!==''?
+   (p.lat!=null&&p.lng!=null&&p.lat!==''&&p.lng!==''&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lng))?
     '&ll='+encodeURIComponent(String(p.lat)+','+String(p.lng)):'');
   const googleURL=gmaps(p);
   const overlay=document.createElement('div');
