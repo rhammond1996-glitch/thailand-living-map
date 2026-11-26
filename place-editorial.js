@@ -1,5 +1,4 @@
-/* Short, destination-first descriptions and scannable highlights for all trip-map locations.
-   Editorial copy describes the place itself, never itinerary timing or logistics. */
+/* Short, destination-first descriptions and scannable highlights. */
 window.PLACE_EDITORIAL = {
   "bkk-centralworld": [
     "Large central Bangkok shopping complex with international fashion, independent Thai designers, niche perfume boutiques and contemporary art installations.",
@@ -615,6 +614,33 @@ window.PLACE_EDITORIAL = {
       "Gilded chedi",
       "Lanna temple ornament",
       "Mountain panorama"
+    ]
+  ],
+  "bkk-banthatthong": [
+    "Central Bangkok food street packed with Thai-Chinese shophouse restaurants, lively noodle shops, casual eateries and dessert counters.",
+    [
+      "Street food & shophouses",
+      "Thai-Chinese noodles",
+      "Desserts",
+      "Local dining"
+    ]
+  ],
+  "bkk-yaowarat": [
+    "Bangkok's historic Chinatown food street, filled with neon-lit stalls serving noodles, grilled seafood, dumplings and Thai-Chinese sweets.",
+    [
+      "Chinatown street food",
+      "Night-market atmosphere",
+      "Thai-Chinese specialties",
+      "Dessert stalls"
+    ]
+  ],
+  "bkk-panpuriwellness": [
+    "Elevated Thai wellness sanctuary at Gaysorn Tower offering onsen bathing, spa therapies and scent-led rituals.",
+    [
+      "12th-floor spa",
+      "Onsen & wellness",
+      "Thai massage",
+      "Aromatherapy"
     ]
   ]
 };
