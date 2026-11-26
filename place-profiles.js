@@ -3,18 +3,19 @@
    Wikimedia Commons serves optional open-licensed imagery at runtime. */
 window.MAP_PROFILES = {
  "bkk-centralworld":{
+  retailDirectory:true,
   title:"centralwOrld", thai:"เซ็นทรัลเวิลด์", eyebrow:"RETAIL FIELD GUIDE / SIAM",
   hours:"Daily · 10:00–22:00", visit:"Allow 2–3 hours", transit:"BTS Chit Lom · skywalk",
   wiki:"CentralWorld", listing:"STORES",
   intro:"Our fragrance and Thai-design headquarters. The fragrance stops are clustered around floors 1–3; use these notes as a mini in-mall route, not a claim of live stock.",
   items:[
-   {name:"Butterfly Thai Perfume",where:"1F · Hug Thai",type:"Thai fragrance",note:"One of our key Thai perfume stops; check the Hug Thai area."},
-   {name:"JOURNAL",where:"2F",type:"Thai fragrance",note:"Explore Thai storytelling-led scents and discovery sets."},
+   {name:"Butterfly Thai Perfume",where:"1F · Hug Thai",type:"Thai fragrance",note:"Thai perfume boutique in the Hug Thai retail area."},
+   {name:"JOURNAL",where:"2F",type:"Thai fragrance",note:"Thai perfumery with storytelling-led fragrances and discovery sets."},
    {name:"SKONX Perfumery",where:"2F · Eden Zone",type:"Niche fragrance",note:"A multi-brand scent bar focused on independent perfumery."},
    {name:"PAÑPURI",where:"2F · Atrium Zone",type:"Luxury Thai fragrance",note:"Sensorial boutique for perfume, body care and home fragrance."},
-   {name:"MITH",where:"3F · Mall directory",type:"Thai niche fragrance",note:"The current official directory lists 3F; earlier notes listed 2F. Recheck when visiting."},
-   {name:"PROAD",where:"Floor to confirm",type:"Fragrance",note:"Previously paired with MITH in our shopping notes. Store placement not independently confirmed."},
-   {name:"Gongdid Design",where:"2F · verify location",type:"Independent fashion",note:"Sculptural Thai clothing; verify current shop-in-shop before visiting."},
+   {name:"MITH",where:"3F · Mall directory",type:"Thai niche fragrance",note:"Earlier notes listed 2F; a subsequent directory listed 3F, so the floor is not settled."},
+   {name:"PROAD",where:"Floor to confirm",type:"Fragrance",note:"Thai fragrance label; separate in-mall store placement has not been verified."},
+   {name:"Gongdid Design",where:"2F · verify location",type:"Independent fashion",note:"Sculptural Thai clothing; the in-mall storefront has not been verified."},
    {name:"Matter Makers",where:"Floor to confirm",type:"Independent fashion",note:"Contemporary local streetwear and clothing."}
   ],
   quickLink:"https://www.centralworld.co.th/en",
@@ -94,20 +95,23 @@ window.MAP_PROFILES = {
   items:[{name:"Biennale presentation",where:"Cultural institute",note:"Confirm gallery opening hours and artwork locations."}]
  },
  "bkk-dragon":{
+  retailDirectory:true,
   title:"Dragon Town · Rebellion Lab",eyebrow:"FRAGRANCE / CHULA",
   listing:"STORES",intro:"An excellent independent-perfume detour in Bangkok's Chula district.",
-  items:[{name:"Rebellion Lab",where:"2F · Dragon Town",note:"Experimental local perfume stop."},{name:"Perfume Bar",where:"2F · Dragon Town",note:"Explore fragrance offerings together."}]
+  items:[{name:"Rebellion Lab",where:"2F · Dragon Town",note:"Experimental Thai fragrance boutique."},{name:"Perfume Bar",where:"2F · Dragon Town",note:"Perfume sampling and independent fragrance selection."}]
  },
  "cm-onenimman":{
+  retailDirectory:true,
   title:"One Nimman",eyebrow:"CHIANG MAI / DESIGN & FRAGRANCE",
   wiki:"One Nimman",listing:"STORES",
   intro:"A design-forward shopping complex in Nimman; an efficient fragrance and maker stop.",
-  items:[{name:"JOURNAL",where:"Unit D106",note:"Thai niche fragrance."},{name:"PAÑPURI",where:"One Nimman · confirm unit",note:"Thai wellness and perfumery."},{name:"Independent designers",where:"Across the complex",note:"Browse changing makers and small shops."}]
+  items:[{name:"JOURNAL",where:"Unit D106",note:"Thai fragrances inspired by local places and stories."},{name:"PAÑPURI",where:"One Nimman · confirm unit",note:"Thai fragrance, wellness and body-care boutique."},{name:"Independent designers",where:"Across the complex",note:"Contemporary local fashion and artisan boutiques."}]
  },
  "bkk-gaysorn":{
+  retailDirectory:true,
   title:"Gaysorn Tower · SKONX",eyebrow:"FRAGRANCE / RATCHAPRASONG",listing:"STORES",
   intro:"A convenient second SKONX location near centralwOrld.",
-  items:[{name:"SKONX Perfumery",where:"2F · Gaysorn Tower",note:"Alternative stop if centralwOrld is too busy."}]
+  items:[{name:"SKONX Perfumery",where:"2F · Gaysorn Tower",note:"Independent niche fragrance retailer."}]
  },
  "cm-bosangfestival":{
   title:"Bo Sang Umbrella Festival",eyebrow:"CHIANG MAI / CRAFT FESTIVAL",
