@@ -84,6 +84,17 @@ Do not import `places.json` or the original CSV back over your existing Sheet: t
 - The `Biennale` filter and its graphic starburst stamp are part of Explore. Existing Chiang Mai day routes and nearby-alternative behavior are untouched; Bangkok itinerary days have not yet been scheduled.
 - Official 2026 venue list: https://www.bkkartbiennale.com/venues (the lower route section of this page still contains 2024 itinerary information).
 
+### Harmonized Day / Night visual system (November 26, 2026)
+
+The public map now uses a paired **Day** and **Night** design derived from the Soft System and Dark Modern concept studies. Both share the same navigation, typography, photo-led cards, glass surfaces, map pin shapes and category logic, with only colors/contrast changing. The explicitly labeled **Day / Night** switch is in the top header, alongside Explore, Itinerary and Discover. On a first visit it uses the device's system appearance; after a manual choice the site remembers that selection on that browser through `localStorage`, without applying it to other friends' devices.
+
+- **Theme mechanism:** `theme-mode.js` keeps `data-ui-theme` and accessible `aria-pressed` states in sync, updates the browser theme-color, and emits `thailand:themechange`. The early inline header script prevents an incorrect initial theme flash.
+- **Shared styling:** `dual-mode.css` is loaded after legacy styles, replacing bold print textures and overwhelming CMY accents with pale translucent panels in Day and navy glass panels in Night. The maps, Discover overlay, shopping guides, itineraries and Apple/Google Maps chooser keep their existing functionality.
+- **Live cartography:** `map-basemap.js` recolors the existing OpenFreeMap/MapLibre vector layers when switching modes. The map is **not reconstructed**, preserving map position, marker selection, itinerary routing, and favorites. The CARTO raster fallback also changes between its light and dark tiles.
+- **Pin language:** `app.js` maps detailed categories to four restrained families with clear shopping, nightlife, art and nature glyphs. Both modes use identical icon shapes and category colors. The Explore cluster threshold remains **six or more** nearby points; groups of two through five still overlap as individual pins.
+- **Mockup interpretation:** Concept illustrations explored supplemental cards and Plan actions; these are not part of the deployed popup. The working map intentionally retains its simpler single Maps chooser and detailed in-building store guides.
+- **Testing caveat:** Source code and interaction checks validate the implementation, but GitHub Pages may be cached and direct mobile-browser visuals should be checked on-device after deployment.
+
 ### Unified destination cards (November 26, 2026)
 
 Every marker opens the same compact, mobile-first location card. The visual order is **place name + category/city → swipeable photo carousel → brief, destination-first description → visible highlights → one "Open in Maps" chooser button**. There are no Photos, Highlights or Plan sub-tabs, no repeated directions/reviews buttons, and no lengthy itinerary or transit notes in location cards. The chooser offers **Apple Maps** and **Google Maps** on every device. Either option uses a universal HTTPS map link to open the named mapping app when supported, or a web map otherwise; it does not detect installed apps or force a default.
