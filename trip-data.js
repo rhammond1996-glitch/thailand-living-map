@@ -361,14 +361,181 @@ window.TRIP_PLACES=[
     "verification": "Pin checked against a public reference or locality; confirm precise entrance before visiting"
   }
 ];
+/* Bangkok trip-only destinations, merged with the primary sheet and Chiang Mai places. */
+window.TRIP_PLACES.push(...[
+  {
+    "id": "bkk-banthatthong",
+    "name": "Banthat Thong Food Street",
+    "city": "Bangkok",
+    "categories": "Food & Drink",
+    "location_type": "Food street",
+    "address": "Banthat Thong Road, Wang Mai, Pathum Wan, Bangkok, Thailand",
+    "highlights": "Lively Thai-Chinese shophouse restaurants, noodles, street food and desserts",
+    "priority": "High",
+    "status": "Draft",
+    "lat": 13.745326,
+    "lng": 100.523977,
+    "verification": "Area-level pin, not a specific business. Reference: https://www.lovethailand.org/travel/en/17-Bangkok/16530-Banthat-Thong-Road.html"
+  },
+  {
+    "id": "bkk-yaowarat",
+    "name": "Yaowarat Chinatown Food Street",
+    "city": "Bangkok",
+    "categories": "Food & Drink|Markets & shopping",
+    "location_type": "Food street",
+    "address": "Yaowarat Road, Samphanthawong, Bangkok, Thailand",
+    "highlights": "Neon-lit Thai-Chinese street food: noodles, seafood, dumplings and desserts",
+    "priority": "High",
+    "status": "Draft",
+    "lat": 13.741136,
+    "lng": 100.508305,
+    "verification": "Area-level pin, not a specific food vendor. Reference: https://en.wikipedia.org/wiki/Yaowarat_Road"
+  },
+  {
+    "id": "bkk-panpuriwellness",
+    "name": "PAÑPURI WELLNESS Gaysorn Tower",
+    "city": "Bangkok",
+    "categories": "Wellness & beauty|Fragrances",
+    "location_type": "Spa & wellness",
+    "address": "Gaysorn Tower, 12th Floor, 127 Ratchadamri Road, Lumphini, Pathum Wan, Bangkok 10330, Thailand",
+    "highlights": "Thai onsen, aromatherapy and spa rituals at the 12th-floor wellness retreat",
+    "priority": "High",
+    "status": "Draft",
+    "lat": 13.7481625,
+    "lng": 100.5433812,
+    "verification": "Building-level coordinates; floor verified against official PAÑPURI site. https://panpuriwellness.com/wellness/panpuri-wellness-gaysorn-tower/"
+  }
+]);
+/* Draft Bangkok day definitions. Dates and routing are adjustable. */
+window.TRIP_BANGKOK_DAYS=[
+  {
+    "id": "bkk-1",
+    "city": "Bangkok",
+    "number": 1,
+    "date": "Thu · Jan 7 (draft)",
+    "short": "Siam / scents & style",
+    "title": "Siam shopping, Thai perfume & self-care",
+    "summary": "CentralWorld's Thai fragrance floors, Siam Square designers, and an optional PAÑPURI wellness reset.",
+    "color": "#F44BB7",
+    "warning": "Flexible first-day plan: international arrival timing and appointment availability may change this route.",
+    "stops": [
+      "bkk-centralworld",
+      "bkk-gaysorn",
+      "bkk-panpuriwellness",
+      "bkk-siamcenter",
+      "bkk-mith",
+      "bkk-tres",
+      "bkk-garcon"
+    ],
+    "transfers": [
+      "Start in the Ratchaprasong retail district",
+      "Nearby Gaysorn complex; walking distance",
+      "Gaysorn Tower 12F, same complex",
+      "Toward Siam's fashion district",
+      "Siam Square perfume boutique",
+      "Siam Square independent fashion",
+      "More local designers in Siam Square"
+    ],
+    "wellness": "PAÑPURI WELLNESS spa/onsen is optional; book treatments directly and check current offerings."
+  },
+  {
+    "id": "bkk-2",
+    "city": "Bangkok",
+    "number": 2,
+    "date": "Fri · Jan 8 (draft)",
+    "short": "Chula / design & food",
+    "title": "Experimental scents, art, food & queer techno",
+    "summary": "A day through the Chula design district, contemporary galleries, local street food and queer nightlife.",
+    "color": "#4EA1FF",
+    "warning": "Club events are not guaranteed on this date; check the specific DJ calendar.",
+    "stops": [
+      "bkk-art-jim-thompson",
+      "bkk-bab-bacc",
+      "bkk-dragon",
+      "bkk-banthatthong",
+      "bkk-gongdid",
+      "bkk-horn"
+    ],
+    "transfers": [
+      "Central creative-district art start",
+      "Short central Bangkok transfer",
+      "Chulalongkorn / Dragon Town perfume stop",
+      "Local food street near Chula",
+      "Continue toward Gongdid's Sathorn showroom",
+      "Late-night club in Silom; check event programme"
+    ],
+    "wellness": "Optional facial, foot massage or treatment between the daytime art stops and nightlife."
+  },
+  {
+    "id": "bkk-3",
+    "city": "Bangkok",
+    "number": 3,
+    "date": "Sat · Jan 9 (draft)",
+    "short": "Architecture / art",
+    "title": "Contemporary architecture, galleries & beauty",
+    "summary": "Art-forward modern Bangkok: exhibitions, striking architecture, refined wellness and an optional underground club.",
+    "color": "#8B63F6",
+    "warning": "Bangkok Art Biennale venue programming can change; verify the specific exhibition and opening hours.",
+    "stops": [
+      "bkk-art-citycity",
+      "bkk-bab-one-bangkok",
+      "bkk-bab-alliance-francaise",
+      "bkk-art-100-tonson",
+      "bkk-bab-siam-paragon",
+      "bkk-subwerk"
+    ],
+    "transfers": [
+      "Independent contemporary gallery",
+      "Large design and public-art district",
+      "Nearby cultural institution",
+      "Cross-town contemporary art foundation",
+      "Siam gallery and shopping option",
+      "Optional underground late-night session"
+    ],
+    "wellness": "Build in an optional facial, hair appointment or full-service massage; not yet tied to a specific clinic."
+  },
+  {
+    "id": "bkk-4",
+    "city": "Bangkok",
+    "number": 4,
+    "date": "Sun · Jan 10 (draft)",
+    "short": "Markets / old city",
+    "title": "Vintage markets, temples & Chinatown food",
+    "summary": "A flexible mix of Chatuchak shopping, Bangkok's historic architecture, creative warehouses and an evening Chinatown food crawl.",
+    "color": "#F5A23D",
+    "warning": "This is an ambitious draft spanning several districts. Treat the morning market and evening Chinatown as anchors; trim temple stops as needed.",
+    "stops": [
+      "bkk-chatuchak",
+      "bkk-bab-wat-pho",
+      "bkk-bab-wat-arun",
+      "bkk-songwat",
+      "bkk-warehouse30",
+      "bkk-yaowarat",
+      "bkk-g-bangkok"
+    ],
+    "transfers": [
+      "Sunday market for vintage, jewelry and artisan finds",
+      "Transfer to historic Rattanakosin",
+      "Cross the Chao Phraya for the riverside temple",
+      "Song Wat independent design and architecture",
+      "Creative warehouse in Charoen Krung",
+      "Yaowarat Chinatown food crawl after dark",
+      "Optional Silom dancing after food"
+    ],
+    "wellness": "Leave time for a massage or a slower lunch; this route is deliberately easy to shorten."
+  }
+];
+
 window.TRIP_DAYS=[
   {
     "id": "1",
+    "city": "Chiang Mai",
+    "number": 1,
     "date": "Wed · Jan 13",
     "short": "Mountain wilds",
     "title": "Cloud forests & creative Nimman",
     "summary": "Doi Inthanon wilderness, cloud-forest walks and a Nimman evening.",
-    "color": "#b84d7c",
+    "color": "#F44BB7",
     "warning": "Full-day expedition. One Nimman and a massage depend on returning with energy.",
     "stops": [
       "cm-inthanon",
@@ -388,11 +555,13 @@ window.TRIP_DAYS=[
   },
   {
     "id": "2",
+    "city": "Chiang Mai",
+    "number": 2,
     "date": "Thu · Jan 14",
     "short": "Elephants & makers",
     "title": "Sanctuary, artist village & monk chat",
     "summary": "Elephant sanctuary, southwest creative quarter, monk conversation and night shopping.",
-    "color": "#437f9d",
+    "color": "#4EA1FF",
     "warning": "Elephant Nature Park transport is fixed by your booking; afternoon timing may compress.",
     "stops": [
       "cm-elephantnature",
@@ -414,11 +583,13 @@ window.TRIP_DAYS=[
   },
   {
     "id": "3",
+    "city": "Chiang Mai",
+    "number": 3,
     "date": "Fri · Jan 15",
     "short": "Lanna & Bo Sang",
     "title": "Historic architecture, contemporary art & festival",
     "summary": "Private-style Lanna walking tour through Old City; eastbound design museums and Bo Sang festival.",
-    "color": "#9872be",
+    "color": "#8B63F6",
     "warning": "Extremely crowded schedule. Tour length, opening hours and festival timing must be verified.",
     "stops": [
       "cm-watchiangman",
@@ -448,11 +619,13 @@ window.TRIP_DAYS=[
   },
   {
     "id": "4",
+    "city": "Chiang Mai",
+    "number": 4,
     "date": "Sat · Jan 16",
     "short": "Markets & mountains",
     "title": "Markets, sticky falls, lake & mountain temples",
     "summary": "Weekend markets, waterfall climbing, raft-style dining and two forest/mountain temples.",
-    "color": "#338578",
+    "color": "#35C987",
     "warning": "Jan 16 is currently your Thailand departure day. This is a wishlist, not an executable flight-day plan.",
     "stops": [
       "cm-jing",
