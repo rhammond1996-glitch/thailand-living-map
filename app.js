@@ -13,87 +13,92 @@ const CATEGORIES=[
  [
   "All",
   "All places",
-  "#69769A"
+  "#7C86AC"
  ],
  [
   "Fragrances",
   "Fragrance",
-  "#D94E9D"
+  "#F44BB7"
  ],
  [
   "Independent fashion",
   "Fashion",
-  "#D94E9D"
+  "#F44BB7"
  ],
  [
   "Designer replicas",
   "Replicas",
-  "#D94E9D"
+  "#F44BB7"
  ],
  [
   "Vintage",
   "Vintage",
-  "#D94E9D"
+  "#F44BB7"
  ],
  [
   "Jewelry & artisan",
   "Artisan",
-  "#D94E9D"
+  "#F44BB7"
  ],
  [
   "Creative districts",
   "Design",
-  "#4286D6"
+  "#4EA1FF"
  ],
  [
   "Gay Nightlife",
   "Nightlife",
-  "#8563D8"
+  "#8B63F6"
  ],
  [
   "Underground & Raves",
   "Raves",
-  "#8563D8"
+  "#8B63F6"
  ],
  [
   "Architecture & heritage",
   "Architecture",
-  "#4286D6"
+  "#4EA1FF"
  ],
  [
   "Temples & culture",
   "Temples",
-  "#4286D6"
+  "#4EA1FF"
  ],
  [
   "Art & design",
   "Art",
-  "#4286D6"
+  "#4EA1FF"
  ],
  [
   "Bangkok Art Biennale",
   "Biennale",
-  "#4286D6"
+  "#4EA1FF"
  ],
  [
   "Nature & adventure",
   "Nature",
-  "#229B79"
+  "#35C987"
  ],
  [
   "Wildlife",
   "Wildlife",
-  "#229B79"
+  "#35C987"
  ],
  [
   "Markets & shopping",
   "Markets",
-  "#D94E9D"
+  "#F44BB7"
+ ],
+ [
+  "Food & Drink",
+  "Food & drink",
+  "#F5A23D"
  ],
  [
   "Wellness & beauty",
   "Wellness",
-  "#229B79"
+  "#35C987"
  ]
 ];
 /* PRINT CLUB / graphic symbol language.
@@ -179,11 +184,13 @@ const UI_ICON_GROUP={
  'Gay Nightlife':'nightlife','Underground & Raves':'nightlife',
  'Creative districts':'art','Architecture & heritage':'art','Temples & culture':'art',
  'Art & design':'art','Bangkok Art Biennale':'art',
- 'Nature & adventure':'nature','Wildlife':'nature','Wellness & beauty':'nature','All':'all'
+ 'Nature & adventure':'nature','Wildlife':'nature','Wellness & beauty':'nature',
+ 'Food & Drink':'food','All':'all'
 };
 const UI_ICON_PATH={
  shopping:'<rect x="4" y="8" width="16" height="13" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>',
  nightlife:'<path d="M9 18V5l12-2v13"/><circle cx="6.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="16.5" r="2.5"/>',
+ food:'<path d="M4 3v8m3-8v8m3-8v8M7 11v10M18 3v18M18 3c-5 4-5 9 0 11"/>',
  art:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1"/><path d="m5 17 5-5 3 3 3-4 3 6"/>',
  nature:'<path d="M20 4c-8 0-15 3-15 11a6 6 0 0 0 6 6c8 0 11-7 9-17Z"/><path d="M5 20c3-4 7-7 12-10"/>',
  all:'<circle cx="12" cy="12" r="9"/><path d="M12 5v14M5 12h14"/>'
@@ -536,11 +543,16 @@ function renderPins(list,preserveView=false){
   const primary=cats(p)[0]||'All';
   const t=STYLES[primary]||STYLES.All;
   const saved=favorites.has(String(p.id));
-  const markup='<span class="ink-free-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'" aria-hidden="true">'+
-   '<span class="ink-free-icon">'+symbolSVG(primary,34)+'</span>'+
-   (saved?'<span class="ink-free-favorite">'+starSVG(true,11)+'</span>':'')+
+  // Symmetric, unrotated SVG silhouette: geographic anchor stays at the
+  // vertical tip and the glyph sits exactly over the broad pin head.
+  const markup='<span class="ui-map-pin '+(saved?'favorite':'')+'" style="--pin:'+t.color+'" aria-hidden="true">'+
+   '<svg class="ui-pin-shape" viewBox="0 0 44 52" width="44" height="52" focusable="false" aria-hidden="true">'+
+   '<path d="M22 2.8C11.4 2.8 3.9 10.4 3.9 21c0 11.9 12.8 23.5 18.1 28.2C27.3 44.5 40.1 32.9 40.1 21 40.1 10.4 32.6 2.8 22 2.8Z" fill="var(--pin)" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>'+
+   '</svg>'+
+   '<span class="ui-pin-symbol">'+symbolSVG(primary,22)+'</span>'+
+   (saved?'<span class="ui-pin-saved">'+starSVG(true,11)+'</span>':'')+
    '</span>';
-  const icon=L.divIcon({html:markup,className:'map-marker map-glyph-marker',iconSize:[42,42],iconAnchor:[21,21]});
+  const icon=L.divIcon({html:markup,className:'map-marker map-glyph-marker',iconSize:[44,52],iconAnchor:[22,49]});
   const marker=L.marker([Number(p.lat),Number(p.lng)],{icon,title:String(p.name),alt:String(p.name)});
   marker.on('click',()=>focus(p.id));
   markerById.set(p.id,marker);
