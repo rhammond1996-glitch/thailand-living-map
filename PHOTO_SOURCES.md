@@ -1,6 +1,6 @@
 # Destination photography: sourcing audit
 
-**Audit date:** 22 November 2026. **Scope:** all saved Bangkok and Chiang Mai map markers, including the Chiang Mai itinerary.
+**Audit date:** 22 November 2026. **Last update:** 26 November 2026 (carousel UI and CentralWorld Commons gallery). **Scope:** all saved Bangkok and Chiang Mai map markers, including the Chiang Mai itinerary.
 
 ## Editorial rules
 
@@ -15,7 +15,7 @@
 ## Summary
 
 - **76** destinations reviewed.
-- **53** destinations with a manually selected source-linked image set (**59** curated photographs in total).
+- **53** destinations with a manually selected source-linked image set (**61** curated photographs in total).
 - **20** destinations with destination-specific Wikimedia Commons / Wikipedia lookup (primarily temples, monuments, major arts venues and nature sites). Photos are resolved dynamically, not manually locked.
 - **3** smaller shops with no trustworthy photograph yet; their graphic fallback remains by design.
 
@@ -30,7 +30,7 @@
 | BACC — Bangkok Art Biennale | Bangkok | Wikimedia/Wikipedia lookup | Bangkok Art and Culture Centre |
 | BANGKOK CITYCITY GALLERY | Bangkok | Curated (1) | [Wazzadu architectural photograph](https://www.wazzadu.com/article/1531) — Venue photograph |
 | Carnival | Bangkok | Curated (1) | [sabukaru editorial](https://sabukaru.online/articles/how-to-build-a-sneaker-legacy-in-bangkok-a-talk-with-carnival) — Brand storefront; branch not independently confirmed |
-| CentralWorld | Bangkok | Curated (1) | [Sale Here](https://salehere.co.th/articles/central-world-walking-guide) — Venue photograph |
+| CentralWorld | Bangkok | Curated (3) | [DvTor8303 — recent facade photographs](https://commons.wikimedia.org/wiki/File:CentralWorld_20261104_(1).jpg), [Slyronit — interior atrium](https://commons.wikimedia.org/wiki/File:CentralWorld,_Bangkok.jpg) — CC0 1.0 / CC BY-SA 4.0 |
 | Chatuchak Weekend Market | Bangkok | Curated (1) | [Reisroutes.nl travel photography](https://www.reisroutes.nl/blog/thailand/bezienswaardigheden-thailand/) — Venue photograph |
 | Daniya Perfumes | Bangkok | Pending exact photo | Bangkok store is listed in the independent perfume guide; prior purported official website could not be tied to this branch. No verified photographs. |
 | Dragon Town / Rebellion Lab | Bangkok | Curated (1) | [GQ Thailand](https://www.gqthailand.com/article/gq-style-vol-88) — Venue photograph |
@@ -109,3 +109,9 @@
 ## Known limitations
 
 Curated media URLs are remote references. Some hosts change paths or block embeds; the card hides failed images. A publisher attribution is not a content license. Before commercial distribution or wider republication, obtain permission, check the image's actual license or replace it with properly licensed photography.
+
+## 26 November: presentation update
+
+The separate Photos tab was removed. Each destination now renders its photographs as a horizontally swipeable top-of-card carousel with a counter and optional arrows. Full-screen enlargement remains available by tapping an image. Attribution stays in a collapsed image-credit section directly under the carousel.
+
+**CentralWorld:** Replaced the watermarked Sale Here image with three specific, photographer-attributed Wikimedia Commons photographs (two November 2026 exteriors and one interior), under CC0 1.0 and CC BY-SA 4.0 respectively. Most other curated venues still have one source-linked image, so the visual gallery expansion and venue-by-venue image reliability checks are **not yet complete**. Some remote images may be hotlink-blocked or require further licensing review.
