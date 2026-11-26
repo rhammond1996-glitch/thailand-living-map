@@ -312,3 +312,64 @@
  font-weight:900;
  letter-spacing:.025em;
 }
+
+/* Top-of-card destination photo carousel — swipe directly on the images. */
+#place-detail .visit-photo-carousel{position:relative;isolation:isolate;background:#101c36;overflow:hidden}
+#place-detail .visit-photo-track{
+ display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;
+ scroll-snap-type:x mandatory;scrollbar-width:none;
+ overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+}
+#place-detail .visit-photo-track::-webkit-scrollbar{display:none}
+#place-detail .visit-photo-track:focus-visible{outline:3px solid #e3ff5d;outline-offset:-4px}
+#place-detail .visit-hero-slide{flex:0 0 100%;min-width:0;height:100%;scroll-snap-align:start;scroll-snap-stop:always}
+#place-detail .visit-hero-image-button{
+ display:block;width:100%;height:100%;padding:0;margin:0;border:0;
+ border-radius:0;background:#101c36;cursor:zoom-in;
+}
+#place-detail .visit-hero-slide img{display:block;width:100%;height:100%;object-fit:cover}
+#place-detail .visit-photo-toolbar{
+ position:absolute;left:0;right:0;bottom:0;z-index:2;
+ display:flex;justify-content:space-between;align-items:flex-end;gap:10px;
+ padding:28px 10px 10px;
+ background:linear-gradient(transparent,rgba(1,10,30,.83));
+ color:white;pointer-events:none;
+}
+#place-detail .visit-photo-collection{
+ max-width:65%;font:900 9px/1.3 "DM Sans",Arial,sans-serif;
+ letter-spacing:.07em;text-transform:uppercase;text-shadow:0 1px 3px #080e21;
+}
+#place-detail .visit-photo-controls{display:flex;align-items:center;gap:5px;flex:0 0 auto;pointer-events:auto}
+#place-detail .visit-photo-counter{
+ min-width:41px;text-align:center;white-space:nowrap;
+ font:850 11px/1.2 "DM Sans",Arial,sans-serif;
+ font-variant-numeric:tabular-nums;
+}
+#place-detail .visit-photo-controls button{
+ display:grid;place-items:center;width:27px;height:28px;margin:0;padding:0;
+ border:1px solid #ffffffa0;border-radius:2px;
+ background:rgba(9,19,43,.72);color:white;font:500 22px/1 Arial,sans-serif;
+ cursor:pointer;
+}
+#place-detail .visit-photo-controls button:disabled{opacity:.28;cursor:default}
+#place-detail .visit-photo-controls button:focus-visible{outline:2px solid #dfff40;outline-offset:2px}
+#place-detail .visit-photo-progress{
+ position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;
+ height:3px;background:#ffffff50;
+}
+#place-detail .visit-photo-progress span{
+ display:block;height:100%;background:#dfff40;
+ transition:transform .16s ease;will-change:transform;
+}
+#place-detail .visit-hero-credit .visit-photo-credits{margin:7px 0 0;padding:0;border:0}
+#place-detail .visit-hero-credit .visit-photo-credits summary{font-size:9px}
+#place-detail .visit-hero-credit:empty{display:none}
+#place-detail .visit-tab{max-width:none}
+@media(max-width:720px){
+ #place-detail .visit-photo-toolbar{padding:23px 9px 9px}
+ #place-detail .visit-photo-collection{font-size:8px}
+ #place-detail .visit-photo-controls button{width:29px;height:29px}
+}
+@media(prefers-reduced-motion:reduce){
+ #place-detail .visit-photo-progress span{transition:none}
+}
