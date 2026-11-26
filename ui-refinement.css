@@ -1,0 +1,304 @@
+/* Final mobile refinement for the dual-mode Thailand map.
+   Single-row controls, true centered SVG pins, stronger concept colors,
+   and itinerary parity with Explore. Loaded after dual-mode.css. */
+html[data-design="print"][data-ui-theme="day"]{
+ --ui-primary:#7655ED;
+ --ui-accent:#D65BB8;
+ --ui-focus:#715DF5;
+ --ui-highlight:#EFE8FF;
+ --ui-chip:#F2F1FB;
+ --ui-panel:#FFFEFF;
+ --ui-border:#D7D7EB;
+ --ui-map:#F0F0F9;
+}
+html[data-design="print"][data-ui-theme="night"]{
+ --ui-primary:#9873F8;
+ --ui-accent:#E27DDD;
+ --ui-focus:#B9A1FF;
+ --ui-highlight:#40355F;
+ --ui-chip:#222D46;
+ --ui-panel:#141F36;
+ --ui-border:#465372;
+ --ui-map:#0D1528;
+}
+/* Brighter selection, without saturating the whole surface. */
+html[data-design="print"][data-ui-theme] .mode-picker button.active{
+ background:linear-gradient(110deg,#586EFF,#B451ED)!important;
+ box-shadow:0 3px 14px rgba(125,81,232,.27)!important;
+}
+html[data-design="print"][data-ui-theme] #theme-toggle button.active{
+ color:var(--ui-text)!important;
+ background:var(--ui-panel)!important;
+ box-shadow:0 2px 11px rgba(115,82,195,.17)!important;
+}
+html[data-design="print"][data-ui-theme] .masthead #discover-toggle[aria-expanded="true"]{
+ background:var(--ui-primary)!important;color:#fff!important;
+}
+html[data-design="print"][data-ui-theme] #places-panel #map-cities button.active,
+html[data-design="print"][data-ui-theme] .day-picker button.active{
+ background:linear-gradient(105deg,#596DFA,#B45AE8)!important;
+ color:white!important;
+}
+/* Marker visual coordinates are exactly 44 x 52; location anchor is (22,49).
+   No rotated CSS geometry or pseudo-element offset can distort the silhouette. */
+.leaflet-marker-icon.map-glyph-marker,
+.leaflet-marker-icon.trip-number-marker{
+ width:44px!important;height:52px!important;
+ background:none!important;border:0!important;box-shadow:none!important;
+ overflow:visible!important;
+}
+.ui-map-pin,.ui-trip-pin{
+ display:block;position:relative;
+ width:44px;height:52px;
+ background:transparent;border:0;
+ pointer-events:none;
+}
+.ui-pin-shape,.ui-trip-shape{
+ position:absolute;left:0;top:0;
+ display:block;width:44px;height:52px;
+ overflow:visible;
+ filter:drop-shadow(0 3px 5px rgba(15,26,64,.34));
+}
+.ui-pin-symbol,.ui-trip-number{
+ position:absolute;left:11px;top:10px;
+ display:grid;place-items:center;
+ width:22px;height:22px;
+ color:#fff;
+}
+.ui-pin-symbol .category-icon{
+ display:block!important;
+ width:22px!important;height:22px!important;
+ stroke:#fff!important;fill:none!important;
+ stroke-width:2.15;
+ stroke-linecap:round;stroke-linejoin:round;
+ filter:none!important;
+ margin:0!important;
+}
+.ui-map-pin.favorite .ui-pin-shape{
+ filter:drop-shadow(0 0 3px rgba(255,255,255,.95)) drop-shadow(0 3px 6px rgba(15,26,64,.4));
+}
+.ui-pin-saved{
+ position:absolute;right:0;top:0;
+ display:grid;place-items:center;
+ height:17px;width:17px;
+ background:var(--ui-panel,#fff);
+ color:var(--ui-primary,#7C58F3);
+ border:1.5px solid #fff;
+ border-radius:50%;
+ box-shadow:0 2px 5px rgba(18,31,73,.32);
+}
+.ui-pin-saved svg{width:10px;height:10px;display:block;fill:currentColor}
+.ui-trip-number{
+ font:900 13px/1 "DM Sans",Arial,sans-serif;
+ text-shadow:0 1px 2px rgba(7,14,40,.3);
+ font-variant-numeric:tabular-nums;
+}
+html[data-design="print"][data-ui-theme] .ink-cluster-center{
+ background:linear-gradient(145deg,#7B56ED,#5F61E8)!important;
+ border-color:#fff!important;
+}
+html[data-design="print"][data-ui-theme] .ink-cluster-plus{
+ background:var(--ui-panel)!important;
+ color:var(--ui-primary)!important;
+}
+/* Routes: two city choices + four days inside an easy-to-scan floating selector. */
+html[data-design="print"][data-ui-theme] #trip-day-picker.day-picker{
+ display:flex;flex-direction:column;align-items:stretch;
+ gap:5px;padding:6px;
+ width:min(540px,calc(100vw - 83px));
+ max-width:min(540px,calc(100vw - 83px));
+ max-height:none;
+ overflow:visible;
+ border-radius:15px!important;
+ background:var(--ui-glass)!important;
+ border:1px solid var(--ui-border)!important;
+ box-shadow:0 5px 16px var(--ui-shadow)!important;
+ -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+}
+html[data-design="print"][data-ui-theme] #trip-day-picker .trip-city-switch{
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:4px;
+ width:100%;
+}
+html[data-design="print"][data-ui-theme] #trip-day-picker .trip-day-scroll{
+ display:flex;align-items:center;gap:4px;
+ width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+ scrollbar-width:none;
+}
+html[data-design="print"][data-ui-theme] #trip-day-picker .trip-day-scroll::-webkit-scrollbar{display:none}
+html[data-design="print"][data-ui-theme] #trip-day-picker button{
+ flex:1 0 auto;
+ padding:9px 10px;
+ min-width:0;min-height:34px;
+ border:1px solid transparent!important;
+ border-radius:10px!important;
+ background:var(--ui-chip)!important;
+ color:var(--ui-muted)!important;
+ font:800 10px/1.15 "DM Sans",Arial,sans-serif;
+ box-shadow:none!important;
+ text-transform:none;
+}
+html[data-design="print"][data-ui-theme] #trip-day-picker button.active{
+ color:#fff!important;
+ background:linear-gradient(105deg,#596DFA,#B45AE8)!important;
+ border-color:transparent!important;
+}
+html[data-design="print"][data-ui-theme] #trip-day-picker .trip-day-scroll button{
+ flex:1 0 49px;
+}
+html[data-design="print"][data-ui-theme] #places-panel .trip-controls,
+html[data-design="print"][data-ui-theme] #places-panel .trip-stop,
+html[data-design="print"][data-ui-theme] #places-panel .trip-option{
+ background:var(--ui-panel)!important;
+ color:var(--ui-text)!important;
+ border:1px solid var(--ui-border)!important;
+ border-radius:14px!important;
+ box-shadow:none!important;
+}
+html[data-design="print"][data-ui-theme] .trip-controls h2{
+ font:800 22px/1.2 "Space Grotesk",Arial,sans-serif!important;
+ color:var(--ui-text)!important;
+ letter-spacing:-.04em;
+}
+html[data-design="print"][data-ui-theme] .trip-kicker,
+html[data-design="print"][data-ui-theme] .trip-controls p,
+html[data-design="print"][data-ui-theme] .trip-header,
+html[data-design="print"][data-ui-theme] .trip-stop-main small,
+html[data-design="print"][data-ui-theme] .trip-option small,
+html[data-design="print"][data-ui-theme] .trip-hint,
+html[data-design="print"][data-ui-theme] .trip-popup small{
+ color:var(--ui-muted)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-stop-main strong,
+html[data-design="print"][data-ui-theme] .trip-option strong,
+html[data-design="print"][data-ui-theme] .trip-step-expanded p,
+html[data-design="print"][data-ui-theme] .trip-popup strong{
+ color:var(--ui-text)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-header{
+ display:flex;justify-content:space-between;gap:8px;
+ font:800 10px/1.35 "DM Sans",Arial,sans-serif;
+}
+html[data-design="print"][data-ui-theme] .trip-header span:first-child{
+ color:var(--ui-primary);
+}
+html[data-design="print"][data-ui-theme] .trip-index{
+ background:var(--trip-color)!important;
+ border-radius:10px;
+ color:white!important;
+}
+html[data-design="print"][data-ui-theme] .trip-option .trip-alt-marker{
+ border-color:var(--ui-muted)!important;
+ background:var(--ui-panel)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-stop-actions button,
+html[data-design="print"][data-ui-theme] .trip-option button,
+html[data-design="print"][data-ui-theme] .trip-settings button,
+html[data-design="print"][data-ui-theme] .trip-settings select{
+ background:var(--ui-chip)!important;color:var(--ui-text)!important;
+ border:1px solid var(--ui-border)!important;
+ border-radius:9px!important;
+}
+html[data-design="print"][data-ui-theme] .trip-stop-actions button.trip-directions,
+html[data-design="print"][data-ui-theme] .trip-popup-actions button{
+ background:var(--ui-primary)!important;color:#fff!important;
+ border:0!important;
+}
+html[data-design="print"][data-ui-theme] .trip-warning{
+ color:var(--ui-text)!important;
+ background:var(--ui-highlight)!important;
+ border-color:var(--ui-border)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-step-info,
+html[data-design="print"][data-ui-theme] .trip-settings,
+html[data-design="print"][data-ui-theme] .trip-alternatives{
+ color:var(--ui-text)!important;
+ border-color:var(--ui-border)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-step-info summary,
+html[data-design="print"][data-ui-theme] .trip-settings summary,
+html[data-design="print"][data-ui-theme] .trip-alternatives>summary{
+ color:var(--ui-text)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-map-legend{
+ top:110px;
+ background:var(--ui-glass)!important;
+ color:var(--ui-text)!important;
+ border-color:var(--ui-border)!important;
+ box-shadow:0 5px 14px var(--ui-shadow)!important;
+}
+html[data-design="print"][data-ui-theme] .trip-map-legend .solid{color:var(--ui-primary)!important}
+html[data-design="print"][data-ui-theme] .trip-map-legend .muted{color:var(--ui-muted)!important}
+/* One-row mobile masthead; branding is redundant inside a shared trip map. */
+@media(max-width:850px){
+ html[data-design="print"][data-ui-theme]{--masthead-height:64px}
+ html[data-design="print"][data-ui-theme] .masthead{
+  height:64px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:nowrap!important;
+  gap:6px!important;
+  padding:8px max(8px,env(safe-area-inset-left))!important;
+ }
+ html[data-design="print"][data-ui-theme] .masthead .brand{
+  display:none!important;
+ }
+ html[data-design="print"][data-ui-theme] .masthead .mode-picker{
+  order:0;flex:1 1 144px;
+  min-width:0;max-width:210px;
+  display:flex;
+  justify-content:stretch;
+  margin:0!important;
+  padding:3px!important;
+  height:43px;
+  border-radius:13px!important;
+ }
+ html[data-design="print"][data-ui-theme] .mode-picker button{
+  flex:1 1 0;min-width:0;
+  padding:7px 5px!important;
+  min-height:35px;
+  font-size:10px!important;
+  letter-spacing:-.01em!important;
+ }
+ html[data-design="print"][data-ui-theme] .masthead #theme-toggle{
+  order:1;
+  flex:0 0 auto;
+  margin:0;
+  gap:2px;padding:3px;
+  height:42px;min-height:0;
+ }
+ html[data-design="print"][data-ui-theme] #theme-toggle button{
+  min-width:39px;min-height:34px;
+  gap:4px;padding:5px 6px;
+  font-size:9px;
+ }
+ html[data-design="print"][data-ui-theme] #theme-toggle svg{width:14px;height:14px}
+ html[data-design="print"][data-ui-theme] .head-actions{
+  order:2;flex:0 0 auto;
+  margin:0!important;padding:0!important;
+ }
+ html[data-design="print"][data-ui-theme] #sync-status{display:none!important}
+ html[data-design="print"][data-ui-theme] .masthead #discover-toggle{
+  height:42px;min-height:42px;
+  gap:5px;padding:0 9px!important;
+  font-size:9px!important;
+ }
+ html[data-design="print"][data-ui-theme] .masthead #discover-toggle svg{
+  width:14px;height:14px;
+ }
+ html[data-design="print"][data-ui-theme] #app .workspace{
+  height:calc(100% - 64px)!important;
+ }
+ html[data-design="print"][data-ui-theme] .trip-map-legend{
+  top:119px!important;
+ }
+}
+@media(max-width:370px){
+ html[data-design="print"][data-ui-theme] .masthead{gap:4px!important}
+ html[data-design="print"][data-ui-theme] #theme-toggle button{min-width:34px;padding:4px}
+ html[data-design="print"][data-ui-theme] #theme-toggle button span{display:none}
+ html[data-design="print"][data-ui-theme] .masthead #discover-toggle{padding:0 6px!important}
+ html[data-design="print"][data-ui-theme] .mode-picker button{font-size:9px!important}
+}
