@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en" data-design="print">
+<html lang="en" data-design="print" data-ui-theme="day">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0a132b">
+  <meta name="theme-color" content="#f5f5fd">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Our living Bangkok and Chiang Mai map — independent fashion, niche fragrances, art and places to explore.">
@@ -15,7 +15,16 @@
   <script>
     (function(){
       const preview=new URLSearchParams(location.search).get('design');
-      document.documentElement.dataset.design=['soft','type'].includes(preview)?preview:'print';
+      // This deployment uses a single shared design system with two palettes.
+      document.documentElement.dataset.design='print';
+      const key='thailand-living-map:appearance:v1';
+      let stored;
+      try{stored=localStorage.getItem(key);}catch{}
+      const systemDark=window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+      const theme=stored==='day'||stored==='night'?stored:(systemDark?'night':'day');
+      document.documentElement.dataset.uiTheme=theme;
+      document.documentElement.style.colorScheme=theme==='night'?'dark':'light';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content',theme==='night'?'#0b1426':'#f5f5fd');
     })();
   </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -30,6 +39,7 @@
   <link rel="stylesheet" href="./glyph-cluster.css?v=1">
   <link rel="stylesheet" href="./photo-editorial.css?v=4">
   <link rel="stylesheet" href="./card-clean.css?v=3">
+  <link rel="stylesheet" href="./dual-mode.css?v=1">
 </head>
 <body>
   <div id="app">
@@ -39,6 +49,16 @@
         <h1>THAILAND<i>/</i><em>MAP</em></h1>
       </div>
       <nav class="mode-picker" id="mode-picker" aria-label="Map mode"><button type="button" class="active" data-mode="explore" aria-pressed="true">Explore</button><button type="button" data-mode="itinerary" aria-pressed="false">Itinerary</button></nav>
+      <div id="theme-toggle" class="theme-toggle" role="group" aria-label="Appearance: day or night">
+        <button type="button" data-ui-choice="day" aria-pressed="true" title="Day mode" aria-label="Day mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <span>Day</span>
+        </button>
+        <button type="button" data-ui-choice="night" aria-pressed="false" title="Night mode" aria-label="Night mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5 8.7 8.7 0 1 0 20.5 14.5Z"/></svg>
+          <span>Night</span>
+        </button>
+      </div>
       <div class="head-actions">
         <span class="sync" id="sync-status" title="Map data source"><span class="status-dot"></span><span id="sync-label">Loading…</span></span>
         <button class="discover-button" id="discover-toggle" type="button" aria-controls="places-panel" aria-expanded="false" aria-label="Open Discover destinations"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 5 5"/></svg><span class="discover-button-label">DISCOVER</span></button>
@@ -103,13 +123,14 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.1/dist/maplibre-gl.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js" defer></script>
-  <script src="./map-basemap.js?v=9" defer></script>
+  <script src="./map-basemap.js?v=10" defer></script>
   <script src="./trip-data.js?v=1" defer></script>
   <script src="./place-profiles.js?v=4" defer></script>
   <script src="./venue-research.js?v=5" defer></script>
   <script src="./place-editorial.js?v=1" defer></script>
-  <script src="./app.js?v=25" defer></script>
+  <script src="./app.js?v=26" defer></script>
   <script src="./trip-itinerary.js?v=7" defer></script>
   <script src="./place-cards.js?v=12" defer></script>
+  <script src="./theme-mode.js?v=1" defer></script>
 </body>
 </html>
