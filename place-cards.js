@@ -48,12 +48,39 @@
     (f.license?' · '+(f.licenseUrl?'<a href="'+html(f.licenseUrl)+'" target="_blank" rel="noopener noreferrer">'+html(f.license)+'</a>':html(f.license)):"")+
     '</li>').join("")+'</ol></details>';
  }
+ function renderRetailDirectory(o){
+  if(!o.retailDirectory||!Array.isArray(o.items))return '';
+  // Only named, explicitly saved store stops belong in a store directory.
+  // Generic retail categories remain in the location summary, not as fake shops.
+  const stores=o.items.filter(item=>item&&String(item.name||'').trim()&&
+    !/^(independent designers|other shops|stores|browse)$/i.test(String(item.name).trim()));
+  if(!stores.length)return '';
+  const rows=stores.map((item,index)=>{
+   const name=String(item.name||'').trim(),where=String(item.where||'').trim();
+   const type=String(item.type||'').trim(),note=String(item.note||'').trim();
+   const unverified=/confirm|verify|not established|unconfirmed|tbc|tbd/i.test(where);
+   return '<li class="visit-store-row">'+
+    '<span class="visit-store-num" aria-hidden="true">'+String(index+1).padStart(2,'0')+'</span>'+
+    '<div class="visit-store-info"><div class="visit-store-top"><strong>'+html(name)+'</strong>'+
+    (type?'<span class="visit-store-category">'+html(type)+'</span>':'')+'</div>'+
+    (where?'<span class="visit-store-location '+(unverified?'is-unverified':'')+'">'+html(where)+'</span>':'')+
+    (note?'<p>'+html(note)+'</p>':'')+
+    '</div></li>';
+  }).join('');
+  return '<section class="visit-store-guide" aria-label="Stores and stops inside this location">'+
+   '<header class="visit-store-guide-header"><h3>OUR STOPS INSIDE</h3><span>'+
+    stores.length+' '+(stores.length===1?'PLACE':'PLACES')+'</span></header>'+
+   '<ol class="visit-store-list">'+rows+'</ol>'+
+   '<p class="visit-store-fineprint">Floor and unit information reflects saved research and can change. Unconfirmed locations are marked.</p>'+
+   '</section>';
+ }
  function makeCard(p){
   const o=cards[p.id]||{};
   const primary=split(p)[0]||"All",c=STYLES?.[primary]||{color:"#6748D8",label:primary};
   const copy=editorial[p.id]||[];
   const description=String(copy[0]||p.highlights||"").trim();
   const highlights=Array.isArray(copy[1])?copy[1]:[];
+  const storeGuide=renderRetailDirectory(o);
   const heading=html(displayName(p,o));
   const sub=html(p.city+" / "+(p.location_type||c.label||primary));
   return '<div class="visit-shell visit-compact" style="--visit-accent:'+html(c.color)+'" data-place-id="'+html(p.id)+'">'+
@@ -63,10 +90,11 @@
    '<div class="visit-hero" aria-label="Destination or collection photography">'+renderHero(p,o)+'</div>'+
    '<div class="visit-hero-credit">'+renderCredits(cache.get(p.id)?.photos||[])+'</div>'+
    (description?'<p class="visit-summary">'+html(description)+'</p>':"")+
-   (highlights.length?'<section class="visit-highlights" aria-label="Location highlights">'+
-    '<h3>HIGHLIGHTS</h3><ul>'+
-    highlights.map(t=>'<li><span class="visit-highlight-marker" aria-hidden="true"></span><span>'+html(t)+'</span></li>').join("")+
-    '</ul></section>':"")+
+   (storeGuide||(
+    highlights.length?'<section class="visit-highlights" aria-label="Location highlights">'+
+     '<h3>HIGHLIGHTS</h3><ul>'+
+     highlights.map(t=>'<li><span class="visit-highlight-marker" aria-hidden="true"></span><span>'+html(t)+'</span></li>').join("")+
+     '</ul></section>':""))+
    '<button type="button" class="visit-map-button" data-map-chooser aria-label="Choose a map app for '+heading+'">'+
    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/><circle cx="12" cy="11" r="2" fill="currentColor" stroke="none"/></svg>'+
    '<span>OPEN IN MAPS</span><span aria-hidden="true">⌄</span></button>'+
