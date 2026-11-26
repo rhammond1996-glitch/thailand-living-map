@@ -3,7 +3,7 @@
    No private keys, scraping of the biennale's photos, or fabricated venue hours. */
 (function(){
  "use strict";
- const profiles=window.MAP_PROFILES||{},sources=window.VENUE_RESEARCH||{};
+ const profiles=window.MAP_PROFILES||{},sources=window.VENUE_RESEARCH||{},editorial=window.PLACE_EDITORIAL||{};
  const cards=Object.fromEntries([...new Set([...Object.keys(sources),...Object.keys(profiles)])].map(id=>[id,
   {...sources[id],...profiles[id],links:[...(sources[id]?.links||[]),...(profiles[id]?.links||[])]}]));
  const cache=new Map();
@@ -14,49 +14,6 @@
  const isBab=p=>split(p).includes("Bangkok Art Biennale");
  const searchName=p=>String(p.name||"").replace(/\s*[—–]\s*(Bangkok Art Biennale|Biennale|BACC).*$/i,"").replace(/\s*\/.*/,"").trim();
  const displayName=(p,o)=>o.title||searchName(p)||p.name;
- const typeFor=p=>{
-  const c=split(p);
-  if(c.includes("Bangkok Art Biennale"))return "ARTISTS";
-  if(c.some(x=>["Fragrances","Independent fashion","Designer replicas","Vintage","Jewelry & artisan"].includes(x)))return "STORES";
-  if(c.includes("Markets & shopping"))return "FINDS";
-  if(c.includes("Nature & adventure"))return "EXPLORE";
-  if(c.includes("Temples & culture")||c.includes("Architecture & heritage"))return "HIGHLIGHTS";
-  if(c.includes("Gay Nightlife")||c.includes("Underground & Raves"))return "THE SCENE";
-  if(c.includes("Wellness & beauty"))return "EXPERIENCES";
-  return "HIGHLIGHTS";
- };
- const factsFor=(p,o)=>{
-  const facts=[];
-  // Only show details we actually know; no fabricated opening times or
-  // compulsory "flexible stop" rows.
-  if(o.hours&&!/check|confirm|unknown|varies|tba/i.test(o.hours))facts.push(["HOURS",o.hours]);
-  if(o.dates||isBab(p))facts.push(["EVENT",o.dates||(isBab(p)?"29 Oct 2026 – 28 Feb 2027":"")]);
-  if(o.visit&&!/flexible|tbd|check|confirm/i.test(o.visit))facts.push(["ALLOW",o.visit]);
-  if(o.transit)facts.push(["GETTING THERE",o.transit]);
-  return facts;
- };
-  const itemsFor=(p,o)=>{
-  if(o.items?.length){
-   return o.items.filter(it=>it&&String(it.name||"").trim()&&
-    !/^(biennale (exhibition|presentation|installations|artwork)|independent designers)$/i.test(String(it.name).trim()));
-  }
-  const note=String(p.highlights||"").trim();
-  if(!note)return [];
-  const parts=note.split(/\s*;\s*/).map(x=>x.trim()).filter(Boolean);
-  // No invented "feature" for a single sentence: that belongs in the
-  // editorial introduction, not a forced numbered list.
-  return parts.length>1?parts.slice(0,7).map(name=>({name})):[];
- };
- const introFor=(p,o)=>{
-  const text=String(o.intro||p.highlights||"").trim();
-  return /^(saved stop|explore this|check.*hours|flexible stop)/i.test(text)?"":text;
- };
- const needsCheck=value=>!!value&&!/^(approximate neighborhood|pin checked|verify entrance|pin needs|check pin|approximate pin)/i.test(String(value).trim());
- const goodNote=value=>!!String(value||"").trim()&&!/^(none|n\/a|no notes|to be confirmed)$/i.test(String(value).trim());
-  function chipIcon(p){
-  const c=split(p)[0]||"All";
-  try{return categoryStamp(c)}catch{return '<span class="visit-mark">✳</span>'}
- }
  function renderHero(p,o){
   const photos=cache.get(p.id)?.photos||[];
   if(photos.length){
@@ -82,20 +39,6 @@
    '<div class="visit-poster-symbol" aria-hidden="true">✳</div>'+
    '<strong>'+html(displayName(p,o))+'</strong></div>';
  }
-  function renderMainTab(p,o){
-  const items=itemsFor(p,o);
-  const more=String(o.more||"").trim();
-  if(!items.length&&!more)return "";
-  return (items.length?
-   '<div class="visit-section-kicker">WHAT TO LOOK FOR</div><div class="visit-items">'+
-   items.map((it,i)=>'<article class="visit-item"><span class="visit-item-num">'+String(i+1).padStart(2,"0")+'</span>'+
-    '<div class="visit-item-copy"><strong>'+html(it.name)+'</strong>'+
-    (it.type?'<small class="visit-item-type">'+html(it.type)+'</small>':'')+
-    (it.where?'<span class="visit-item-loc">'+html(it.where)+'</span>':'')+
-    (it.note?'<p>'+html(it.note)+'</p>':'')+
-    '</div></article>').join("")+'</div>':"")+
-   (more?'<p class="visit-about-text visit-extra-note">'+html(more)+'</p>':"");
- }
   function renderCredits(photos){
   if(!photos.length)return "";
   return '<details class="visit-photo-credits"><summary>Image sources &amp; credits</summary><ol>'+
@@ -105,76 +48,31 @@
     (f.license?' · '+(f.licenseUrl?'<a href="'+html(f.licenseUrl)+'" target="_blank" rel="noopener noreferrer">'+html(f.license)+'</a>':html(f.license)):"")+
     '</li>').join("")+'</ol></details>';
  }
- function usableLinks(o,limit=5){
-  const links=(o.links||[]).filter(item=>Array.isArray(item)&&item.length>=2&&/^https:\/\//.test(item[1]));
-  if(o.quickLink&&/^https:\/\//.test(o.quickLink))links.push(["OFFICIAL GUIDE",o.quickLink]);
-  const seen=new Set();
-  return links.filter(x=>{if(seen.has(x[1]))return false;seen.add(x[1]);return true}).slice(0,limit);
- }
- function renderVenueLinks(o,limit=3){
-  const links=usableLinks(o,limit);
-  return links.length?'<div class="visit-venue-links">'+links.map(([label,url])=>
-    '<a href="'+html(url)+'" target="_blank" rel="noopener noreferrer">'+html(label)+' ↗</a>').join("")+'</div>':"";
- }
- function renderPhotoTab(p,o){
-  const entry=cache.get(p.id);
-  if(!entry||entry.loading)return '<div class="visit-gallery-loading"><span class="visit-gallery-orbit" aria-hidden="true"></span>Finding photographs of this place…</div>';
-  const photos=entry.photos||[];
-  if(!photos.length)return '<div class="visit-gallery-empty"><p>No reliable photograph selected yet. Check the venue links or browse visitor photos.</p>'+
-   renderVenueLinks(o,2)+
-   '<a class="visit-google-photos" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">VISITOR PHOTOS &amp; REVIEWS ↗</a></div>';
-  return '<div class="visit-gallery-heading"><span>'+html(o.photoLabel||"THE PLACE, IN PICTURES")+'</span><span>'+photos.length+' PHOTOS</span></div>'+
-   '<div class="visit-gallery">'+photos.map((f,i)=>
-    '<figure><button type="button" data-photo-index="'+i+'" aria-label="View photograph '+(i+1)+' enlarged">'+
-    '<img src="'+html(f.url)+'" loading="'+(i<4?"eager":"lazy")+'" decoding="async" alt="'+html(f.title||displayName(p,o)+' — photo '+(i+1))+'"></button></figure>'
-   ).join("")+'</div>'+renderCredits(photos);
- }
- function renderPlanTab(p,o){
-  const rows=[];
-  // Opening hours, route and timing already appear above. Keep this
-  // section exclusively for practical details that add something new.
-  if(goodNote(p.price_note))rows.push(["COST / NOTES",p.price_note]);
-  if(goodNote(o.practical))rows.push(["GOOD TO KNOW",o.practical]);
-  if(o.confidence==="location-check")rows.push(["EXACT STOREFRONT","The business has a source, but confirm this particular branch before setting off."]);
-  if(o.confidence==="dates-check")rows.push(["EVENT DATES","The January 2027 programme has not yet been confirmed by organizers."]);
-  if(o.confidence==="needs-review")rows.push(["ON OUR RESEARCH LIST","The saved shop location is not sufficiently verified. Check the linked source before visiting."]);
-  return '<div class="visit-section-kicker">MAKE IT HAPPEN</div>'+
-   '<div class="visit-plan-actions"><a class="visit-primary-link" href="'+html(directions(p))+'" target="_blank" rel="noopener noreferrer">GET DIRECTIONS ↗</a>'+
-   '<a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">MAPS &amp; REVIEWS ↗</a></div>'+
-   rows.map(([k,v])=>'<div class="visit-address"><span>'+html(k)+'</span><p>'+html(v)+'</p></div>').join("")+
-   (p.address?'<div class="visit-address"><span>ADDRESS</span><p>'+html(p.address)+'</p></div>':"")+
-   (goodNote(o.practical)?'':"");
- }
- function renderTab(p,o,tab){
-  if(tab==="features")return renderMainTab(p,o);
-  return renderPlanTab(p,o);
- }
-  function makeCard(p){
+ function makeCard(p){
   const o=cards[p.id]||{};
   const primary=split(p)[0]||"All",c=STYLES?.[primary]||{color:"#6748D8",label:primary};
-  const sub=o.eyebrow||(isBab(p)?"BANGKOK ART BIENNALE / 2026–27":"THAILAND / "+(c.label||primary).toUpperCase());
-  const facts=factsFor(p,o),lead=introFor(p,o);
-  const showHighlights=itemsFor(p,o).length>0||goodNote(o.more);
-  const tabs=[...(showHighlights?[["features","HIGHLIGHTS"]]:[]),["plan","PLAN"]];
-  const defaultTab=showHighlights?"features":"plan";
-  return '<div class="visit-shell" style="--visit-accent:'+html(c.color)+'" data-place-id="'+html(p.id)+'">'+
-   '<div class="visit-heading"><div class="visit-identity"><span class="visit-kicker">'+html(sub)+'</span>'+
-   '<h2>'+html(displayName(p,o))+'</h2>'+(o.thai?'<div class="visit-thai" lang="th">'+html(o.thai)+'</div>':"")+'</div>'+
+  const copy=editorial[p.id]||[];
+  const description=String(copy[0]||p.highlights||"").trim();
+  const highlights=Array.isArray(copy[1])?copy[1]:[];
+  const heading=html(displayName(p,o));
+  const sub=html(p.city+" / "+(p.location_type||c.label||primary));
+  return '<div class="visit-shell visit-compact" style="--visit-accent:'+html(c.color)+'" data-place-id="'+html(p.id)+'">'+
+   '<div class="visit-heading"><div class="visit-identity"><span class="visit-kicker">'+sub+'</span>'+
+   '<h2>'+heading+'</h2>'+'</div>'+
    '<div class="visit-actions">'+favoriteButton(p,"detail")+'<button class="close-detail" type="button" aria-label="Close destination card">×</button></div></div>'+
    '<div class="visit-hero" aria-label="Destination or collection photography">'+renderHero(p,o)+'</div>'+
    '<div class="visit-hero-credit">'+renderCredits(cache.get(p.id)?.photos||[])+'</div>'+
-   (lead?'<p class="visit-lead">'+html(lead)+'</p>':"")+
-   (o.confidence==="needs-review"?'<p class="visit-review-notice">This shop is still on our research list; its storefront has not been confirmed.</p>':"")+
-   renderVenueLinks(o,3)+
-   (facts.length?'<div class="visit-facts">'+facts.map(([label,value])=>'<div class="visit-fact"><span>'+html(label)+'</span><strong>'+html(value)+'</strong></div>').join("")+'</div>':"")+
-   '<div class="visit-place-guide"><span class="visit-guide-dot"></span><span>'+html(p.city.toUpperCase())+' / '+html(p.location_type||c.label)+'</span>'+
-   '<a href="'+html(directions(p))+'" target="_blank" rel="noopener noreferrer">DIRECTIONS ↗</a></div>'+
-   '<div class="visit-tabs" role="tablist" aria-label="Destination information">'+tabs.map(([id,label])=>
-    '<button role="tab" type="button" class="visit-tab '+(id===defaultTab?"is-active":"")+'" data-visit-tab="'+id+'" aria-selected="'+(id===defaultTab)+'">'+html(label)+'</button>').join("")+'</div>'+
-   '<div class="visit-tab-panel" role="tabpanel" aria-live="polite">'+renderTab(p,o,defaultTab)+'</div>'+
-   '<div class="visit-footer"><a href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer">OPEN IN GOOGLE MAPS ↗</a></div></div>';
+   (description?'<p class="visit-summary">'+html(description)+'</p>':"")+
+   (highlights.length?'<section class="visit-highlights" aria-label="Location highlights">'+
+    '<h3>HIGHLIGHTS</h3><ul>'+
+    highlights.map(t=>'<li><span class="visit-highlight-marker" aria-hidden="true"></span><span>'+html(t)+'</span></li>').join("")+
+    '</ul></section>':"")+
+   '<a class="visit-map-button" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer" aria-label="Open '+heading+' in Google Maps for directions, address and reviews">'+
+   '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/><circle cx="12" cy="11" r="2" fill="currentColor" stroke="none"/></svg>'+
+   '<span>OPEN IN GOOGLE MAPS</span><span aria-hidden="true">↗</span></a>'+
+   '</div>';
  }
-  function metadataText(value){
+ function metadataText(value){
   return String(value||"").replace(/<[^>]*>/g," ").replace(/&(?:nbsp|#160);/gi," ")
    .replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/\s+/g," ").trim().slice(0,170);
  }
@@ -434,14 +332,5 @@
    if(p){e.preventDefault();showPhoto(p,photo.dataset.photoIndex);}
    return;
   }
-  const tab=e.target.closest("#place-detail [data-visit-tab]");
-  if(!tab)return;
-  const panel=cardEl(), id=panel.dataset.placeId;
-  const p=state.places?.find(x=>String(x.id)===String(id));
-  if(!p)return;
-  const chosen=tab.dataset.visitTab;
-  panel.querySelectorAll(".visit-tab").forEach(b=>{const active=b===tab;b.classList.toggle("is-active",active);b.setAttribute("aria-selected",String(active));});
-  const body=panel.querySelector(".visit-tab-panel");
-  if(body)body.innerHTML=renderTab(p,cards[id]||{},chosen);
  });
 })();
