@@ -11,6 +11,7 @@
  let tripCity=linkedDay?.city||(params.get('tripCity')==='Chiang Mai'?'Chiang Mai':'Bangkok');
  let day=params.get('day')==='all'?'all':linkedDay?.id||days.find(d=>d.city===tripCity)?.id||'all';
  let showNear=true, radiusKm=3, drafts={};
+ const auxMarkers=new Set();
  try{const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}');if(saved&&typeof saved==='object')drafts=saved;}catch{}
  let explorer={city:'All',category:'All',query:'',favoritesOnly:false};
  const lookup=id=>state.places.find(p=>String(p.id)===String(id));
@@ -78,10 +79,16 @@
   if(!valid(p))return;
   let marker;
   if(kind==='primary'){
-   const icon=L.divIcon({html:'<div class="trip-pin" style="--trip-color:'+d.color+'">'+number+'</div>',className:'map-marker',iconSize:[39,39],iconAnchor:[19,19]});
+   const html='<span class="ui-trip-pin" style="--trip-color:'+d.color+'" aria-hidden="true">'+
+    '<svg class="ui-trip-shape" viewBox="0 0 44 52" width="44" height="52" focusable="false" aria-hidden="true">'+
+    '<path d="M22 2.8C11.4 2.8 3.9 10.4 3.9 21c0 11.9 12.8 23.5 18.1 28.2C27.3 44.5 40.1 32.9 40.1 21 40.1 10.4 32.6 2.8 22 2.8Z" fill="var(--trip-color)" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>'+
+    '<span class="ui-trip-number">'+number+'</span></span>';
+   const icon=L.divIcon({html,className:'map-marker trip-number-marker',iconSize:[44,52],iconAnchor:[22,49]});
    marker=L.marker(point(p),{icon,zIndexOffset:1100,title:p.name}).addTo(markers);
   }else{
-   marker=L.circleMarker(point(p),{radius:6,color:'#b3a5b2',weight:1.5,opacity:.78,fillColor:'#fff',fillOpacity:.72}).addTo(markers);
+   const dark=document.documentElement.dataset.uiTheme==='night';
+   marker=L.circleMarker(point(p),{radius:6,color:dark?'#9ba9c8':'#8897b4',weight:2,opacity:1,fillColor:dark?'#15233f':'#fff',fillOpacity:1}).addTo(markers);
+   auxMarkers.add(marker);
   }
   marker.bindPopup(popup(p,kind,index,number,d?.id));
   marker.on('click',()=>{focus(p.id);marker.closePopup();});
@@ -120,7 +127,7 @@
   if(!map)return true;
   const active=activeDays();
   const nearby=findNearby();
-  markers.clearLayers();markerById.clear();
+  markers.clearLayers();markerById.clear();auxMarkers.clear();
   const all=[];
   for(const d of active){
    const ordered=dayIds(d).map(lookup).filter(valid);
@@ -212,7 +219,16 @@
   $('places-list').addEventListener('keydown',e=>{
    if(e.key==='Enter'||e.key===' '){const b=e.target.closest('[data-trip-focus]');if(b){e.preventDefault();focus(b.dataset.tripFocus);}}
   });
-  $('map').addEventListener('click',e=>{const b=e.target.closest('[data-trip-add]');if(b){e.preventDefault();e.stopPropagation();addToDay(b.dataset.tripAdd);}});
+  $('map').addEventListener('click',e=>{
+   const add=e.target.closest('[data-trip-add]');
+   if(add){e.preventDefault();e.stopPropagation();addToDay(add.dataset.tripAdd);return;}
+   const details=e.target.closest('[data-trip-focus]');
+   if(details){e.preventDefault();e.stopPropagation();focus(details.dataset.tripFocus);}
+  });
+  document.addEventListener('thailand:themechange',()=>{
+   const dark=document.documentElement.dataset.uiTheme==='night';
+   for(const m of auxMarkers)m.setStyle({color:dark?'#9ba9c8':'#8897b4',fillColor:dark?'#15233f':'#fff'});
+  });
   const legend=document.createElement('div');legend.className='trip-map-legend';legend.id='trip-legend';
   legend.innerHTML='<span class="solid">NUMBERED / PLAN</span> · <span class="muted">OUTLINE / OPTIONAL</span>';
   $('map').parentElement.appendChild(legend);
