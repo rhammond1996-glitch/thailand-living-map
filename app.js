@@ -7,26 +7,94 @@ const CONFIG={
   gid:'426752005', refreshMs:60000
 };
 const FIELDS=['id','name','city','categories','location_type','address','highlights','price_note','priority','status','lat','lng','verification'];
-// Every category has one fixed, saturated, high-contrast ink color.
-// The same token drives filter badges, lists, and map stamps.
+// A restrained four-color category system; all modes share the same semantics.
+// Related categories intentionally share a color and a readable icon.
 const CATEGORIES=[
- ['All','All places','#151515'],
- ['Fragrances','Fragrance','#F5008E'],
- ['Independent fashion','Fashion','#1546FF'],
- ['Designer replicas','Replicas','#FF4D00'],
- ['Vintage','Vintage','#009E49'],
- ['Jewelry & artisan','Artisan','#922EFF'],
- ['Creative districts','Design','#00ABD6'],
- ['Gay Nightlife','Nightlife','#FF224A'],
- ['Underground & Raves','Raves','#202020'],
- ['Architecture & heritage','Architecture','#FFCB00'],
- ['Temples & culture','Temples','#F08B00'],
- ['Art & design','Art','#6748D8'],
- ['Bangkok Art Biennale','Biennale','#B542D6'],
- ['Nature & adventure','Nature','#008B77'],
- ['Wildlife','Wildlife','#8DD900'],
- ['Markets & shopping','Markets','#E62BB9'],
- ['Wellness & beauty','Wellness','#07B2A1']
+ [
+  "All",
+  "All places",
+  "#69769A"
+ ],
+ [
+  "Fragrances",
+  "Fragrance",
+  "#D94E9D"
+ ],
+ [
+  "Independent fashion",
+  "Fashion",
+  "#D94E9D"
+ ],
+ [
+  "Designer replicas",
+  "Replicas",
+  "#D94E9D"
+ ],
+ [
+  "Vintage",
+  "Vintage",
+  "#D94E9D"
+ ],
+ [
+  "Jewelry & artisan",
+  "Artisan",
+  "#D94E9D"
+ ],
+ [
+  "Creative districts",
+  "Design",
+  "#4286D6"
+ ],
+ [
+  "Gay Nightlife",
+  "Nightlife",
+  "#8563D8"
+ ],
+ [
+  "Underground & Raves",
+  "Raves",
+  "#8563D8"
+ ],
+ [
+  "Architecture & heritage",
+  "Architecture",
+  "#4286D6"
+ ],
+ [
+  "Temples & culture",
+  "Temples",
+  "#4286D6"
+ ],
+ [
+  "Art & design",
+  "Art",
+  "#4286D6"
+ ],
+ [
+  "Bangkok Art Biennale",
+  "Biennale",
+  "#4286D6"
+ ],
+ [
+  "Nature & adventure",
+  "Nature",
+  "#229B79"
+ ],
+ [
+  "Wildlife",
+  "Wildlife",
+  "#229B79"
+ ],
+ [
+  "Markets & shopping",
+  "Markets",
+  "#D94E9D"
+ ],
+ [
+  "Wellness & beauty",
+  "Wellness",
+  "#229B79"
+ ]
 ];
 /* PRINT CLUB / graphic symbol language.
  * Handmade 32×32 SVGs, built from geometric silhouettes, not stock pictograms.
@@ -103,9 +171,26 @@ function categoryInk(hex){
  const luminance=.2126*linear[0]+.7152*linear[1]+.0722*linear[2];
  return luminance>.18?'#151515':'#FFFFFF';
 }
+/* One visual vocabulary across light/dark and across all 17 interests.
+   Each detailed interest uses a recognizable icon from its broader category. */
+const UI_ICON_GROUP={
+ 'Fragrances':'shopping','Independent fashion':'shopping','Designer replicas':'shopping',
+ 'Vintage':'shopping','Jewelry & artisan':'shopping','Markets & shopping':'shopping',
+ 'Gay Nightlife':'nightlife','Underground & Raves':'nightlife',
+ 'Creative districts':'art','Architecture & heritage':'art','Temples & culture':'art',
+ 'Art & design':'art','Bangkok Art Biennale':'art',
+ 'Nature & adventure':'nature','Wildlife':'nature','Wellness & beauty':'nature','All':'all'
+};
+const UI_ICON_PATH={
+ shopping:'<rect x="4" y="8" width="16" height="13" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>',
+ nightlife:'<path d="M9 18V5l12-2v13"/><circle cx="6.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="16.5" r="2.5"/>',
+ art:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1"/><path d="m5 17 5-5 3 3 3-4 3 6"/>',
+ nature:'<path d="M20 4c-8 0-15 3-15 11a6 6 0 0 0 6 6c8 0 11-7 9-17Z"/><path d="M5 20c3-4 7-7 12-10"/>',
+ all:'<circle cx="12" cy="12" r="9"/><path d="M12 5v14M5 12h14"/>'
+};
 function symbolSVG(category,size=21){
- const path=(document.documentElement.dataset.design==='print'&&CMY_GLYPHS[category])||CATEGORY_SYMBOLS[category]||CATEGORY_SYMBOLS.All;
- return '<svg class="category-icon" width="'+size+'" height="'+size+'" viewBox="0 0 32 32" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg">'+path+'</svg>';
+ const group=UI_ICON_GROUP[category]||'all';
+ return '<svg class="category-icon" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">'+UI_ICON_PATH[group]+'</svg>';
 }
 function categoryStamp(category){
  const item=STYLES[category]||STYLES.All;
