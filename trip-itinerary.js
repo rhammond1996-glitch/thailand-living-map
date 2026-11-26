@@ -3,11 +3,13 @@
 /* Adaptive day routing without changing the shared Google Sheet.
    Draft order changes persist on this device only. */
 (function(){
- const days=window.TRIP_DAYS||[];
+ const days=[...(window.TRIP_BANGKOK_DAYS||[]),...(window.TRIP_DAYS||[])];
  const DRAFT_KEY='thailand-living-map:itinerary-draft:v1';
  const params=new URLSearchParams(location.search);
  let mode=params.get('view')==='itinerary'?'itinerary':'explore';
- let day=params.get('day')==='all'?'all':days.some(d=>d.id===params.get('day'))?params.get('day'):'1';
+ const linkedDay=days.find(d=>d.id===params.get('day'));
+ let tripCity=linkedDay?.city||(params.get('tripCity')==='Chiang Mai'?'Chiang Mai':'Bangkok');
+ let day=params.get('day')==='all'?'all':linkedDay?.id||days.find(d=>d.city===tripCity)?.id||'all';
  let showNear=true, radiusKm=3, drafts={};
  try{const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'{}');if(saved&&typeof saved==='object')drafts=saved;}catch{}
  let explorer={city:'All',category:'All',query:'',favoritesOnly:false};
@@ -21,7 +23,8 @@
   const candidate=Array.isArray(drafts[d.id])?drafts[d.id]:original;
   return [...new Set(candidate.filter(id=>typeof id==='string' && (original.includes(id)||!!lookup(id))))];
  };
- const activeDays=()=>day==='all'?days:[byDay(day)].filter(Boolean);
+ const cityDays=()=>days.filter(d=>d.city===tripCity);
+ const activeDays=()=>day==='all'?cityDays():[byDay(day)].filter(d=>d&&d.city===tripCity);
  const distanceKm=(a,b)=>{
   const r=Math.PI/180,dlat=(Number(b.lat)-Number(a.lat))*r,dlng=(Number(b.lng)-Number(a.lng))*r;
   const x=Math.sin(dlat/2)**2+Math.cos(Number(a.lat)*r)*Math.cos(Number(b.lat)*r)*Math.sin(dlng/2)**2;
@@ -32,22 +35,22 @@
   try{localStorage.setItem(DRAFT_KEY,JSON.stringify(drafts));}catch(e){console.warn('Itinerary changes not saved',e);}
  };
  function setUrl(){
-  try{const url=new URL(location.href);if(mode==='itinerary'){url.searchParams.set('view','itinerary');url.searchParams.set('day',day);}else{url.searchParams.delete('view');url.searchParams.delete('day');}history.replaceState(null,'',url);}catch(e){}
+  try{const url=new URL(location.href);if(mode==='itinerary'){url.searchParams.set('view','itinerary');url.searchParams.set('day',day);url.searchParams.set('tripCity',tripCity);}else{url.searchParams.delete('view');url.searchParams.delete('day');url.searchParams.delete('tripCity');}history.replaceState(null,'',url);}catch(e){}
  }
  function findNearby(){
   if(!showNear||!state.places.length)return [];
   const chosen=activeDays().flatMap(d=>dayIds(d)).map(lookup).filter(valid);
   const selected=new Set(chosen.map(p=>String(p.id)));
   if(!chosen.length)return [];
-  return state.places.filter(p=>p.city==='Chiang Mai'&&valid(p)&&!selected.has(String(p.id))).map(p=>{
+  return state.places.filter(p=>p.city===tripCity&&valid(p)&&!selected.has(String(p.id))).map(p=>{
    let distance=Infinity,anchor=null;
    for(const main of chosen){const next=distanceKm(p,main);if(next<distance){distance=next;anchor=main;}}
-   const scheduled=days.find(d=>dayIds(d).includes(p.id));
+   const scheduled=cityDays().find(d=>dayIds(d).includes(p.id));
    return {p,distance,anchor,scheduled:scheduled?.id||''};
   }).filter(x=>x.distance<=radiusKm).sort((a,b)=>a.distance-b.distance||a.p.name.localeCompare(b.p.name)).slice(0,day==='all'?32:24);
  }
  function addToDay(id){
-  const d=byDay(day==='all'?'1':day),p=lookup(id);
+  const d=byDay(day==='all'?cityDays()[0]?.id:day),p=lookup(id);
   if(!d||!p)return;
   const ids=dayIds(d);
   if(ids.includes(id))return;
@@ -69,7 +72,7 @@
   const tag=kind==='primary'?'Planned stop '+number:'Nearby alternative';
   return '<div class="popup trip-popup"><strong>'+escapeText(p.name)+'</strong><small>'+escapeText(tag)+'</small><p>'+escapeText(p.highlights)+'</p><div class="trip-popup-actions">'+
    (kind==='aux'&&day!=='all'?'<button type="button" data-trip-add="'+escapeText(p.id)+'">Add to today</button>':'')+
-   '<a href="'+gmaps(p)+'" target="_blank" rel="noopener noreferrer">Maps ↗</a></div></div>';
+   '<button type="button" data-trip-focus="'+escapeText(p.id)+'">Place details &amp; Maps</button></div></div>';
  }
  function putMarker(p,kind,d,index,number){
   if(!valid(p))return;
@@ -86,7 +89,7 @@
  }
  function listOneDay(d){
   const ids=dayIds(d);
-  return '<div class="trip-header" style="--trip-color:'+d.color+'"><span>DAY '+d.id+'</span><span>'+escapeText(d.date)+' / '+escapeText(d.short)+'</span></div>'+
+  return '<div class="trip-header" style="--trip-color:'+d.color+'"><span>DAY '+(d.number||d.id)+'</span><span>'+escapeText(d.date)+' / '+escapeText(d.short)+'</span></div>'+
    (!ids.length?'<div class="empty">All stops skipped for this day. Use nearby suggestions or Reset.</div>':'')+
    ids.map((id,i)=>{
     const p=lookup(id);if(!p)return '';
@@ -97,7 +100,7 @@
      '<p><b>GETTING THERE</b> '+escapeText(transfer)+'</p>'+
      '<p>'+escapeText(p.highlights||'')+'</p>'+
      '<div class="trip-stop-actions"><button type="button" data-trip-skip="'+escapeText(id)+'" data-trip-skip-day="'+d.id+'">Skip this stop</button>'+
-     '<a class="trip-directions" href="'+directions(p)+'" target="_blank" rel="noopener noreferrer">Directions ↗</a></div></div></details></article>';
+     '<button type="button" class="trip-directions" data-trip-focus="'+escapeText(id)+'">Place details &amp; Maps</button></div></div></details></article>';
    }).join('')+
    (d.wellness?'<details class="trip-wellness"><summary>Optional evening idea</summary><p>'+escapeText(d.wellness)+'</p></details>':'');
  }
@@ -127,11 +130,11 @@
   }
   for(const a of nearby)putMarker(a.p,'aux',null,null,null);
   $('places-list').innerHTML=(state.places.length?active.map(listOneDay).join(''):'<div class="empty">Loading places and route…</div>')+alternativesHtml(nearby);
-  $('drawer-summary').textContent=day==='all'?'All four days':('DAY '+day+' / '+(byDay(day)?.short||''));
+  $('drawer-summary').textContent=day==='all'?'All '+tripCity+' days':(tripCity+' · DAY '+(byDay(day)?.number||day)+' / '+(byDay(day)?.short||''));
   const drawerHeading=document.querySelector('#drawer-grab .grab-copy strong');if(drawerHeading)drawerHeading.textContent='YOUR ROUTE';
   const thisDay=byDay(day);
-  $('trip-controls').innerHTML='<div class="trip-kicker">02 / YOUR ROUTE</div>'+
-   '<h2>'+(thisDay?escapeText(thisDay.title):'Four days / Chiang Mai')+'</h2>'+
+  $('trip-controls').innerHTML='<div class="trip-kicker">'+escapeText(tripCity.toUpperCase())+' / YOUR ROUTE</div>'+
+   '<h2>'+(thisDay?escapeText(thisDay.title):'Four days / '+escapeText(tripCity))+'</h2>'+
    '<p>'+(thisDay?escapeText(thisDay.summary):'Choose a day to see its planned route.')+'</p>'+
    (thisDay&&thisDay.warning?'<p class="trip-warning">'+escapeText(thisDay.warning)+'</p>':'')+
    '<details class="trip-settings"><summary>ROUTE OPTIONS <span aria-hidden="true">+</span></summary><div class="trip-settings-body">'+
@@ -170,7 +173,21 @@
   const title=document.querySelector('#drawer-grab .grab-copy strong');if(title)title.textContent=mode==='itinerary'?'YOUR ROUTE':'DISCOVER ↗';
   closeDetails();setUrl();render();
  }
- function selectDay(id){if(id!=='all'&&!byDay(id))return;day=id;closeDetails();setUrl();render();}
+ function selectDay(id){if(id!=='all'&&(!byDay(id)||byDay(id).city!==tripCity))return;day=id;closeDetails();setUrl();render();}
+ function setTripCity(city){
+  if(!['Bangkok','Chiang Mai'].includes(city)||city===tripCity)return;
+  tripCity=city;
+  day=cityDays()[0]?.id||'all';
+  closeDetails();renderDayPicker();setUrl();render();
+ }
+ function renderDayPicker(){
+  const nav=$('trip-day-picker');
+  nav.innerHTML='<div class="trip-city-switch" role="group" aria-label="Itinerary city">'+
+    ['Bangkok','Chiang Mai'].map(city=>'<button type="button" data-trip-city="'+city+'" class="'+(city===tripCity?'active':'')+'" aria-pressed="'+(city===tripCity)+'">'+city+'</button>').join('')+
+    '</div><div class="trip-day-scroll" role="group" aria-label="'+tripCity+' itinerary days">'+
+    cityDays().map(d=>'<button type="button" data-day="'+d.id+'" class="'+(d.id===day?'active':'')+'" aria-pressed="'+(d.id===day)+'">Day '+(d.number||d.id)+'</button>').join('')+
+    '<button type="button" data-day="all" class="'+(day==='all'?'active':'')+'" aria-pressed="'+(day==='all')+'">All</button></div>';
+ }
  function tripClick(e){
   const add=e.target.closest('[data-trip-add]');if(add){e.preventDefault();e.stopPropagation();addToDay(add.dataset.tripAdd);return;}
   const skip=e.target.closest('[data-trip-skip]');if(skip){e.preventDefault();e.stopPropagation();skipFromDay(skip.dataset.tripSkip,skip.dataset.tripSkipDay);return;}
@@ -178,10 +195,14 @@
  }
  function initTrip(){
   const nav=$('trip-day-picker');
-  nav.innerHTML=days.map(d=>'<button type="button" data-day="'+d.id+'" aria-pressed="false">Day '+d.id+'</button>').join('')+
-   '<button type="button" data-day="all" aria-pressed="false">All days</button>';
+  renderDayPicker();
   $('mode-picker').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)setMode(b.dataset.mode);});
-  nav.addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(b)selectDay(b.dataset.day);});
+  nav.addEventListener('click',e=>{
+   const city=e.target.closest('[data-trip-city]');
+   if(city){setTripCity(city.dataset.tripCity);return;}
+   const b=e.target.closest('[data-day]');
+   if(b)selectDay(b.dataset.day);
+  });
   $('trip-controls').addEventListener('change',e=>{
    if(e.target.id==='trip-show-near'){showNear=e.target.checked;render(true);}
    else if(e.target.id==='trip-radius'){radiusKm=Number(e.target.value)||3;render(true);}
@@ -196,7 +217,6 @@
   legend.innerHTML='<span class="solid">NUMBERED / PLAN</span> · <span class="muted">OUTLINE / OPTIONAL</span>';
   $('map').parentElement.appendChild(legend);
   if(mode==='itinerary'){mode='explore';setMode('itinerary');}else{legend.hidden=true;}
-  const originalSetMode=setMode;
   // Keep legend visibility in step with mode changes via a lightweight observer.
   const obs=new MutationObserver(()=>{legend.hidden=!document.body.classList.contains('itinerary-mode');});
   obs.observe(document.body,{attributes:true,attributeFilter:['class']});
