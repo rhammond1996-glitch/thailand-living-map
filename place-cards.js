@@ -67,9 +67,9 @@
     '<h3>HIGHLIGHTS</h3><ul>'+
     highlights.map(t=>'<li><span class="visit-highlight-marker" aria-hidden="true"></span><span>'+html(t)+'</span></li>').join("")+
     '</ul></section>':"")+
-   '<a class="visit-map-button" href="'+html(gmaps(p))+'" target="_blank" rel="noopener noreferrer" aria-label="Open '+heading+' in Google Maps for directions, address and reviews">'+
+   '<button type="button" class="visit-map-button" data-map-chooser aria-label="Choose a map app for '+heading+'">'+
    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/><circle cx="12" cy="11" r="2" fill="currentColor" stroke="none"/></svg>'+
-   '<span>OPEN IN GOOGLE MAPS</span><span aria-hidden="true">↗</span></a>'+
+   '<span>OPEN IN MAPS</span><span aria-hidden="true">⌄</span></button>'+
    '</div>';
  }
  function metadataText(value){
@@ -290,7 +290,64 @@
   if(credits)credits.innerHTML=renderCredits(cache.get(p.id)?.photos||[]);
   wireHeroCarousel(panel);
  }
+ let mapChooser=null,mapChooserKeyHandler=null,mapChooserTrigger=null;
+ function closeMapChooser(restoreFocus=true){
+  if(!mapChooser)return;
+  mapChooser.remove();
+  mapChooser=null;
+  if(mapChooserKeyHandler){
+   document.removeEventListener('keydown',mapChooserKeyHandler,true);
+   mapChooserKeyHandler=null;
+  }
+  const previous=mapChooserTrigger;
+  mapChooserTrigger=null;
+  if(restoreFocus&&previous?.isConnected)previous.focus();
+ }
+ function openMapChooser(p,trigger){
+  closeMapChooser(false);
+  if(!p)return;
+  mapChooserTrigger=trigger||null;
+  const placeName=displayName(p,cards[p.id]||{});
+  // Universal map links let the device open the named app when supported,
+  // otherwise a compatible web map. No forced native scheme or app install.
+  const query=[searchName(p),p.address].filter(Boolean).join(', ');
+  const appleURL='https://maps.apple.com/?q='+encodeURIComponent(query)+
+   (Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lng))&&p.lat!==''&&p.lng!==''?
+    '&ll='+encodeURIComponent(String(p.lat)+','+String(p.lng)):'');
+  const googleURL=gmaps(p);
+  const overlay=document.createElement('div');
+  overlay.className='visit-map-chooser-overlay';
+  overlay.innerHTML='<section class="visit-map-chooser" role="dialog" aria-modal="true" aria-labelledby="visit-map-choice-title" aria-describedby="visit-map-choice-place">'+
+   '<header class="visit-map-choice-header"><div><span class="visit-map-choice-kicker">MAPS / OPEN LOCATION</span>'+
+   '<h2 id="visit-map-choice-title">CHOOSE YOUR MAP APP</h2>'+
+   '<p id="visit-map-choice-place">'+html(placeName)+'</p></div>'+
+   '<button type="button" class="visit-map-choice-close" data-map-close aria-label="Close map app chooser">×</button></header>'+
+   '<div class="visit-map-options">'+
+   '<a class="visit-map-option visit-map-option-apple" href="'+html(appleURL)+'" data-map-app="apple" aria-label="Open '+html(placeName)+' in Apple Maps">'+
+   '<span class="visit-map-option-icon" aria-hidden="true">A</span>'+
+   '<span>Apple Maps<small>Apple devices &amp; web</small></span><span class="visit-map-option-arrow" aria-hidden="true">↗</span></a>'+
+   '<a class="visit-map-option visit-map-option-google" href="'+html(googleURL)+'" data-map-app="google" aria-label="Open '+html(placeName)+' in Google Maps">'+
+   '<span class="visit-map-option-icon" aria-hidden="true">G</span>'+
+   '<span>Google Maps<small>Google Maps app &amp; web</small></span><span class="visit-map-option-arrow" aria-hidden="true">↗</span></a></div>'+
+   '<p class="visit-map-choice-footnote">Your device chooses the installed app or web version.</p></section>';
+  overlay.addEventListener('click',event=>{
+   if(event.target===overlay||event.target.closest('[data-map-close]'))closeMapChooser();
+  });
+  document.body.appendChild(overlay);
+  mapChooser=overlay;
+  mapChooserKeyHandler=event=>{
+   if(event.key==='Escape'){event.preventDefault();closeMapChooser();return;}
+   if(event.key!=='Tab')return;
+   const focusable=Array.from(overlay.querySelectorAll('a[href],button:not([disabled])'));
+   const first=focusable[0],last=focusable[focusable.length-1];
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}
+  };
+  document.addEventListener('keydown',mapChooserKeyHandler,true);
+  overlay.querySelector('[data-map-app="apple"]')?.focus();
+ }
  window.openPlaceProfile=function(p){
+  closeMapChooser(false);
   const panel=cardEl();if(!panel||!p)return;
   panel.dataset.placeId=String(p.id);
   panel.innerHTML=makeCard(p);
@@ -319,6 +376,14 @@
   if(entry.photos.length!==before)syncPhotos(id);
  },true);
  document.addEventListener("click",function(e){
+  const opener=e.target.closest('#place-detail [data-map-chooser]');
+  if(opener){
+   e.preventDefault();
+   const id=cardEl()?.dataset.placeId;
+   const p=state.places?.find(place=>String(place.id)===String(id));
+   if(p)openMapChooser(p,opener);
+   return;
+  }
   const arrow=e.target.closest("#place-detail [data-photo-step]");
   if(arrow){
    e.preventDefault();
