@@ -55,6 +55,7 @@
   const stores=o.items.filter(item=>item&&String(item.name||'').trim()&&
     !/^(independent designers|other shops|stores|browse)$/i.test(String(item.name).trim()));
   if(!stores.length)return '';
+  const hasUnconfirmed=stores.some(item=>/confirm|verify|not established|unconfirmed|tbc|tbd/i.test(String(item.where||'')));
   const rows=stores.map((item,index)=>{
    const name=String(item.name||'').trim(),where=String(item.where||'').trim();
    const type=String(item.type||'').trim(),note=String(item.note||'').trim();
@@ -71,7 +72,7 @@
    '<header class="visit-store-guide-header"><h3>OUR STOPS INSIDE</h3><span>'+
     stores.length+' '+(stores.length===1?'PLACE':'PLACES')+'</span></header>'+
    '<ol class="visit-store-list">'+rows+'</ol>'+
-   '<p class="visit-store-fineprint">Floor and unit information reflects saved research and can change. Unconfirmed locations are marked.</p>'+
+   (hasUnconfirmed?'<p class="visit-store-fineprint">Some shop floors or units are unconfirmed; check the venue directory for current locations.</p>':'')+
    '</section>';
  }
  function makeCard(p){
