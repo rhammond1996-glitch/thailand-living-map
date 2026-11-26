@@ -1,4 +1,4 @@
-/* Source-screened venue reference overlay; curated images with explicit provenance. Updated 2026-11-22. */
+/* Source-screened venue reference overlay; curated images with explicit provenance. Updated 2026-11-26. */
 window.VENUE_RESEARCH = {
   "bkk-centralworld": {
     "confidence": "established",
@@ -12,14 +12,34 @@ window.VENUE_RESEARCH = {
     "photoQueries": [
       "CentralWorld Bangkok"
     ],
-    "photoLabel": "CENTRALWORLD / SHOPPING COMPLEX",
+    "photoLabel": "CENTRALWORLD / EXTERIOR & INTERIOR",
     "photoSelections": [
       {
-        "title": "CentralWorld shopping complex, Bangkok",
-        "url": "https://img.salehere.co.th/p/1200x0/2024/03/21/fqwuucyavhyi.jpg",
-        "page": "https://salehere.co.th/articles/central-world-walking-guide",
-        "artist": "Sale Here",
-        "kind": "Venue photograph"
+        "title": "CentralWorld facade, November 2026",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/CentralWorld_20261104_%281%29.jpg/1280px-CentralWorld_20261104_%281%29.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:CentralWorld_20261104_(1).jpg",
+        "artist": "DvTor8303",
+        "kind": "Venue exterior · November 2026",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      {
+        "title": "CentralWorld interior atrium",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/CentralWorld%2C_Bangkok.jpg/500px-CentralWorld%2C_Bangkok.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:CentralWorld,_Bangkok.jpg",
+        "artist": "Slyronit",
+        "kind": "Venue interior · 2022",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      },
+      {
+        "title": "CentralWorld complex from Ratchadamri Road, November 2026",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/CentralWorld_20261104_%282%29.jpg/1280px-CentralWorld_20261104_%282%29.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:CentralWorld_20261104_(2).jpg",
+        "artist": "DvTor8303",
+        "kind": "Venue exterior · November 2026",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
       }
     ]
   },
